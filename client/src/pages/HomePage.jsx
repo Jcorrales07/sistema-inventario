@@ -1,9 +1,15 @@
 import React, { useEffect } from 'react'
-
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
-
-import { Container, Row, Col, Navbar, Nav, Image } from 'react-bootstrap'
+import {
+    Container,
+    Row,
+    Col,
+    Navbar,
+    Nav,
+    Image,
+    Button,
+} from 'react-bootstrap'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 
@@ -45,8 +51,6 @@ const buttons = [
 function HomePage() {
     const [date, setDate] = React.useState('')
 
-    // WARNING: This will run every second
-    // PUEDE SER QUE AFECTE EL RENDIMIENTO
     useEffect(() => {
         setInterval(() => {
             const now = new Date()
@@ -64,15 +68,20 @@ function HomePage() {
                 {/* Columna Izquierda */}
                 <Col
                     className="bg-dark text-white vh-100 py-5 px-3"
-                    style={{ width: 'fit-content', maxWidth: '450px' }}
+                    style={{
+                        maxWidth: '350px', // Limita el ancho máximo
+                        width: 'fit-content', // Se ajusta al contenido
+                    }}
                 >
                     <div
                         style={{ display: 'flex' }}
-                        className="flex-column justify-content-between"
+                        className="flex-column justify-content-between mt-5"
                     >
-                        <div className="user-info text-center mb-5">
+                        <div
+                            className="user-info text-center mb-5"
+                            style={{ display: 'inline-block' }}
+                        >
                             <div className="user-avatar mb-2">
-                                {/* Imagen del usuario */}
                                 <img
                                     src="https://via.placeholder.com/50"
                                     alt="Avatar"
@@ -82,17 +91,26 @@ function HomePage() {
                             <p>Nombre de usuario</p>
                             <p>correo@electronico.com</p>
                         </div>
-                        <Nav defaultActiveKey="/" className="flex-column">
-                            {/* Botones de la barra de navegacion */}
+
+                        <Nav
+                            defaultActiveKey="/"
+                            className="flex-column"
+                            // style={{ width: 'fit-content' }}
+                        >
                             {buttons.map((button) => (
-                                <Nav.Link
+                                <Button
                                     key={button.name}
-                                    href={button.link}
-                                    className="text-white"
-                                    style={{ width: 'fit-content' }}
+                                    className="mb-2 w-full"
+                                    variant="dark"
                                 >
-                                    {button.name}
-                                </Nav.Link>
+                                    <Nav.Link
+                                        key={button.name}
+                                        href={button.link}
+                                        className="text-white text-start"
+                                    >
+                                        {button.name}
+                                    </Nav.Link>
+                                </Button>
                             ))}
                         </Nav>
                     </div>
@@ -101,9 +119,9 @@ function HomePage() {
                 {/* Columna Principal */}
                 <Col className="flex-grow-1 p-0">
                     {/* Barra Superior */}
-                    <Navbar bg="dark" fluid className="mb-3 border-bg-black">
+                    <Navbar bg="dark" fluid className="border-bg-black px-2">
                         <Container fluid>
-                            <Navbar.Brand href="#" className="text-white">
+                            <Navbar.Brand className="text-white">
                                 {date}
                             </Navbar.Brand>
                             <Navbar.Collapse className="justify-content-end">
@@ -129,22 +147,27 @@ function HomePage() {
                     </Navbar>
 
                     {/* Contenido Principal */}
-                    <Container className='p-4'>
+                    <Container
+                        style={{
+                            padding: '35px',
+                        }}
+                    >
                         <h4>Estado del inventario:</h4>
-                        <Row className="text-center g-3">
-                            <Col className="border p-3">Contenido 1</Col>
-                            <Col className="border p-3">Contenido 2</Col>
-                            <Col className="border p-3">Contenido 3</Col>
+
+                        <Row className="text-center mb-3">
+                            <Col className="border p-3 mx-2">Contenido 1</Col>
+                            <Col className="border p-3 mx-2">Contenido 2</Col>
+                            <Col className="border p-3 mx-2">Contenido 3</Col>
                         </Row>
-                        <Row className="text-center g-3">
-                            <Col className="border p-3">Contenido 1</Col>
-                            <Col className="border p-3">Contenido 2</Col>
-                            <Col className="border p-3">Contenido 3</Col>
+                        <Row className="text-center mb-3">
+                            <Col className="border p-3 mx-2">Contenido 1</Col>
+                            <Col className="border p-3 mx-2">Contenido 2</Col>
+                            <Col className="border p-3 mx-2">Contenido 3</Col>
                         </Row>
-                        <Row className="text-center g-3">
-                            <Col className="border p-3">Contenido 1</Col>
-                            <Col className="border p-3">Contenido 2</Col>
-                            <Col className="border p-3">Contenido 3</Col>
+                        <Row className="text-center mb-3">
+                            <Col className="border p-3 mx-2">Contenido 1</Col>
+                            <Col className="border p-3 mx-2">Contenido 2</Col>
+                            <Col className="border p-3 mx-2">Contenido 3</Col>
                         </Row>
                         {/* Aquí puedes agregar más contenido */}
                     </Container>
