@@ -119,20 +119,15 @@ function HomePage() {
                 {/* Columna Principal */}
                 <Col className="flex-grow-1 p-0">
                     {/* Barra Superior */}
-                    <Navbar bg="dark" fluid className="border-bg-black px-2">
+                    <Navbar bg="dark" fluid className="border-bg-black">
                         <Container fluid>
-                            <Navbar.Brand className="text-white">
+                            <Navbar.Brand className="text-white text-capitalize">
                                 {date}
                             </Navbar.Brand>
                             <Navbar.Collapse className="justify-content-end">
                                 <Nav>
                                     <Nav.Link href="#notificaciones">
-                                        <img
-                                            src="bell.svg"
-                                            alt="campana"
-                                            width={25}
-                                            height={25}
-                                        />
+                                    <i class="bi bi-bell-fill text-white fs-5"></i>
                                     </Nav.Link>
                                     <Nav.Link href="#perfil">
                                         <Image
