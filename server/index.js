@@ -3,8 +3,6 @@ const app = express();
 const cors = require("cors");
 const morgan = require("morgan");
 const db = require("./database");
-const Usuario = require("./modelos/Usuario");
-const Socio = require("./modelos/Socio");
 
 const PORT = process.env.PORT || 3000;
 
