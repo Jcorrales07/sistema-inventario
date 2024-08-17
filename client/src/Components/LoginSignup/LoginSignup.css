@@ -1,22 +1,26 @@
 .container {
     display: flex;
-    justify-content: center;
+    justify-content:center;
     align-items: center;
-    height: 100vh;
-    padding: 50px;
+    height: 100vh; 
+    padding: 90px;
+    margin: 0px;
     box-sizing: border-box;
-    background-color: aqua;
+    
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);  
 }
 
 
+
 .containerIniciar {
-    max-width: 500px; 
-    width: 100%; 
-    padding: 42px; 
+    padding: 50px; 
     box-sizing: border-box; 
     background-color: #fff; 
     border-radius: 8px; 
-    box-shadow: 0010pxrgba(0, 0, 0, 0.1);
+    box-shadow: 0010pxrgba(0, 0, 0, 0.1); /* Corrected box-shadow */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -69,7 +73,7 @@
 }
 
 .submit {
-    background-color: #010402; 
+    background-color: #121413; 
     color: white;
     padding: 12px;
     border: none;
@@ -79,7 +83,7 @@
 }
 
 .submit:hover {
-    background-color: #010402; 
+    background-color: #5a5e5b; 
 }
 
 

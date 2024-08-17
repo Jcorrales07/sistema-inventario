@@ -1,32 +1,38 @@
-import React, { useState } from 'react'
-import './LoginSignup.css'
+import React, { useState } from'react';
+import { useNavigate } from'react-router-dom';
 
+import'./LoginSignup.css';
+import { toast } from'react-toastify';
 
 const LoginSignup = () => {
-
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
-    const handleLogin = () => {
-        if (username === 'admin' && password === '1234') {
-            setIsLoggedIn(true)
-            setError('')
-        }else if(username === '' && password === '1234') {
-            setError('Campo de usuario no completado!')
-            setUsername('');
-            setPassword('');
-        }else if(username === 'admin' && password === '') {
-            setError('Campo de contraseña no completado!')
-            setUsername('');
-            setPassword('');
-        } else {
-            setError('Usuario o contraseña incorrectos!')
-            setUsername('');
-            setPassword('');
+    const handleLogin = async () => {
+        if (!username || !password) {
+            setError('Usuario y contraseña son requeridos');
+            return;
         }
-    }
+
+        const response = await authApi.signInRequest(username, password);
+        if (response) {
+            if (response.status === 201) {
+                setIsLoggedIn(true);
+                setError('');
+                toast.success('Inicio de sesión exitoso!', {
+                    position: "bottom-center",
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                });
+                navigate('/homepage');
+            }
+        } else {
+            setError('Error en el inicio de sesión');
+        }
+    };
 
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
@@ -38,43 +44,43 @@ const LoginSignup = () => {
         <div className='container'>
             {isLoggedIn ? (
                 <div>  
-                    {/*aqui se configura lo que va adentro del boton de login*/} 
+                    {/* Aquí puedes agregar lo que quieras mostrar cuando el usuario esté logueado */}
                 </div>
             ) : (
                 <div className='containerIniciar'>
                     <div className="header"><h3>Inicio de Sesión</h3></div>
                     <div className="inputs">
-                        <div className="input">
-                        <label htmlFor="username">Usuario</label>
+                        <div className="input"><label htmlFor="username">Usuario</label>
                             <input
-                                id = "username" 
-                                type="text" 
-                                placeholder = ""
+                                id="username"
+                                type="text"
+                                placeholder=""
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                                 maxLength="50"
+                                onKeyDown={handleKeyDown}
+                                className={error.includes('Usuario') ? 'input-error' : ''}
                             />
                         </div>
-
-                        <div className="input">
-                            <label htmlFor="password">Contraseña</label>
+                        <div className="input"><label htmlFor="password">Contraseña</label>
                             <input
-                                id = "password"
-                                type="password" 
+                                id="password"
+                                type="password"
                                 placeholder=""
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                onKeyDown={handleKeyDown} 
+                                onKeyDown={handleKeyDown}
+                                className={error.includes('Contraseña') ? 'input-error' : ''}
                             />
                         </div>
-                        {error && <div className= "error-messager">{error}</div>}
+                        {error && <div className="error-messager">{error}</div>}
                     </div>
                     <div className="submit-container">
-                        <div className="submit" onClick={handleLogin}>Inicar Sesión</div>     
+                        <div className="submit" onClick={handleLogin}>Iniciar Sesión</div>
                     </div>
                 </div>
             )}
         </div> 
-    )
-}
+    );
+};
 export default LoginSignup;
