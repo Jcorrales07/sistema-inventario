@@ -1,6 +1,6 @@
 import React, { useState } from'react';
 import { useNavigate } from'react-router-dom';
-
+//import { login } from'@client/api/auth.api';;
 import'./LoginSignup.css';
 import { toast } from'react-toastify';
 
@@ -17,7 +17,7 @@ const LoginSignup = () => {
             return;
         }
 
-        const response = await authApi.signInRequest(username, password);
+        const response = await login(username, password);
         if (response) {
             if (response.status === 201) {
                 setIsLoggedIn(true);

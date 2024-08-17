@@ -1,59 +1,16 @@
-import axios from'./AxiosInstance'; 
-import { toast } from'react-toastify';
+import axiosInstance from'@axiosInstance';
 
-const signInRequest = async (username, password) => {
+const login = async (email, password) => {
     try {
-        const response = await axios.post('/auth/login', {
-            username,
-            password,
-        });
-
-        if (response.status === 201) {
-            // Inicio de sesión exitoso
-            toast.success('Inicio de sesión exitoso!', {
-                position: "bottom-center",
-                autoClose: 5000,
-                hideProgressBar: true,
-            });
-            return response;
-        } else {
-            return null;
-        }
+        const response = await axiosInstance.post('/auth', { email, password });
+        return response.data; 
     } catch (error) {
-        // Manejar errores
         if (error.response) {
-            const status = error.response.status;
-
-            if (status === 401) {
-                toast.error('Usuario inexistente', {
-                    position: "bottom-center",
-                    autoClose: 5000,
-                    hideProgressBar: true,
-                });
-            } else if (status === 402) {
-                toast.error('Contraseña inválida', {
-                    position: "bottom-center",
-                    autoClose: 5000,
-                    hideProgressBar: true,
-                });
-            } else {
-                toast.error('Hubo un problema, vuelva a intentarlo!', {
-                    position: "bottom-center",
-                    autoClose: 5000,
-                    hideProgressBar: true,
-                });
-            }
+            throw new Error(error.response.data.message || 'Error al realizar el login');
+        } else if (error.request) {
+            throw new Error('No se recibió respuesta del servidor');
         } else {
-            toast.error('Hubo un problema, vuelva a intentarlo!', {
-                position: "bottom-center",
-                autoClose: 5000,
-                hideProgressBar: true,
-            });
+            throw new Error('Error al configurar la solicitud');
         }
-        returnnull;
     }
-};
-
-export default {
-    signInRequest,
 };
