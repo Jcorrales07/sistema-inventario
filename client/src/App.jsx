@@ -1,6 +1,6 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
-
+import UserView from './Usuarios.jsx'
 function App() {
     return (
         <Routes>
@@ -10,6 +10,7 @@ function App() {
             <Route path="/login" element={<p>Login Page</p>} />
             <Route path="/dashboard" element={<p>Dashboard Page</p>} />
             <Route path="*" element={<p>Error 404: Page not found</p>} />
+            <Route path="/users" element = {<UserView/>}  />
         </Routes>
     )
 }
