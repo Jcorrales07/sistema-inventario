@@ -26,7 +26,7 @@ function RegistroUsuarios() {
         usuario: '',
         identificacion: '',
         numeroIdentidad: '',
-        contraseña: '',
+        contrasena: '',
         rol: 'Roles',
     })
 
@@ -66,8 +66,8 @@ function RegistroUsuarios() {
             newErrors.numeroIdentidad =
                 'El número de identidad debe tener el formato xxxx-xxxx-xxxxx.'
         }
-        if (formData.contraseña.length < 8) {
-            newErrors.contraseña =
+        if (formData.contrasena.length < 8) {
+            newErrors.contrasena =
                 'La contraseña debe tener al menos 8 caracteres.'
         }
         if (formData.rol === 'Roles') {
@@ -118,7 +118,7 @@ function RegistroUsuarios() {
             usuario: '',
             identificacion: '',
             numeroIdentidad: '',
-            contraseña: '',
+            contrasena: '',
             rol: 'Roles',
         })
         setErrors({})
@@ -223,17 +223,17 @@ function RegistroUsuarios() {
                             </Form.Group>
                         </Col>
                         <Col md={6}>
-                            <Form.Group controlId="contraseña">
+                            <Form.Group controlId="contrasena">
                                 <Form.Label>Contraseña</Form.Label>
                                 <Form.Control
                                     type="password"
-                                    name="contraseña"
-                                    value={formData.contraseña}
+                                    name="contrasena"
+                                    value={formData.contrasena}
                                     onChange={handleChange}
-                                    isInvalid={!!errors.contraseña}
+                                    isInvalid={!!errors.contrasena}
                                 />
                                 <Form.Control.Feedback type="invalid">
-                                    {errors.contraseña}
+                                    {errors.contrasena}
                                 </Form.Control.Feedback>
                             </Form.Group>
                         </Col>
