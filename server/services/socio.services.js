@@ -11,11 +11,11 @@ exports.socioCreateService = async (socioData, res) => {
 
 exports.socioUpdateService = async (id, socioUpdate, res) => {
     try {
-        const socioUpdateService = await Socio.update(socioUpdate);
-        if (socioUpdateService) {
-            const edited = await Socio.findOne(id);
-            return edited;
+        const socioUpdateService = await Socio.update(socioUpdate,{where:{id}});
+        if(!socioUpdateService){
+            return null
         }
+            return await Socio.findByPk(id);
     } catch (error) {
         res.status(404).json({ message: 'Id invalido, no existe u ocrurrio algún error' })
     }
@@ -24,9 +24,8 @@ exports.socioUpdateService = async (id, socioUpdate, res) => {
 
 exports.socioDeleteService = async (id, res) => {
     try {
-        const deleteSocio = await Socio.destroy(id);
+        const deleteSocio = await Socio.destroy({where:{id}});
         return deleteSocio;
-
     } catch (error) {
         res.status(404).json({ message: 'Id no encontrado' });
     }
