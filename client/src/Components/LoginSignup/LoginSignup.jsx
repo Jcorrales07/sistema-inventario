@@ -13,31 +13,34 @@ const LoginSignup = () => {
 
   const handleLogin = async () => {
     if (!username || !password) {
-      setError("Usuario y contraseña son requeridos");
+      toast.error("Usuario y contraseña son requeridos!");
       return;
     }
 
     const response = await login(username, password);
     if (response) {
       if (response.status === 201) {
-        setIsLoggedIn(true);
-        setError("");
         toast.success("Inicio de sesión exitoso!");
         navigate("/");
+
+        setIsLoggedIn(true);
         return;
       }
 
       if (response.status === 401) {
-        setError("Usuario no existe");
-        toast.error("Usuario no existe!");
+        toast.error("Usuario no existe!", {
+            icon: "👤",
+        });
       }
 
       if (response.status === 402) {
-        setError("Contraseña incorrecta");
-        toast.error("Contraseña incorrecta!");
+        toast.error("Contraseña incorrecta!", {
+            icon: "🔑",
+        });
       }
     } else {
       setError("Error en el inicio de sesión");
+      console.log("Error en el inicio de sesión");
     }
   };
 
@@ -96,11 +99,11 @@ const LoginSignup = () => {
             <div className="submit" onClick={handleLogin}>
               Iniciar Sesión
             </div>
-
-            <Toaster />
           </div>
         </div>
       )}
+
+      <Toaster />
     </div>
   );
 };
