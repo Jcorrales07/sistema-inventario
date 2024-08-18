@@ -8,15 +8,7 @@ const login = async (nickname, contrasena) => {
     });
     return response;
   } catch (error) {
-    if (error.response) {
-      throw new Error(
-        error.response.data.message || "Error al realizar el login"
-      );
-    } else if (error.request) {
-      throw new Error("No se recibió respuesta del servidor");
-    } else {
-      throw new Error("Error al configurar la solicitud");
-    }
+    return error.response;
   }
 };
 
