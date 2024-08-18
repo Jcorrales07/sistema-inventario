@@ -1,5 +1,12 @@
 import React from 'react'
-import { Button, Container, Dropdown, Image, Nav, Navbar } from 'react-bootstrap'
+import {
+    Button,
+    Container,
+    Dropdown,
+    Image,
+    Nav,
+    Navbar,
+} from 'react-bootstrap'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 function FeatureNavbar() {
@@ -45,10 +52,15 @@ function FeatureNavbar() {
                                 <Dropdown.Item href="#/profile">
                                     Profile
                                 </Dropdown.Item>
-                                <Dropdown.Item href="#/settings">
+                                <Dropdown.Item href="/configuracion">
                                     Settings
                                 </Dropdown.Item>
-                                <Dropdown.Item href="#/logout">
+                                <Dropdown.Item
+                                    href="/"
+                                    onClick={() =>
+                                        localStorage.removeItem('user')
+                                    }
+                                >
                                     Logout
                                 </Dropdown.Item>
                             </Dropdown.Menu>
