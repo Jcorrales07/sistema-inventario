@@ -21,7 +21,10 @@ const LoginSignup = () => {
         if (response) {
             if (response.status === 201) {
                 toast.success('Inicio de sesión exitoso!')
-                navigate('/')
+
+                setTimeout(() => {
+                    navigate('/home')
+                }, 2000)
 
                 setIsLoggedIn(true)
                 return
@@ -41,6 +44,12 @@ const LoginSignup = () => {
         } else {
             setError('Error en el inicio de sesión')
             console.log('Error en el inicio de sesión')
+        }
+    }
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handleLogin()
         }
     }
 

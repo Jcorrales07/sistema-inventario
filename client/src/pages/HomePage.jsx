@@ -39,7 +39,7 @@ const buttons = [
     },
     {
         name: 'Cerrar Sesión',
-        link: '/login',
+        link: '/',
     },
 ]
 
