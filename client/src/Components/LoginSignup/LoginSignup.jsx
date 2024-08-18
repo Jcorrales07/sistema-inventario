@@ -53,7 +53,9 @@ const LoginSignup = () => {
                     </div>
                     <div className="inputs">
                         <div className="input">
-                            <label htmlFor="username">Usuario</label>
+                            <label className="labels" htmlFor="username">
+                                Usuario
+                            </label>
                             <input
                                 id="username"
                                 type="text"
@@ -62,15 +64,18 @@ const LoginSignup = () => {
                                 onChange={(e) => setUsername(e.target.value)}
                                 maxLength="50"
                                 onKeyDown={handleKeyDown}
-                                className={
+                                className={`${
                                     error.includes('Usuario')
                                         ? 'input-error'
                                         : ''
                                 }
+                                `}
                             />
                         </div>
                         <div className="input">
-                            <label htmlFor="password">Contraseña</label>
+                            <label className="labels" htmlFor="password">
+                                Contraseña
+                            </label>
                             <input
                                 id="password"
                                 type="password"
@@ -78,11 +83,12 @@ const LoginSignup = () => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 onKeyDown={handleKeyDown}
-                                className={
-                                    error.includes('Contraseña')
+                                className={`${
+                                    error.includes('Usuario')
                                         ? 'input-error'
                                         : ''
                                 }
+                                `}
                             />
                         </div>
                         {error && <div className="error-messager">{error}</div>}
