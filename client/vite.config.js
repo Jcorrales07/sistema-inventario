@@ -1,8 +1,9 @@
-// vite.config.jsimport { defineConfig } from'vite';
+// vite.config.js
+import { defineConfig } from'vite';
 import react from'@vitejs/plugin-react';
 import path from'path';
 
-exportdefaultdefineConfig({
+export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {

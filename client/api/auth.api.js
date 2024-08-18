@@ -1,4 +1,4 @@
-import axiosInstance from'@axiosInstance';
+import axiosInstance from '../api/AxiosInstance';
 
 const login = async (email, password) => {
     try {
@@ -14,3 +14,7 @@ const login = async (email, password) => {
         }
     }
 };
+
+export {
+    login
+}
