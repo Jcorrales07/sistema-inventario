@@ -1,5 +1,6 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
+import LoginSignup from './Components/LoginSignup/LoginSignup'
 import {
     HomePage,
     CRUDProductosPage,
@@ -13,8 +14,7 @@ import {
 function App() {
     return (
         <Routes>
-            <Route path="/login" element={<p>Login Page</p>} />
-
+            
             {/* Estas rutas deben estar protegidas, osea, que una vez que se incia sesion, se puedan acceder */}
             <Route path="/" element={<HomePage />} />
             <Route path="/productos" element={<CRUDProductosPage />} />
@@ -24,6 +24,7 @@ function App() {
             <Route path="/reportes" element={<CRUDReportesPage />} />
             <Route path="/configuracion" element={<ConfiguracionPage />} />
 
+            <Route path="/login" element={<LoginSignup />} />
             <Route path="*" element={<p>Error 404: Page not found</p>} />
         </Routes>
     )
