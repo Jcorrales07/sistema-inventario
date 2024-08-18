@@ -51,7 +51,7 @@ exports.usuarioSelectAllController = async (req, res) => {
     if (usuarios.length === 0) {
       return res
         .status(201)
-        .json({ error: "No hay usuarios registrados", Data: [] });
+        .json({ message: "No hay usuarios registrados", Data: [] });
     }
 
     return res.status(200).json({ Data: usuarios });

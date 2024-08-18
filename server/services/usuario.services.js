@@ -16,7 +16,11 @@ exports.usuarioUpdateService = async (id, values) => {
       where: { id: id },
     });
 
-    return usuarioEditado;
+    if (!usuarioEditado) {
+      return null;
+    }
+
+    return await Usuario.findByPk(id);
   } catch (error) {
     throw error;
   }
@@ -24,11 +28,16 @@ exports.usuarioUpdateService = async (id, values) => {
 
 exports.usuarioDeleteService = async (id) => {
   try {
-    const usuarioEliminado = await Usuario.destroy({
-      where: { id: id },
-    });
 
-    return usuarioEliminado;
+    const usuario = await Usuario.findByPk(id);
+
+    if (!usuario) {
+      return null;
+    }
+
+    await usuario.destroy();
+
+    return usuario;
   } catch (error) {
     throw error;
   }
