@@ -1,14 +1,9 @@
 import React, { useEffect } from 'react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+// prettier-ignore
 import {
-    Container,
-    Row,
-    Col,
-    Navbar,
-    Nav,
-    Image,
-    Button,
+    Container, Row, Col, Navbar, Nav, Image, Button, Dropdown,
 } from 'react-bootstrap'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -49,7 +44,7 @@ const buttons = [
 ]
 
 function HomePage() {
-    const [date, setDate] = React.useState('')
+    const [date, setDate] = React.useState('Fecha')
 
     useEffect(() => {
         setInterval(() => {
@@ -127,15 +122,36 @@ function HomePage() {
                             <Navbar.Collapse className="justify-content-end">
                                 <Nav>
                                     <Nav.Link href="#notificaciones">
-                                    <i class="bi bi-bell-fill text-white fs-5"></i>
+                                        <i class="bi bi-bell-fill text-white fs-5"></i>
                                     </Nav.Link>
-                                    <Nav.Link href="#perfil">
-                                        <Image
-                                            src="https://via.placeholder.com/30"
-                                            alt="Avatar"
-                                            className="img-fluid rounded-circle"
-                                        />
-                                    </Nav.Link>
+                                    <Dropdown>
+                                        <Dropdown.Toggle
+                                            variant="link"
+                                            id="dropdown-avatar"
+                                            style={{
+                                                background: 'transparent',
+                                                border: 'none',
+                                            }}
+                                        >
+                                            <Image
+                                                src="https://via.placeholder.com/30"
+                                                alt="Avatar"
+                                                className="img-fluid rounded-circle"
+                                            />
+                                        </Dropdown.Toggle>
+
+                                        <Dropdown.Menu align="end">
+                                            <Dropdown.Item href="#/profile">
+                                                Profile
+                                            </Dropdown.Item>
+                                            <Dropdown.Item href="#/settings">
+                                                Settings
+                                            </Dropdown.Item>
+                                            <Dropdown.Item href="#/logout">
+                                                Logout
+                                            </Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
                                 </Nav>
                             </Navbar.Collapse>
                         </Container>
