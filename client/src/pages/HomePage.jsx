@@ -162,6 +162,7 @@ function HomePage() {
                         style={{
                             padding: '35px',
                         }}
+                        fluid
                     >
                         <h4>Estado del inventario:</h4>
 
