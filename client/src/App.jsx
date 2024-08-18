@@ -16,10 +16,10 @@ import { RegistroUsuarios } from './components'
 function App() {
     return (
         <Routes>
-            <Route path="/login" element={<LoginSignup />} />
+            <Route path="/" element={<LoginSignup />} />
 
             {/* Estas rutas deben estar protegidas, osea, que una vez que se incia sesion, se puedan acceder */}
-            <Route path="/" element={<HomePage />} />
+            <Route path="/home" element={<HomePage />} />
             <Route path="/productos" element={<CRUDProductosPage />} />
             <Route path="/almacenes" element={<CRUDAlmacenesPage />} />
             <Route path="/usuarios" element={<CRUDUsuariosPage />} />

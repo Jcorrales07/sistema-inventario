@@ -1,6 +1,6 @@
 // src/components/pagesCRUDUsuarios/RegistroUsuarios.js
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     Form,
     Button,
@@ -35,13 +35,17 @@ function RegistroUsuarios() {
     const [successMessage, setSuccessMessage] = useState('')
     const [showToast, setShowToast] = useState(false)
 
-    // Validar cada campo y verificar si el formulario es válido
+    // Validar formulario al cambiar el formData
+    useEffect(() => {
+        validateForm()
+    }, [formData])
+
     const validateForm = () => {
         let newErrors = {}
 
-        // Validaciones para cada campo
-        if (formData.nombre.length > 50) {
-            newErrors.nombre = 'El nombre no debe exceder 50 caracteres.'
+        if (formData.nombre.trim() === '' || formData.nombre.length > 50) {
+            newErrors.nombre =
+                'El nombre no debe estar vacío ni exceder 50 caracteres.'
         }
         if (!/^\d{4}-\d{4}$/.test(formData.telefono)) {
             newErrors.telefono = 'El teléfono debe tener el formato xxxx-xxxx.'
@@ -62,10 +66,6 @@ function RegistroUsuarios() {
             newErrors.numeroIdentidad =
                 'El número de identidad debe tener el formato xxxx-xxxx-xxxxx.'
         }
-        if (!/^\d{4}-\d{4}$/.test(formData.identificacion)) {
-            newErrors.identificacion =
-                'El número de identificación debe tener el formato xxxx-xxxx.'
-        }
         if (formData.contraseña.length < 8) {
             newErrors.contraseña =
                 'La contraseña debe tener al menos 8 caracteres.'
@@ -78,32 +78,30 @@ function RegistroUsuarios() {
         setFormValid(Object.keys(newErrors).length === 0)
     }
 
-    // Manejar cambios en los campos del formulario
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
-        validateForm()
     }
 
-    // Manejar la selección del rol
     const handleSelectRol = (rol) => {
         setFormData({ ...formData, rol })
-        validateForm()
     }
 
-    // Enviar el formulario
     const handleSubmit = (e) => {
         e.preventDefault()
         if (formValid) {
-            // Simular la llamada a la API
-            const apiResponse = null // Simulación de respuesta nula
+            const apiResponse = true // Simulación de respuesta exitosa
 
-            if (apiResponse === null) {
-                setShowToast(true)
-            } else {
+            if (apiResponse) {
                 setSuccessMessage(
-                    `El usuario ${formData.nombre} fue creado exitosamente!`
+                    `El usuario para ${formData.nombre} fue creado exitosamente!`
                 )
-                // Redirigir al menú CRUD de usuarios
+                setShowToast(true)
+
+                setTimeout(() => {
+                    navigate(-1)
+                }, 3000)
+            } else {
+                setErrors({ form: 'Hubo un problema con el registro' })
             }
         } else {
             setErrors({
@@ -112,7 +110,6 @@ function RegistroUsuarios() {
         }
     }
 
-    // Limpiar el formulario y redirigir al CRUD
     const handleCancel = () => {
         setFormData({
             nombre: '',
@@ -135,9 +132,9 @@ function RegistroUsuarios() {
             <Container className="d-flex justify-content-center align-items-center min-vh-100">
                 <Form className="w-75" onSubmit={handleSubmit}>
                     <h3 className="text-center">Registro de Usuarios</h3>
+
                     <Row>
                         <Col md={6}>
-                            {/* Nombre Completo */}
                             <Form.Group controlId="nombre">
                                 <Form.Label>Nombre Completo</Form.Label>
                                 <Form.Control
@@ -155,7 +152,6 @@ function RegistroUsuarios() {
                         </Col>
 
                         <Col md={6}>
-                            {/* Número de Teléfono */}
                             <Form.Group controlId="telefono">
                                 <Form.Label>Número de Teléfono</Form.Label>
                                 <Form.Control
@@ -175,7 +171,6 @@ function RegistroUsuarios() {
 
                     <Row>
                         <Col md={6}>
-                            {/* Correo Electrónico */}
                             <Form.Group controlId="correo">
                                 <Form.Label>Correo Electrónico</Form.Label>
                                 <Form.Control
@@ -193,7 +188,6 @@ function RegistroUsuarios() {
                         </Col>
 
                         <Col md={6}>
-                            {/* Usuario */}
                             <Form.Group controlId="usuario">
                                 <Form.Label>Usuario</Form.Label>
                                 <Form.Control
@@ -213,7 +207,6 @@ function RegistroUsuarios() {
 
                     <Row>
                         <Col md={6}>
-                            {/* Número de Identidad */}
                             <Form.Group controlId="numeroIdentidad">
                                 <Form.Label>Número de Identidad</Form.Label>
                                 <Form.Control
@@ -230,7 +223,6 @@ function RegistroUsuarios() {
                             </Form.Group>
                         </Col>
                         <Col md={6}>
-                            {/* Contraseña */}
                             <Form.Group controlId="contraseña">
                                 <Form.Label>Contraseña</Form.Label>
                                 <Form.Control
@@ -245,32 +237,38 @@ function RegistroUsuarios() {
                                 </Form.Control.Feedback>
                             </Form.Group>
                         </Col>
+
+                        <Col md={6}>
+                            <Form.Group controlId="rol">
+                                <Form.Label>Rol</Form.Label>
+                                <DropdownButton
+                                    id="rol-dropdown"
+                                    title={formData.rol}
+                                    onSelect={handleSelectRol}
+                                    className={!!errors.rol ? 'is-invalid' : ''}
+                                >
+                                    <Dropdown.Item eventKey="Encargado de entradas">
+                                        Encargado de entradas
+                                    </Dropdown.Item>
+                                    <Dropdown.Item eventKey="Encargado de salidas">
+                                        Encargado de salidas
+                                    </Dropdown.Item>
+                                    <Dropdown.Item eventKey="Analista de compras">
+                                        Analista de compras
+                                    </Dropdown.Item>
+                                </DropdownButton>
+
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.rol && (
+                                        <div className="invalid-feedback d-block">
+                                            {errors.rol}
+                                        </div>
+                                    )}
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                        </Col>
                     </Row>
 
-                    {/* Rol del Usuario */}
-                    <DropdownButton
-                        id="rol-dropdown"
-                        title={formData.rol}
-                        onSelect={handleSelectRol}
-                        className={!!errors.rol ? 'is-invalid' : ''}
-                    >
-                        <Dropdown.Item eventKey="Encargado de entregas">
-                            Encargado de entregas
-                        </Dropdown.Item>
-                        <Dropdown.Item eventKey="Encargado de salidas">
-                            Encargado de salidas
-                        </Dropdown.Item>
-                        <Dropdown.Item eventKey="Analista de compras">
-                            Analista de compras
-                        </Dropdown.Item>
-                    </DropdownButton>
-                    {errors.rol && (
-                        <div className="invalid-feedback d-block">
-                            {errors.rol}
-                        </div>
-                    )}
-
-                    {/* Botones de acción */}
                     <Row className="mt-3">
                         <Col>
                             <Button
@@ -288,22 +286,18 @@ function RegistroUsuarios() {
                         </Col>
                     </Row>
 
-                    {/* Toast de error */}
                     <Toast
                         onClose={() => setShowToast(false)}
                         show={showToast}
                         delay={3000}
                         autohide
                     >
-                        <Toast.Body>
-                            Hubo un problema con el registro
-                        </Toast.Body>
+                        <Toast.Body>{successMessage}</Toast.Body>
                     </Toast>
 
-                    {/* Mensaje de éxito */}
-                    {successMessage && (
-                        <Alert variant="success" className="mt-3">
-                            {successMessage}
+                    {errors.form && (
+                        <Alert variant="danger" className="mt-3">
+                            {errors.form}
                         </Alert>
                     )}
                 </Form>
