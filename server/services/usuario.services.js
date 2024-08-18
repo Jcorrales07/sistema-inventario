@@ -28,7 +28,6 @@ exports.usuarioUpdateService = async (id, values) => {
 
 exports.usuarioDeleteService = async (id) => {
   try {
-
     const usuario = await Usuario.findByPk(id);
 
     if (!usuario) {
@@ -54,6 +53,14 @@ exports.usuarioSelectAllService = async () => {
 exports.usuarioSelectByIdService = async (id) => {
   try {
     return await Usuario.findByPk(id);
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.usuarioSelectByNicknameService = async (nickname) => {
+  try {
+    return await Usuario.findOne({ where: { nickname: nickname } });
   } catch (error) {
     throw error;
   }
