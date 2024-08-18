@@ -13,7 +13,8 @@
 .containerIniciar {
     padding: 50px 0px; 
     box-sizing: border-box; 
-    background-color: #fff; 
+    background-color: #eeeeee; 
+    padding: 50px 20px;
     border-radius: 8px; 
     display: flex;
     flex-direction: column;
