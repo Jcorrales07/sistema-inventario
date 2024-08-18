@@ -1,9 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 // prettier-ignore
 import {
     Container, Row, Col, Navbar, Nav, Image, Button, Dropdown,
+    Badge,
+    Stack,
 } from 'react-bootstrap'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -12,41 +14,51 @@ const buttons = [
     {
         name: 'Dashboard',
         link: '/',
+        rolePermissions: [0, 1, 2, 3],
     },
     {
         name: 'Gestión de Productos',
         link: '/productos',
+        rolePermissions: [0],
     },
     {
         name: 'Gestión de Almacenes',
         link: '/almacenes',
+        rolePermissions: [0, 1, 2],
     },
     {
         name: 'Gestión de Usuarios',
         link: '/usuarios',
+        rolePermissions: [0],
     },
     {
         name: 'Gestión de Proveedores',
         link: '/proveedores',
+        rolePermissions: [0, 3],
     },
     {
         name: 'Reportes',
         link: '/reportes',
+        rolePermissions: [0, 1, 2, 3],
     },
     {
         name: 'Configuración',
         link: '/configuracion',
-    },
-    {
-        name: 'Cerrar Sesión',
-        link: '/',
+        rolePermissions: [0, 1, 2, 3],
     },
 ]
 
 function HomePage() {
-    const [date, setDate] = React.useState('Fecha')
+    const [user, setUser] = useState({
+        nombre: '',
+        email: '',
+        rol: '',
+        username: '',
+    })
+    const [date, setDate] = useState('Fecha')
 
     useEffect(() => {
+        setUser(JSON.parse(localStorage.getItem('user')))
         setInterval(() => {
             const now = new Date()
             setDate(
@@ -76,15 +88,36 @@ function HomePage() {
                             className="user-info text-center mb-5"
                             style={{ display: 'inline-block' }}
                         >
-                            <div className="user-avatar mb-2">
+                            <div className="user-avatar mb-4">
                                 <img
-                                    src="https://via.placeholder.com/50"
+                                    src="https://via.placeholder.com/80"
                                     alt="Avatar"
                                     className="img-fluid rounded-circle"
                                 />
                             </div>
-                            <p>Nombre de usuario</p>
-                            <p>correo@electronico.com</p>
+                            <Stack
+                                className="d-flex flex-column align-items-center"
+                                direction="vertical"
+                                gap={2}
+                            >
+                                <Badge
+                                    pill
+                                    bg="secondary"
+                                    style={{ width: 'fit-content' }}
+                                >
+                                    {user.username.charAt(0).toUpperCase() +
+                                        user.username.slice(1)}
+                                </Badge>
+
+                                <Badge
+                                    pill
+                                    bg="light"
+                                    className="text-dark"
+                                    style={{ width: 'fit-content' }}
+                                >
+                                    {user.email}
+                                </Badge>
+                            </Stack>
                         </div>
 
                         <Nav
@@ -92,21 +125,39 @@ function HomePage() {
                             className="flex-column"
                             // style={{ width: 'fit-content' }}
                         >
-                            {buttons.map((button) => (
-                                <Button
-                                    key={button.name}
-                                    className="mb-2 w-full"
-                                    variant="dark"
-                                >
-                                    <Nav.Link
+                            {buttons
+                                .filter((button) =>
+                                    button.rolePermissions.includes(user.rol)
+                                )
+                                .map((button) => (
+                                    <Button
                                         key={button.name}
-                                        href={button.link}
-                                        className="text-white text-start"
+                                        className="mb-2 w-full"
+                                        variant="dark"
                                     >
-                                        {button.name}
-                                    </Nav.Link>
-                                </Button>
-                            ))}
+                                        <Nav.Link
+                                            key={button.name}
+                                            href={button.link}
+                                            className="text-white text-start"
+                                        >
+                                            {button.name}
+                                        </Nav.Link>
+                                    </Button>
+                                ))}
+                            <Button
+                                key="cerrarSesion"
+                                className="mb-2 w-full"
+                                variant="dark"
+                                onClick={() => localStorage.removeItem('user')}
+                            >
+                                <Nav.Link
+                                    key="cerrarSesion"
+                                    href="/"
+                                    className="text-white text-start"
+                                >
+                                    Cerrar Sesión
+                                </Nav.Link>
+                            </Button>
                         </Nav>
                     </div>
                 </Col>
@@ -144,10 +195,18 @@ function HomePage() {
                                             <Dropdown.Item href="#/profile">
                                                 Profile
                                             </Dropdown.Item>
-                                            <Dropdown.Item href="#/settings">
+                                            <Dropdown.Item href="/configuracion">
                                                 Settings
                                             </Dropdown.Item>
-                                            <Dropdown.Item href="#/logout">
+                                            <Dropdown.Item
+                                                href="/"
+                                                onClick={() =>
+                                                    localStorage.getItem(
+                                                        'user',
+                                                        null
+                                                    )
+                                                }
+                                            >
                                                 Logout
                                             </Dropdown.Item>
                                         </Dropdown.Menu>

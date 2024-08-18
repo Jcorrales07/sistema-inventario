@@ -18,6 +18,17 @@ const LoginSignup = () => {
         }
 
         const response = await login(username, password)
+
+        console.log('RESPONSE', response.data.Data)
+        const user = {
+            nombre: response.data.Data.Socio.nombre,
+            username: response.data.Data.nickname,
+            email: response.data.Data.Socio.email,
+            rol: response.data.Data.rol,
+        }
+        console.log(user)
+        localStorage.setItem('user', JSON.stringify(user))
+
         if (response) {
             if (response.status === 201) {
                 toast.success('Inicio de sesión exitoso!')

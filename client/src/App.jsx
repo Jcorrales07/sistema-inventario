@@ -18,7 +18,7 @@ function App() {
         <Routes>
             <Route path="/" element={<LoginSignup />} />
 
-            {/* Estas rutas deben estar protegidas, osea, que una vez que se incia sesion, se puedan acceder */}
+            {/* WIP: Estas rutas deben estar protegidas, osea, que una vez que se incia sesion, se puedan acceder */}
             <Route path="/home" element={<HomePage />} />
             <Route path="/productos" element={<CRUDProductosPage />} />
             <Route path="/almacenes" element={<CRUDAlmacenesPage />} />
