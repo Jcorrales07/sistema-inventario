@@ -60,7 +60,7 @@ exports.usuarioSelectByIdService = async (id) => {
 
 exports.usuarioSelectByNicknameService = async (nickname) => {
   try {
-    return await Usuario.findOne({ where: { nickname: nickname } });
+    return await Usuario.findOne({ where: { nickname: nickname }, include: Socio });
   } catch (error) {
     throw error;
   }
