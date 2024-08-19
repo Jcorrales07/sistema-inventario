@@ -13,7 +13,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 const buttons = [
     {
         name: 'Dashboard',
-        link: '/',
+        link: '/home',
         rolePermissions: [0, 1, 2, 3],
     },
     {
@@ -200,12 +200,11 @@ function HomePage() {
                                             </Dropdown.Item>
                                             <Dropdown.Item
                                                 href="/"
-                                                onClick={() =>
-                                                    localStorage.getItem(
-                                                        'user',
-                                                        null
+                                                onClick={() => {
+                                                    localStorage.removeItem(
+                                                        'user'
                                                     )
-                                                }
+                                                }}
                                             >
                                                 Logout
                                             </Dropdown.Item>
