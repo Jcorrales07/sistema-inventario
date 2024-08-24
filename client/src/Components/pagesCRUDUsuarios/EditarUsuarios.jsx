@@ -172,7 +172,7 @@ function EditarUsuarios() {
             <FeatureNavbar />
             <Container className="d-flex justify-content-center align-items-center min-vh-100">
                 <Form className="w-75" onSubmit={handleSubmit}>
-                    <h3 className="text-center">Editar cuenta</h3>
+                    <h3 className="text-center">Editar cuenta de: {'usuario'}</h3>
 
                     <Row>
                         <Col md={6}>
@@ -268,12 +268,12 @@ function EditarUsuarios() {
                     <Row>
                         <Col md={6}>
                             <Form.Label>Desactivar cuenta:</Form.Label>
+                            <br />
                             <Form.Check
                                 type="switch"
                                 id="custom-switch"
                                 checked={checked}
                                 onChange={handleToggle}
-                                style={{ width: '48px', height: '24px' }}
                             />
                         </Col>
                     </Row>

@@ -11,7 +11,7 @@ import {
     ConfiguracionPage,
 } from './pages'
 
-import { BuscarUsuarios, RegistroUsuarios } from './components'
+import { AsignarRoles, BuscarUsuarios, RegistroUsuarios } from './components'
 import EditarUsuarios from './components/pagesCRUDUsuarios/EditarUsuarios.jsx'
 
 function App() {
@@ -28,6 +28,8 @@ function App() {
             <Route path="/usuarios/registrar" element={<RegistroUsuarios />} />
             <Route path="/usuarios/buscar" element={<BuscarUsuarios />} />
             <Route path="/usuarios/editar" element={<EditarUsuarios />} />
+            <Route path="/usuarios/roles" element={<AsignarRoles />} />
+
 
             <Route path="/proveedores" element={<CRUDProveedoresPage />} />
             <Route path="/reportes" element={<CRUDReportesPage />} />
