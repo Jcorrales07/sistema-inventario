@@ -11,10 +11,14 @@ import {
     ConfiguracionPage,
 } from './pages'
 
-import { AsignarRoles, BuscarUsuarios, RegistroUsuarios } from './components/index.js'
-import EditarUsuarios from './components/pagesCRUDUsuarios/EditarUsuarios.jsx'
-import CrearProducto from './components/pagesCRUDProductos/CrearProducto.jsx'
-import BuscarProducto from './components/pagesCRUDProductos/BuscarProducto.jsx'
+import {
+    AsignarRoles,
+    BuscarUsuarios,
+    RegistroUsuarios,
+    EditarUsuarios,
+    BuscarProducto,
+    CrearProducto,
+} from './components/index.js'
 
 function App() {
     return (
@@ -28,15 +32,13 @@ function App() {
             <Route path="/productos/crear" element={<CrearProducto />} />
             <Route path="/productos/buscar" element={<BuscarProducto />} />
 
-
             <Route path="/almacenes" element={<CRUDAlmacenesPage />} />
-            
+
             <Route path="/usuarios" element={<CRUDUsuariosPage />} />
             <Route path="/usuarios/registrar" element={<RegistroUsuarios />} />
             <Route path="/usuarios/buscar" element={<BuscarUsuarios />} />
             <Route path="/usuarios/editar" element={<EditarUsuarios />} />
             <Route path="/usuarios/roles" element={<AsignarRoles />} />
-
 
             <Route path="/proveedores" element={<CRUDProveedoresPage />} />
             <Route path="/reportes" element={<CRUDReportesPage />} />

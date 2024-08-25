@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import { Form, Button, Container, Row, Col } from 'react-bootstrap'
-import 'bootstrap/dist/css/bootstrap.min.css'
-
-import React from 'react'
+import FeatureNavbar from '../FeatureNavbar'
+import { useNavigate } from 'react-router-dom'
 
 function CrearProducto() {
     //esto simula una lista de SKUs que ya existen en la base de datos (conectar a base de datos real) por mientras se usaran estos
@@ -14,6 +13,8 @@ function CrearProducto() {
     const [price, setPrice] = useState('')
     const [stock, setStock] = useState('')
     const [errors, setErrors] = useState({})
+
+    const navigate = useNavigate()
 
     const validateField = (fieldName, value) => {
         const newErrors = { ...errors }
@@ -90,127 +91,139 @@ function CrearProducto() {
         setPrice('')
         setStock('')
         setErrors({})
+        navigate(-1)
     }
 
     return (
-        <Container style={{ maxWidth: '700px', marginTop: '50px' }}>
-            <h1 style={{ marginBottom: '30px', textAlign: 'center' }}>
-                Crear Producto
-            </h1>
-            <Form onSubmit={handleSubmit}>
-                <Row>
-                    <Col md={6}>
-                        <Form.Group controlId="formProductName">
-                            <Form.Label>Nombre del Producto</Form.Label>
-                            <Form.Control
-                                type="text"
-                                value={productName}
-                                onChange={(e) => {
-                                    setProductName(e.target.value)
-                                    validateField('productName', e.target.value)
-                                }}
-                                isInvalid={!!errors.productName}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {errors.productName}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                    </Col>
-                    <Col md={6}>
-                        <Form.Group controlId="formSku">
-                            <Form.Label>SKU</Form.Label>
-                            <Form.Control
-                                type="text"
-                                value={sku}
-                                onChange={(e) => {
-                                    setSku(e.target.value)
-                                    validateField('sku', e.target.value)
-                                }}
-                                isInvalid={!!errors.sku}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {errors.sku}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                    </Col>
-                </Row>
+        <div>
+            <FeatureNavbar />
+            <Container fluid style={{ maxWidth: '700px', marginTop: '50px' }}>
+                <h1 style={{ marginBottom: '30px', textAlign: 'center' }}>
+                    Crear Producto
+                </h1>
+                <Form onSubmit={handleSubmit}>
+                    <Row>
+                        <Col md={6}>
+                            <Form.Group controlId="formProductName">
+                                <Form.Label>Nombre del Producto</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={productName}
+                                    onChange={(e) => {
+                                        setProductName(e.target.value)
+                                        validateField(
+                                            'productName',
+                                            e.target.value
+                                        )
+                                    }}
+                                    isInvalid={!!errors.productName}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.productName}
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                        </Col>
+                        <Col md={6}>
+                            <Form.Group controlId="formSku">
+                                <Form.Label>SKU</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={sku}
+                                    onChange={(e) => {
+                                        setSku(e.target.value)
+                                        validateField('sku', e.target.value)
+                                    }}
+                                    isInvalid={!!errors.sku}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.sku}
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                        </Col>
+                    </Row>
 
-                <Row>
-                    <Col md={6}>
-                        <Form.Group controlId="formCategory">
-                            <Form.Label>Categoría</Form.Label>
-                            <Form.Control
-                                as="select"
-                                value={category}
-                                onChange={(e) => {
-                                    setCategory(e.target.value)
-                                    validateField('category', e.target.value)
-                                }}
-                                isInvalid={!!errors.category}
-                            >
-                                <option value="">
-                                    Seleccione una categoría...
-                                </option>
-                                <option value="Electrónica">Electrónica</option>
-                                <option value="Ropa">Ropa</option>
-                                <option value="Alimentos">Alimentos</option>
-                            </Form.Control>
-                            <Form.Control.Feedback type="invalid">
-                                {errors.category}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                    </Col>
-                    <Col md={6}>
-                        <Form.Group controlId="formStock">
-                            <Form.Label>Cantidad en Stock</Form.Label>
-                            <Form.Control
-                                type="number"
-                                value={stock}
-                                onChange={(e) => {
-                                    setStock(e.target.value)
-                                    validateField('stock', e.target.value)
-                                }}
-                                min="0"
-                                isInvalid={!!errors.stock}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {errors.stock}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                    </Col>
-                </Row>
+                    <Row>
+                        <Col md={6}>
+                            <Form.Group controlId="formCategory">
+                                <Form.Label>Categoría</Form.Label>
+                                <Form.Control
+                                    as="select"
+                                    value={category}
+                                    onChange={(e) => {
+                                        setCategory(e.target.value)
+                                        validateField(
+                                            'category',
+                                            e.target.value
+                                        )
+                                    }}
+                                    isInvalid={!!errors.category}
+                                >
+                                    <option value="">
+                                        Seleccione una categoría...
+                                    </option>
+                                    <option value="Electrónica">
+                                        Electrónica
+                                    </option>
+                                    <option value="Ropa">Ropa</option>
+                                    <option value="Alimentos">Alimentos</option>
+                                </Form.Control>
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.category}
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                        </Col>
+                        <Col md={6}>
+                            <Form.Group controlId="formStock">
+                                <Form.Label>Cantidad en Stock</Form.Label>
+                                <Form.Control
+                                    type="number"
+                                    value={stock}
+                                    onChange={(e) => {
+                                        setStock(e.target.value)
+                                        validateField('stock', e.target.value)
+                                    }}
+                                    min="0"
+                                    isInvalid={!!errors.stock}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.stock}
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                        </Col>
+                    </Row>
 
-                <Form.Group controlId="formPrice">
-                    <Form.Label>Precio (Lps)</Form.Label>
-                    <Form.Control
-                        type="number"
-                        value={price}
-                        onChange={(e) => {
-                            setPrice(e.target.value)
-                            validateField('price', e.target.value)
-                        }}
-                        min="0"
-                        isInvalid={!!errors.price}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                        {errors.price}
-                    </Form.Control.Feedback>
-                </Form.Group>
+                    <Form.Group controlId="formPrice">
+                        <Form.Label>Precio (Lps)</Form.Label>
+                        <Form.Control
+                            type="number"
+                            value={price}
+                            onChange={(e) => {
+                                setPrice(e.target.value)
+                                validateField('price', e.target.value)
+                            }}
+                            min="0"
+                            isInvalid={!!errors.price}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            {errors.price}
+                        </Form.Control.Feedback>
+                    </Form.Group>
 
-                <div className="text-center" style={{ marginTop: '20px' }}>
-                    <Button variant="primary" type="submit">
-                        Guardar
-                    </Button>
-                    <Button
-                        variant="secondary"
-                        style={{ marginLeft: '10px' }}
-                        onClick={handleCancel}
-                    >
-                        Cancelar
-                    </Button>
-                </div>
-            </Form>
-        </Container>
+                    <div className="text-center" style={{ marginTop: '20px' }}>
+                        <Button variant="primary" type="submit">
+                            Guardar
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            style={{ marginLeft: '10px' }}
+                            onClick={handleCancel}
+                        >
+                            Cancelar
+                        </Button>
+                    </div>
+                </Form>
+            </Container>
+        </div>
     )
 }
 
