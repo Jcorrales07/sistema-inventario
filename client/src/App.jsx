@@ -11,8 +11,10 @@ import {
     ConfiguracionPage,
 } from './pages'
 
-import { AsignarRoles, BuscarUsuarios, RegistroUsuarios } from './components'
+import { AsignarRoles, BuscarUsuarios, RegistroUsuarios } from './components/index.js'
 import EditarUsuarios from './components/pagesCRUDUsuarios/EditarUsuarios.jsx'
+import CrearProducto from './components/pagesCRUDProductos/CrearProducto.jsx'
+import BuscarProducto from './components/pagesCRUDProductos/BuscarProducto.jsx'
 
 function App() {
     return (
@@ -21,7 +23,12 @@ function App() {
 
             {/* WIP: Estas rutas deben estar protegidas, osea, que una vez que se incia sesion, se puedan acceder */}
             <Route path="/home" element={<HomePage />} />
+
             <Route path="/productos" element={<CRUDProductosPage />} />
+            <Route path="/productos/crear" element={<CrearProducto />} />
+            <Route path="/productos/buscar" element={<BuscarProducto />} />
+
+
             <Route path="/almacenes" element={<CRUDAlmacenesPage />} />
             
             <Route path="/usuarios" element={<CRUDUsuariosPage />} />

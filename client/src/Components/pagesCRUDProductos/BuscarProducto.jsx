@@ -9,7 +9,7 @@ const initialProducts = [
   { id: 3, name: 'Producto 3', sku: 'QWE456', category: 'Alimentos', price: 300, stock: 30 },
 ];
 
-function ProductTable() {
+function BuscarProducto() {
   const [products, setProducts] = useState(initialProducts);
   const [editingProduct, setEditingProduct] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -150,4 +150,4 @@ function ProductTable() {
   );
 }
 
-export default ProductTable;
+export default BuscarProducto;
