@@ -1,3 +1,5 @@
+// src/components/pagesCRUDUsuarios/EditarUsuarios.js
+
 import React, { useEffect, useState } from 'react'
 import {
     Form,
@@ -6,13 +8,16 @@ import {
     Row,
     Col,
     Alert,
+    Dropdown,
+    DropdownButton,
     Toast,
 } from 'react-bootstrap'
+
 import { useNavigate } from 'react-router-dom'
 import FeatureNavbar from '../FeatureNavbar'
 import usuarioApi from '../../../api/usuario.api'
 
-function RegistroUsuarios() {
+function EditarUsuarios() {
     const navigate = useNavigate()
 
     const [formData, setFormData] = useState({
@@ -23,7 +28,7 @@ function RegistroUsuarios() {
         identificacion: '',
         numeroIdentidad: '',
         contrasena: '',
-        rol: '',
+        rol: 'Roles',
     })
 
     const [errors, setErrors] = useState({})
@@ -31,6 +36,13 @@ function RegistroUsuarios() {
     const [successMessage, setSuccessMessage] = useState('')
     const [showToast, setShowToast] = useState(false)
 
+    const [checked, setChecked] = useState(false)
+
+    const handleToggle = () => {
+        setChecked(!checked)
+    }
+
+    // Validar formulario al cambiar el formData
     useEffect(() => {
         validateForm()
     }, [formData])
@@ -57,7 +69,6 @@ function RegistroUsuarios() {
             newErrors.telefono =
                 "El teléfono solo debe contener números y el carácter '+'."
         }
-
         if (
             !/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i.test(formData.correo)
         ) {
@@ -78,8 +89,8 @@ function RegistroUsuarios() {
             newErrors.contrasena =
                 'La contraseña debe tener al menos 8 caracteres.'
         }
-        if (formData.rol === '') {
-            newErrors.rol = 'Debe asignar un rol.'
+        if (formData.rol === 'Roles') {
+            newErrors.rol = 'Debe seleccionar un rol.'
         }
 
         setErrors(newErrors)
@@ -95,9 +106,27 @@ function RegistroUsuarios() {
         navigate('/usuarios/roles')
     }
 
+    const getRolInt = (rol) => {
+        switch (rol) {
+            case 'Administrador':
+                return 0
+            case 'Encargado de entradas':
+                return 1
+            case 'Encargado de salidas':
+                return 2
+            case 'Analista de compras':
+                return 3
+        }
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         if (formValid) {
+            /*
+        Los objetos socio y usuario deben ser creados con los datos del formulario.
+        Los atributos deben ser iguales a como estan definidos en el modelo del backend.
+
+        */
             const socio = {
                 nombre: formData.nombre,
                 telefono: formData.telefono,
@@ -114,11 +143,11 @@ function RegistroUsuarios() {
             const apiResponse = await usuarioApi.createUsuarioSocioRequest(
                 usuario,
                 socio
-            )
+            ) // Simulación de respuesta exitosa
 
             if (apiResponse && apiResponse.status >= 200) {
                 setSuccessMessage(
-                    `El usuario para ${formData.nombre} fue creado exitosamente!`
+                    `Los datos del usuario para ${formData.nombre} fueron actualizados exitosamente!`
                 )
                 setShowToast(true)
 
@@ -144,9 +173,8 @@ function RegistroUsuarios() {
             identificacion: '',
             numeroIdentidad: '',
             contrasena: '',
-            rol: '',
+            rol: 'Roles',
         })
-        localStorage.removeItem('formData')
         setErrors({})
         setSuccessMessage('')
         navigate(-1)
@@ -157,7 +185,9 @@ function RegistroUsuarios() {
             <FeatureNavbar />
             <Container className="d-flex justify-content-center align-items-center min-vh-100">
                 <Form className="w-75" onSubmit={handleSubmit}>
-                    <h3 className="text-center">Registro de Usuarios</h3>
+                    <h3 className="text-center">
+                        Editar cuenta de: {'usuario'}
+                    </h3>
 
                     <Row>
                         <Col md={6}>
@@ -232,27 +262,9 @@ function RegistroUsuarios() {
                     </Row>
 
                     <Row>
-                        <Col md={6}>
-                            <Form.Group controlId="contrasena">
-                                <Form.Label>Contraseña</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    name="contrasena"
-                                    value={formData.contrasena}
-                                    onChange={handleChange}
-                                    isInvalid={!!errors.contrasena}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {errors.contrasena}
-                                </Form.Control.Feedback>
-                            </Form.Group>
-                        </Col>
-                    </Row>
-
-                    <Row className="mt-4">
-                        <Col md={6}>
+                        <Col md={6} className="mt-4">
                             <Button
-                                variant="primary"
+                                href="/usuarios/roles"
                                 onClick={handleAssignRoles}
                             >
                                 Asignar Roles
@@ -260,20 +272,27 @@ function RegistroUsuarios() {
                         </Col>
 
                         <Col md={6}>
-                            <Form.Group controlId="rolesAsignados">
-                                <Form.Label>Roles del usuario:</Form.Label>
-                                <Form.Control
-                                    as="textarea"
-                                    placeholder="Roles asignados..."
-                                    style={{ height: '100px', resize: 'none' }}
-                                    readOnly
-                                    value={
-                                        formData.rol !== 'Roles'
-                                            ? formData.rol
-                                            : ''
-                                    }
-                                />
-                            </Form.Group>
+                            <Form.Label>Roles del usuario:</Form.Label>
+                            <Form.Control
+                                as="textarea"
+                                placeholder="Roles asignados..."
+                                style={{ height: '100px', resize: 'none' }}
+                                cols={2}
+                                readOnly
+                            />
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col md={6}>
+                            <Form.Label>Desactivar cuenta:</Form.Label>
+                            <br />
+                            <Form.Check
+                                type="switch"
+                                id="custom-switch"
+                                checked={checked}
+                                onChange={handleToggle}
+                            />
                         </Col>
                     </Row>
 
@@ -284,7 +303,7 @@ function RegistroUsuarios() {
                                 type="submit"
                                 disabled={!formValid}
                             >
-                                Guardar Usuario
+                                Aplicar Cambios
                             </Button>
                         </Col>
                         <Col>
@@ -314,4 +333,4 @@ function RegistroUsuarios() {
     )
 }
 
-export default RegistroUsuarios
+export default EditarUsuarios

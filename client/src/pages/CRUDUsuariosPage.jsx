@@ -15,7 +15,7 @@ function CRUDUsuariosPage() {
                     <Button variant="dark" size="lg" href="/usuarios/registrar">
                         Registrar nuevo usuario
                     </Button>
-                    <Button variant="dark" size="lg">
+                    <Button variant="dark" size="lg" href='/usuarios/buscar'>
                         Buscar Usuario
                     </Button>
                 </div>
