@@ -47,6 +47,13 @@ function EditarUsuarios() {
         validateForm()
     }, [formData])
 
+    useEffect(() => {
+        const storedData = localStorage.getItem('formData')
+        if (storedData) {
+            setFormData(JSON.parse(storedData))
+        }
+    }, [])
+
     const validateForm = () => {
         let newErrors = {}
 
@@ -54,8 +61,13 @@ function EditarUsuarios() {
             newErrors.nombre =
                 'El nombre no debe estar vacío ni exceder 50 caracteres.'
         }
-        if (!/^\d{4}-\d{4}$/.test(formData.telefono)) {
-            newErrors.telefono = 'El teléfono debe tener el formato xxxx-xxxx.'
+        if (
+            !/^(\+\d{1,3}[-\s]?)?\(?\d{1,4}\)?[-\s]?\d{1,4}[-\s]?\d{1,9}$/.test(
+                formData.telefono
+            )
+        ) {
+            newErrors.telefono =
+                "El teléfono solo debe contener números y el carácter '+'."
         }
         if (
             !/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i.test(formData.correo)
@@ -89,8 +101,9 @@ function EditarUsuarios() {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
 
-    const handleSelectRol = (rol) => {
-        setFormData({ ...formData, rol })
+    const handleAssignRoles = () => {
+        localStorage.setItem('formData', JSON.stringify(formData))
+        navigate('/usuarios/roles')
     }
 
     const getRolInt = (rol) => {
@@ -172,7 +185,9 @@ function EditarUsuarios() {
             <FeatureNavbar />
             <Container className="d-flex justify-content-center align-items-center min-vh-100">
                 <Form className="w-75" onSubmit={handleSubmit}>
-                    <h3 className="text-center">Editar cuenta de: {'usuario'}</h3>
+                    <h3 className="text-center">
+                        Editar cuenta de: {'usuario'}
+                    </h3>
 
                     <Row>
                         <Col md={6}>
@@ -234,7 +249,7 @@ function EditarUsuarios() {
                                 <Form.Control
                                     type="text"
                                     name="telefono"
-                                    placeholder="xxxx-xxxx"
+                                    placeholder="+xxx xxxxxxxx"
                                     value={formData.telefono}
                                     onChange={handleChange}
                                     isInvalid={!!errors.telefono}
@@ -248,7 +263,10 @@ function EditarUsuarios() {
 
                     <Row>
                         <Col md={6} className="mt-4">
-                            <Button href="/usuarios/roles">
+                            <Button
+                                href="/usuarios/roles"
+                                onClick={handleAssignRoles}
+                            >
                                 Asignar Roles
                             </Button>
                         </Col>

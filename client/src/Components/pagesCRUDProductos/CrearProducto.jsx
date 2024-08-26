@@ -1,18 +1,30 @@
 import React, { useState } from 'react'
-import { Form, Button, Container, Row, Col } from 'react-bootstrap'
+import {
+    Form,
+    Button,
+    Container,
+    Row,
+    Col,
+    Toast,
+    ToastContainer,
+} from 'react-bootstrap'
 import FeatureNavbar from '../FeatureNavbar'
 import { useNavigate } from 'react-router-dom'
 
 function CrearProducto() {
-    //esto simula una lista de SKUs que ya existen en la base de datos (conectar a base de datos real) por mientras se usaran estos
     const existingSkus = ['ABC123', 'XYZ789', 'QWE456']
 
-    const [productName, setProductName] = useState('')
-    const [sku, setSku] = useState('')
-    const [category, setCategory] = useState('')
-    const [price, setPrice] = useState('')
-    const [stock, setStock] = useState('')
+    const [formData, setFormData] = useState({
+        productName: '',
+        sku: '',
+        category: '',
+        price: '',
+        stock: '',
+    })
     const [errors, setErrors] = useState({})
+    const [showToast, setShowToast] = useState(false)
+    const [toastMessage, setToastMessage] = useState('')
+    const [toastVariant, setToastVariant] = useState('success')
 
     const navigate = useNavigate()
 
@@ -69,35 +81,76 @@ function CrearProducto() {
     const handleSubmit = (e) => {
         e.preventDefault()
 
-        if (
-            Object.keys(errors).length === 0 &&
-            productName &&
-            sku &&
-            category &&
-            price > 0 &&
-            stock >= 0
-        ) {
-            alert('Producto guardado con éxito!')
-            handleCancel()
+        if (isFormValid()) {
+            setToastMessage('Producto guardado con éxito!')
+            setToastVariant('success')
+            setShowToast(true)
+            setTimeout(() => {
+                handleCancel()
+            }, 2000)
         } else {
-            alert('Hay errores en el formulario.')
+            setToastMessage('Hay errores en el formulario.')
+            setToastVariant('danger')
+            setShowToast(true)
         }
     }
 
     const handleCancel = () => {
-        setProductName('')
-        setSku('')
-        setCategory('')
-        setPrice('')
-        setStock('')
+        setFormData({
+            productName: '',
+            sku: '',
+            category: '',
+            price: '',
+            stock: '',
+        })
         setErrors({})
         navigate(-1)
+    }
+
+    const handleChange = (e) => {
+        const { name, value } = e.target
+        setFormData({
+            ...formData,
+            [name]: value,
+        })
+        validateField(name, value)
+    }
+
+    const isFormValid = () => {
+        return (
+            formData.productName &&
+            formData.sku &&
+            formData.category &&
+            formData.price > 0 &&
+            formData.stock >= 0 &&
+            Object.keys(errors).length === 0
+        )
     }
 
     return (
         <div>
             <FeatureNavbar />
             <Container fluid style={{ maxWidth: '700px', marginTop: '50px' }}>
+                <ToastContainer
+                    position="bottom-center"
+                    className="p-3 text-white"
+                >
+                    <Toast
+                        onClose={() => setShowToast(false)}
+                        show={showToast}
+                        bg={toastVariant}
+                        delay={3000}
+                        autohide
+                    >
+                        <Toast.Header>
+                            <strong className="me-auto">
+                                {toastVariant === 'success' ? 'Éxito' : 'Error'}
+                            </strong>
+                        </Toast.Header>
+                        <Toast.Body>{toastMessage}</Toast.Body>
+                    </Toast>
+                </ToastContainer>
+
                 <h1 style={{ marginBottom: '30px', textAlign: 'center' }}>
                     Crear Producto
                 </h1>
@@ -108,14 +161,9 @@ function CrearProducto() {
                                 <Form.Label>Nombre del Producto</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    value={productName}
-                                    onChange={(e) => {
-                                        setProductName(e.target.value)
-                                        validateField(
-                                            'productName',
-                                            e.target.value
-                                        )
-                                    }}
+                                    name="productName"
+                                    value={formData.productName}
+                                    onChange={handleChange}
                                     isInvalid={!!errors.productName}
                                 />
                                 <Form.Control.Feedback type="invalid">
@@ -128,11 +176,9 @@ function CrearProducto() {
                                 <Form.Label>SKU</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    value={sku}
-                                    onChange={(e) => {
-                                        setSku(e.target.value)
-                                        validateField('sku', e.target.value)
-                                    }}
+                                    name="sku"
+                                    value={formData.sku}
+                                    onChange={handleChange}
                                     isInvalid={!!errors.sku}
                                 />
                                 <Form.Control.Feedback type="invalid">
@@ -148,14 +194,9 @@ function CrearProducto() {
                                 <Form.Label>Categoría</Form.Label>
                                 <Form.Control
                                     as="select"
-                                    value={category}
-                                    onChange={(e) => {
-                                        setCategory(e.target.value)
-                                        validateField(
-                                            'category',
-                                            e.target.value
-                                        )
-                                    }}
+                                    name="category"
+                                    value={formData.category}
+                                    onChange={handleChange}
                                     isInvalid={!!errors.category}
                                 >
                                     <option value="">
@@ -177,12 +218,10 @@ function CrearProducto() {
                                 <Form.Label>Cantidad en Stock</Form.Label>
                                 <Form.Control
                                     type="number"
-                                    value={stock}
-                                    onChange={(e) => {
-                                        setStock(e.target.value)
-                                        validateField('stock', e.target.value)
-                                    }}
-                                    min="0"
+                                    name="stock"
+                                    value={formData.stock}
+                                    onChange={handleChange}
+                                    min="1"
                                     isInvalid={!!errors.stock}
                                 />
                                 <Form.Control.Feedback type="invalid">
@@ -196,11 +235,9 @@ function CrearProducto() {
                         <Form.Label>Precio (Lps)</Form.Label>
                         <Form.Control
                             type="number"
-                            value={price}
-                            onChange={(e) => {
-                                setPrice(e.target.value)
-                                validateField('price', e.target.value)
-                            }}
+                            name="price"
+                            value={formData.price}
+                            onChange={handleChange}
                             min="0"
                             isInvalid={!!errors.price}
                         />
@@ -210,13 +247,18 @@ function CrearProducto() {
                     </Form.Group>
 
                     <div className="text-center" style={{ marginTop: '20px' }}>
-                        <Button variant="primary" type="submit">
-                            Guardar
+                        <Button
+                            variant="primary"
+                            type="submit"
+                            disabled={!isFormValid() || showToast}
+                        >
+                            Crear Producto
                         </Button>
                         <Button
                             variant="secondary"
                             style={{ marginLeft: '10px' }}
                             onClick={handleCancel}
+                            disabled={showToast}
                         >
                             Cancelar
                         </Button>

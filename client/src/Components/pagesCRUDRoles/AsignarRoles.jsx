@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import FeatureNavbar from '../FeatureNavbar'
 import { Button, Container, Row, Table, Form, Modal } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 function AsignarRoles() {
     const [checkedItems, setCheckedItems] = useState({})
@@ -10,7 +10,16 @@ function AsignarRoles() {
     const [rolDescription, setRolDescription] = useState('')
     const [newPermissions, setNewPermissions] = useState({})
     const [formComplete, setFormComplete] = useState(false)
+    const [formData, setFormData] = useState({})
+
     const navigate = useNavigate()
+
+    useEffect(() => {
+        const storedData = localStorage.getItem('formData')
+        if (storedData) {
+            setFormData(JSON.parse(storedData))
+        }
+    }, [])
 
     const handleCheckboxChange = (index) => {
         setCheckedItems((prevState) => ({
@@ -93,7 +102,7 @@ function AsignarRoles() {
                 className="px-4 py-3 d-flex flex-column flex-grow-1"
             >
                 <Container fluid className="d-flex justify-content-center">
-                    <h3>Usuario a asignar: Nombre de usuario</h3>
+                    <h3>Usuario a asignar: {formData.nombre}</h3>
                 </Container>
 
                 <Container
