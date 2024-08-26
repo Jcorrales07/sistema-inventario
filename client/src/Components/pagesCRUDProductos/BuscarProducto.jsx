@@ -21,6 +21,22 @@ const initialProducts = [
         stock: 50,
     },
     {
+        id: 124,
+        name: 'Producto 5',
+        sku: 'ABsdf123',
+        category: 'Electrónica',
+        price: 100,
+        stock: 50,
+    },
+    {
+        id: 125235,
+        name: 'Producto 53',
+        sku: 'ABsdf12asd3',
+        category: 'Electrónica',
+        price: 100,
+        stock: 50,
+    },
+    {
         id: 2,
         name: 'Producto 2',
         sku: 'XYZ789',
@@ -76,7 +92,7 @@ function BuscarProducto() {
                 <Row className="justify-content-center">
                     <Col md={8}>
                         <h2 className="text-center mb-4">
-                            Gestión de Productos
+                            Buscar Producto
                         </h2>
                         <Form.Control
                             type="text"
@@ -98,7 +114,6 @@ function BuscarProducto() {
                                     <th>Categoría</th>
                                     <th>Precio</th>
                                     <th>Cantidad en Stock</th>
-                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>

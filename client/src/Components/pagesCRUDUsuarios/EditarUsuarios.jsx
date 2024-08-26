@@ -8,11 +8,8 @@ import {
     Row,
     Col,
     Alert,
-    Dropdown,
-    DropdownButton,
     Toast,
 } from 'react-bootstrap'
-
 import { useNavigate } from 'react-router-dom'
 import FeatureNavbar from '../FeatureNavbar'
 import usuarioApi from '../../../api/usuario.api'
@@ -28,7 +25,7 @@ function EditarUsuarios() {
         identificacion: '',
         numeroIdentidad: '',
         contrasena: '',
-        rol: 'Roles',
+        rol: '',
     })
 
     const [errors, setErrors] = useState({})
@@ -47,8 +44,9 @@ function EditarUsuarios() {
         validateForm()
     }, [formData])
 
+    // Cargar datos desde localStorage
     useEffect(() => {
-        const storedData = localStorage.getItem('formData')
+        const storedData = localStorage.getItem('selectedUser')
         if (storedData) {
             setFormData(JSON.parse(storedData))
         }
@@ -103,7 +101,6 @@ function EditarUsuarios() {
 
     const handleAssignRoles = () => {
         localStorage.setItem('formData', JSON.stringify(formData))
-        navigate('/usuarios/roles')
     }
 
     const getRolInt = (rol) => {
@@ -116,17 +113,14 @@ function EditarUsuarios() {
                 return 2
             case 'Analista de compras':
                 return 3
+            default:
+                return -1
         }
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         if (formValid) {
-            /*
-        Los objetos socio y usuario deben ser creados con los datos del formulario.
-        Los atributos deben ser iguales a como estan definidos en el modelo del backend.
-
-        */
             const socio = {
                 nombre: formData.nombre,
                 telefono: formData.telefono,
@@ -140,22 +134,27 @@ function EditarUsuarios() {
                 contrasena: formData.contrasena,
                 rol: getRolInt(formData.rol),
             }
-            const apiResponse = await usuarioApi.createUsuarioSocioRequest(
-                usuario,
-                socio
-            ) // Simulación de respuesta exitosa
 
-            if (apiResponse && apiResponse.status >= 200) {
-                setSuccessMessage(
-                    `Los datos del usuario para ${formData.nombre} fueron actualizados exitosamente!`
+            try {
+                const apiResponse = await usuarioApi.createUsuarioSocioRequest(
+                    usuario,
+                    socio
                 )
-                setShowToast(true)
 
-                setTimeout(() => {
-                    navigate(-1)
-                }, 3000)
-            } else {
-                setErrors({ form: 'Hubo un problema con el registro' })
+                if (apiResponse && apiResponse.status >= 200) {
+                    setSuccessMessage(
+                        `Los datos del usuario para ${formData.nombre} fueron actualizados exitosamente!`
+                    )
+                    setShowToast(true)
+
+                    setTimeout(() => {
+                        navigate(-1)
+                    }, 3000)
+                } else {
+                    setErrors({ form: 'Hubo un problema con el registro' })
+                }
+            } catch (error) {
+                setErrors({ form: 'Hubo un error en la solicitud.' })
             }
         } else {
             setErrors({
@@ -183,13 +182,16 @@ function EditarUsuarios() {
     return (
         <div>
             <FeatureNavbar />
-            <Container className="d-flex justify-content-center align-items-center min-vh-100">
+            <Container
+                fluid
+                className="d-flex justify-content-center align-items-center min-vh-100"
+            >
                 <Form className="w-75" onSubmit={handleSubmit}>
-                    <h3 className="text-center">
-                        Editar cuenta de: {'usuario'}
+                    <h3 className="text-center mb-5">
+                        Editar cuenta de: {formData.nombre}
                     </h3>
 
-                    <Row>
+                    <Row className="mb-3">
                         <Col md={6}>
                             <Form.Group controlId="nombre">
                                 <Form.Label>Nombre Completo</Form.Label>
@@ -225,7 +227,7 @@ function EditarUsuarios() {
                         </Col>
                     </Row>
 
-                    <Row>
+                    <Row className="mb-3">
                         <Col md={6}>
                             <Form.Group controlId="usuario">
                                 <Form.Label>Usuario</Form.Label>
@@ -261,7 +263,7 @@ function EditarUsuarios() {
                         </Col>
                     </Row>
 
-                    <Row>
+                    <Row className="mb-3">
                         <Col md={6} className="mt-4">
                             <Button
                                 href="/usuarios/roles"
