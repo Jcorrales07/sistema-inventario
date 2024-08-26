@@ -1,5 +1,5 @@
 import {DataTypes} from 'sequelize'
-import {sequelize} from '../database/database.js'
+import sequelize from '../database.js'
 import {categoria} from './categoria_modelo.js'
 import {Producto} from './Producto_diego.js'
 
