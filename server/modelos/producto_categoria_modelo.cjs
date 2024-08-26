@@ -1,52 +1,48 @@
-import {DataTypes} from 'sequelize'
-import sequelize from '../database.js'
-import {categoria} from './categoria_modelo.js'
-import {Producto} from './Producto_diego.js'
+const { DataTypes } = require("sequelize");
+const sequelize = require("../database.js");
+const categoria = require("./categoria_modelo.js");
+const Producto = require("./Producto.js");
 
- export const producto_categoria = sequelize.define ('producto_categoria',{
+exports.producto_categoria = sequelize.define("producto_categoria", {
   id_producto: {
     type: DataTypes.INTEGER,
     references: {
       model: Producto,
-      key: 'id',
+      key: "id",
     },
   },
   id_categoria: {
     type: DataTypes.INTEGER,
     references: {
       model: categoria,
-      key: 'id',
+      key: "id",
     },
   },
-
-})
+});
 // producto_categoria.hasMany(categoria, {
 //     foreignKey: 'id',
 //     sourceId: 'id_categoria',
 //     onDelete: 'CASCADE',
 //     onUpdate: 'CASCADE',
 //   });
-  
+
 //   categoria.belongsTo(producto_categoria, {
 //     foreignKey: 'id',
 //     targetId : 'id_categoria',
 //     onDelete: 'CASCADE',
 //     onUpdate: 'CASCADE',
 //   });
-  
+
 //   producto_categoria.hasMany(Producto, {
 //     foreignKey: 'id',
 //     sourceId: 'id',
 //     onDelete: 'CASCADE',
 //     onUpdate: 'CASCADE',
 //   });
-  
+
 //   Producto.belongsTo(producto_categoria, {
 //     foreignKey: 'id',
 //      targetId : 'id_producto',
 //     onDelete: 'CASCADE',
 //     onUpdate: 'CASCADE',
 //   });
-  
-  
-  

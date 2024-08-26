@@ -1,16 +1,16 @@
-import  producto_categoria  from "../modelos/producto_categoria_modelo.js";
+const  producto_categoria = require("../modelos/producto_categoria_modelo.cjs");
 
-export const getProducto_categoria = async (req,res) =>{
+exports.getProducto_categoria = async (req,res) =>{
     try{
     const producto_categorias = await producto_categoria.findAll()
-    res.json(categorias)
+    res.json(producto_categorias)
     }
     catch(error){
         res.status(400).json({ message: 'Error al obtener producto categoria', error: error.message });
     }
 }
 
-export const getProducto_CategoriaUnica = async (req, res) => {
+exports.getProducto_CategoriaUnica = async (req, res) => {
     try {
         const { categoria } = req.params; 
         const producto_categoriaUnica = await  producto_categoria.findOne({
@@ -28,7 +28,7 @@ export const getProducto_CategoriaUnica = async (req, res) => {
 };
 
 
-export const deleteProducto_Categoria = async (req, res) =>{
+exports.deleteProducto_Categoria = async (req, res) =>{
     try{
           const {categoria} = req.params// osea no lo vamos a borrar por el primary key que, en este caso es no natural
           await categoria.destroy ({
@@ -48,7 +48,7 @@ export const deleteProducto_Categoria = async (req, res) =>{
 
 
 
-export const deleteALLProducto_Categoria = async (req, res) =>{
+exports.deleteALLProducto_Categoria = async (req, res) =>{
     try{
           await producto_categoria.destroy ({
               where:{   },
