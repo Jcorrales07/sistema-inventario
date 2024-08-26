@@ -24,7 +24,7 @@ const LoginSignup = () => {
             nombre: response.data.Data.Socio.nombre,
             username: response.data.Data.nickname,
             email: response.data.Data.Socio.email,
-            rol: response.data.Data.rol,
+            rol: response.data.Data.id_rol,
         }
         console.log(user)
         localStorage.setItem('user', JSON.stringify(user))

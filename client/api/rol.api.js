@@ -1,4 +1,4 @@
-import axios from "./client/src/api/AxiosInstance.js"
+import axios from "../api/AxiosInstance"
 
 const  getAllRolsRequest = async () =>{
     try {

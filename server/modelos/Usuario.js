@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const Socio = require("./Socio");
+const Rol = require("./Rol");
 
 const db = require("../database");
 
@@ -23,9 +24,14 @@ const Usuario = db.define(
       type: DataTypes.STRING(256),
       allowNull: false,
     },
-    rol: {
+    id_rol: {
       type: DataTypes.INTEGER,
       allowNull: false,
+    },
+    active: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
     },
   },
   {
@@ -36,6 +42,14 @@ const Usuario = db.define(
 
 Socio.hasOne(Usuario, {
   foreignKey: "id_socio",
+});
+
+Rol.hasMany(Usuario, {
+  foreignKey: "id_rol",
+});
+
+Usuario.belongsTo(Rol, {
+  foreignKey: "id_rol",
 });
 
 Usuario.belongsTo(Socio, {

@@ -14,37 +14,37 @@ const buttons = [
     {
         name: 'Dashboard',
         link: '/home',
-        rolePermissions: [0, 1, 2, 3],
+        rolePermissions: [ 1, 2, 3],
     },
     {
         name: 'Gestión de Productos',
         link: '/productos',
-        rolePermissions: [0],
+        rolePermissions: [1],
     },
     {
         name: 'Gestión de Almacenes',
         link: '/almacenes',
-        rolePermissions: [0, 1, 2],
+        rolePermissions: [ 1, 2],
     },
     {
         name: 'Gestión de Usuarios',
         link: '/usuarios',
-        rolePermissions: [0],
+        rolePermissions: [1],
     },
     {
         name: 'Gestión de Proveedores',
         link: '/proveedores',
-        rolePermissions: [0, 3],
+        rolePermissions: [1, 3],
     },
     {
         name: 'Reportes',
         link: '/reportes',
-        rolePermissions: [0, 1, 2, 3],
+        rolePermissions: [1, 2, 3],
     },
     {
         name: 'Configuración',
         link: '/configuracion',
-        rolePermissions: [0, 1, 2, 3],
+        rolePermissions: [1, 2, 3],
     },
 ]
 

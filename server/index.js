@@ -16,7 +16,7 @@ const initApp = async () => {
     console.log("Conexión exitosa a la base de datos");
 
     await db
-      .sync({ force: false, alter: false })
+      .sync({ force: false, alter: true})
       .then(() => {
         console.log("Database synced without altering existing schema!");
       })
