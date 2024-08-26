@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { forwardRef, useEffect, useState } from 'react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 // prettier-ignore
@@ -68,6 +68,20 @@ function HomePage() {
             )
         }, 1000)
     }, [])
+
+    const CustomToggle = forwardRef(({ onClick }, ref) => (
+        <Image
+            ref={ref}
+            src="https://via.placeholder.com/30"
+            alt="Avatar"
+            className="img-fluid rounded-circle"
+            onClick={(e) => {
+                e.preventDefault()
+                onClick(e)
+            }}
+            style={{ cursor: 'pointer' }}
+        />
+    ))
 
     return (
         <Container fluid>
@@ -171,25 +185,15 @@ function HomePage() {
                                 {date}
                             </Navbar.Brand>
                             <Navbar.Collapse className="justify-content-end">
-                                <Nav>
+                                <Nav className="align-items-center">
                                     <Nav.Link href="#notificaciones">
-                                        <i class="bi bi-bell-fill text-white fs-5"></i>
+                                        <i className="bi bi-bell-fill text-white fs-5"></i>
                                     </Nav.Link>
                                     <Dropdown>
                                         <Dropdown.Toggle
-                                            variant="link"
+                                            as={CustomToggle}
                                             id="dropdown-avatar"
-                                            style={{
-                                                background: 'transparent',
-                                                border: 'none',
-                                            }}
-                                        >
-                                            <Image
-                                                src="https://via.placeholder.com/30"
-                                                alt="Avatar"
-                                                className="img-fluid rounded-circle"
-                                            />
-                                        </Dropdown.Toggle>
+                                        />
 
                                         <Dropdown.Menu align="end">
                                             <Dropdown.Item href="#/profile">
@@ -200,11 +204,11 @@ function HomePage() {
                                             </Dropdown.Item>
                                             <Dropdown.Item
                                                 href="/"
-                                                onClick={() => {
+                                                onClick={() =>
                                                     localStorage.removeItem(
                                                         'user'
                                                     )
-                                                }}
+                                                }
                                             >
                                                 Logout
                                             </Dropdown.Item>

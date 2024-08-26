@@ -155,7 +155,7 @@ function CrearProducto() {
                     Crear Producto
                 </h1>
                 <Form onSubmit={handleSubmit}>
-                    <Row>
+                    <Row className="mb-3">
                         <Col md={6}>
                             <Form.Group controlId="formProductName">
                                 <Form.Label>Nombre del Producto</Form.Label>
@@ -188,7 +188,7 @@ function CrearProducto() {
                         </Col>
                     </Row>
 
-                    <Row>
+                    <Row className="mb-3">
                         <Col md={6}>
                             <Form.Group controlId="formCategory">
                                 <Form.Label>Categoría</Form.Label>
@@ -255,7 +255,7 @@ function CrearProducto() {
                             Crear Producto
                         </Button>
                         <Button
-                            variant="secondary"
+                            variant="danger"
                             style={{ marginLeft: '10px' }}
                             onClick={handleCancel}
                             disabled={showToast}
