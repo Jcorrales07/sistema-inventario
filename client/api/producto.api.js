@@ -1,4 +1,4 @@
-import axios from "./client/src/api/AxiosInstance.js"
+import axios from "../api/AxiosInstance"
 
 const  getAllProductosRequest = async () =>{
     try {
@@ -50,7 +50,7 @@ const deleteProductoRequest = async(id) => {
 
 const createProductoRequest = async(values) => {
     try {
-        const response = await axios.post(`producto/`,values);
+        const response = await axios.post(`/producto/`,values);
         if(!response){
             return null;
         }

@@ -10,17 +10,25 @@ import {
 } from 'react-bootstrap'
 import FeatureNavbar from '../FeatureNavbar'
 import { useNavigate } from 'react-router-dom'
+import productoApi from '../../../api/producto.api'
 
 function CrearProducto() {
-    const existingSkus = ['ABC123', 'XYZ789', 'QWE456']
-
     const [formData, setFormData] = useState({
-        productName: '',
-        sku: '',
-        category: '',
-        price: '',
-        stock: '',
+        nombre: '',
+        tipo: '',
+        codigo_barra: '',
+        precio_venta: '',
+        coste: '',
+        puede_vender: false, // Cambiado a boolean
+        puede_comprar: false, // Cambiado a boolean
+        notas_internas: '',
+        imagen_url: '',
+        volumen: '10',
+        plazo_entrega_cliente: '10',
+        descripcion_recepcion: 'descripcion recepcion',
+        descripcion_entrega: 'descripcion entrega',
     })
+
     const [errors, setErrors] = useState({})
     const [showToast, setShowToast] = useState(false)
     const [toastMessage, setToastMessage] = useState('')
@@ -32,43 +40,53 @@ function CrearProducto() {
         const newErrors = { ...errors }
 
         switch (fieldName) {
-            case 'productName':
+            case 'nombre':
                 if (!value) {
-                    newErrors.productName =
-                        'El nombre del producto es obligatorio.'
+                    newErrors.nombre = 'El nombre es obligatorio.'
                 } else {
-                    delete newErrors.productName
+                    delete newErrors.nombre
                 }
                 break
-            case 'sku':
+            case 'tipo':
                 if (!value) {
-                    newErrors.sku = 'El SKU es obligatorio.'
-                } else if (existingSkus.includes(value)) {
-                    newErrors.sku = 'El SKU ya existe en la base de datos.'
+                    newErrors.tipo = 'El tipo es obligatorio.'
                 } else {
-                    delete newErrors.sku
+                    delete newErrors.tipo
                 }
                 break
-            case 'category':
+            case 'codigo_barra':
                 if (!value) {
-                    newErrors.category = 'Debe seleccionar una categoría.'
+                    newErrors.codigo_barra = 'El código de barra es obligatorio.'
                 } else {
-                    delete newErrors.category
+                    delete newErrors.codigo_barra
                 }
                 break
-            case 'price':
+            case 'precio_venta':
                 if (value <= 0) {
-                    newErrors.price = 'El precio debe ser mayor que 0.'
+                    newErrors.precio_venta = 'El precio de venta debe ser mayor que 0.'
                 } else {
-                    delete newErrors.price
+                    delete newErrors.precio_venta
                 }
                 break
-            case 'stock':
+            case 'coste':
                 if (value < 0) {
-                    newErrors.stock =
-                        'La cantidad en stock no puede ser negativa.'
+                    newErrors.coste = 'El coste no puede ser negativo.'
                 } else {
-                    delete newErrors.stock
+                    delete newErrors.coste
+                }
+                break
+            case 'volumen':
+                if (value <= 0) {
+                    newErrors.volumen = 'El volumen debe ser mayor que 0.'
+                } else {
+                    delete newErrors.volumen
+                }
+                break
+            case 'plazo_entrega_cliente':
+                if (value < 0) {
+                    newErrors.plazo_entrega_cliente = 'El plazo de entrega no puede ser negativo.'
+                } else {
+                    delete newErrors.plazo_entrega_cliente
                 }
                 break
             default:
@@ -82,12 +100,16 @@ function CrearProducto() {
         e.preventDefault()
 
         if (isFormValid()) {
+            productoApi.createProductoRequest(formData).then((response) => {
+                console.log(response)
+            })
+            console.log(formData)
             setToastMessage('Producto guardado con éxito!')
             setToastVariant('success')
             setShowToast(true)
-            setTimeout(() => {
-                handleCancel()
-            }, 2000)
+            // setTimeout(() => {
+            //     handleCancel()
+            // }, 2000)
         } else {
             setToastMessage('Hay errores en el formulario.')
             setToastVariant('danger')
@@ -97,32 +119,42 @@ function CrearProducto() {
 
     const handleCancel = () => {
         setFormData({
-            productName: '',
-            sku: '',
-            category: '',
-            price: '',
-            stock: '',
+            nombre: '',
+            tipo: '',
+            codigo_barra: '',
+            precio_venta: '',
+            coste: '',
+            puede_vender: false,
+            puede_comprar: false,
+            notas_internas: '',
+            imagen_url: '',
+            volumen: '',
+            plazo_entrega_cliente: '',
+            descripcion_recepcion: '',
+            descripcion_entrega: '',
         })
         setErrors({})
         navigate(-1)
     }
 
     const handleChange = (e) => {
-        const { name, value } = e.target
+        const { name, value, type, checked } = e.target
         setFormData({
             ...formData,
-            [name]: value,
+            [name]: type === 'checkbox' ? checked : value,
         })
         validateField(name, value)
     }
 
     const isFormValid = () => {
         return (
-            formData.productName &&
-            formData.sku &&
-            formData.category &&
-            formData.price > 0 &&
-            formData.stock >= 0 &&
+            formData.nombre &&
+            formData.tipo &&
+            formData.codigo_barra &&
+            formData.precio_venta > 0 &&
+            formData.coste >= 0 &&
+            formData.volumen > 0 &&
+            formData.plazo_entrega_cliente >= 0 &&
             Object.keys(errors).length === 0
         )
     }
@@ -157,32 +189,32 @@ function CrearProducto() {
                 <Form onSubmit={handleSubmit}>
                     <Row className="mb-3">
                         <Col md={6}>
-                            <Form.Group controlId="formProductName">
-                                <Form.Label>Nombre del Producto</Form.Label>
+                            <Form.Group controlId="formNombre">
+                                <Form.Label>Nombre</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    name="productName"
-                                    value={formData.productName}
+                                    name="nombre"
+                                    value={formData.nombre}
                                     onChange={handleChange}
-                                    isInvalid={!!errors.productName}
+                                    isInvalid={!!errors.nombre}
                                 />
                                 <Form.Control.Feedback type="invalid">
-                                    {errors.productName}
+                                    {errors.nombre}
                                 </Form.Control.Feedback>
                             </Form.Group>
                         </Col>
                         <Col md={6}>
-                            <Form.Group controlId="formSku">
-                                <Form.Label>SKU</Form.Label>
+                            <Form.Group controlId="formTipo">
+                                <Form.Label>Tipo</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    name="sku"
-                                    value={formData.sku}
+                                    name="tipo"
+                                    value={formData.tipo}
                                     onChange={handleChange}
-                                    isInvalid={!!errors.sku}
+                                    isInvalid={!!errors.tipo}
                                 />
                                 <Form.Control.Feedback type="invalid">
-                                    {errors.sku}
+                                    {errors.tipo}
                                 </Form.Control.Feedback>
                             </Form.Group>
                         </Col>
@@ -190,75 +222,179 @@ function CrearProducto() {
 
                     <Row className="mb-3">
                         <Col md={6}>
-                            <Form.Group controlId="formCategory">
-                                <Form.Label>Categoría</Form.Label>
+                            <Form.Group controlId="formCodigoBarra">
+                                <Form.Label>Código de Barra</Form.Label>
                                 <Form.Control
-                                    as="select"
-                                    name="category"
-                                    value={formData.category}
+                                    type="text"
+                                    name="codigo_barra"
+                                    value={formData.codigo_barra}
                                     onChange={handleChange}
-                                    isInvalid={!!errors.category}
-                                >
-                                    <option value="">
-                                        Seleccione una categoría...
-                                    </option>
-                                    <option value="Electrónica">
-                                        Electrónica
-                                    </option>
-                                    <option value="Ropa">Ropa</option>
-                                    <option value="Alimentos">Alimentos</option>
-                                </Form.Control>
+                                    isInvalid={!!errors.codigo_barra}
+                                />
                                 <Form.Control.Feedback type="invalid">
-                                    {errors.category}
+                                    {errors.codigo_barra}
                                 </Form.Control.Feedback>
                             </Form.Group>
                         </Col>
                         <Col md={6}>
-                            <Form.Group controlId="formStock">
-                                <Form.Label>Cantidad en Stock</Form.Label>
+                            <Form.Group controlId="formPrecioVenta">
+                                <Form.Label>Precio de Venta (Lps)</Form.Label>
                                 <Form.Control
                                     type="number"
-                                    name="stock"
-                                    value={formData.stock}
+                                    name="precio_venta"
+                                    value={formData.precio_venta}
                                     onChange={handleChange}
-                                    min="1"
-                                    isInvalid={!!errors.stock}
+                                    min="0"
+                                    isInvalid={!!errors.precio_venta}
                                 />
                                 <Form.Control.Feedback type="invalid">
-                                    {errors.stock}
+                                    {errors.precio_venta}
                                 </Form.Control.Feedback>
                             </Form.Group>
                         </Col>
                     </Row>
 
-                    <Form.Group controlId="formPrice">
-                        <Form.Label>Precio (Lps)</Form.Label>
-                        <Form.Control
-                            type="number"
-                            name="price"
-                            value={formData.price}
-                            onChange={handleChange}
-                            min="0"
-                            isInvalid={!!errors.price}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                            {errors.price}
-                        </Form.Control.Feedback>
-                    </Form.Group>
+                    <Row className="mb-3">
+                        <Col md={6}>
+                            <Form.Group controlId="formCoste">
+                                <Form.Label>Coste (Lps)</Form.Label>
+                                <Form.Control
+                                    type="number"
+                                    name="coste"
+                                    value={formData.coste}
+                                    onChange={handleChange}
+                                    min="0"
+                                    isInvalid={!!errors.coste}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.coste}
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                        </Col>
+                        <Col md={6}>
+                            <Form.Group controlId="formImagenUrl">
+                                <Form.Label>URL de Imagen</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="imagen_url"
+                                    value={formData.imagen_url}
+                                    onChange={handleChange}
+                                />
+                            </Form.Group>
+                        </Col>
+                    </Row>
 
-                    <div className="text-center" style={{ marginTop: '20px' }}>
-                        <Button
-                            variant="primary"
-                            type="submit"
-                            disabled={!isFormValid() || showToast}
-                        >
-                            Crear Producto
+                    <Row className="mb-3">
+                        <Col md={6}>
+                            <Form.Group controlId="formPuedeVender">
+                                <Form.Label>¿Puede Vender? (Salidas)</Form.Label>
+                                <Form.Check
+                                    type="switch"
+                                    name="puede_vender"
+                                    label={formData.puede_vender ? 'Sí' : 'No'}
+                                    checked={formData.puede_vender}
+                                    onChange={handleChange}
+                                />
+                            </Form.Group>
+                        </Col>
+                        <Col md={6}>
+                            <Form.Group controlId="formPuedeComprar">
+                                <Form.Label>¿Puede Comprar? (Entradas)</Form.Label>
+                                <Form.Check
+                                    type="switch"
+                                    name="puede_comprar"
+                                    label={formData.puede_comprar ? 'Sí' : 'No'}
+                                    checked={formData.puede_comprar}
+                                    onChange={handleChange}
+                                />
+                            </Form.Group>
+                        </Col>
+                    </Row>
+
+                    <Row className="mb-3">
+                        <Col md={12}>
+                            <Form.Group controlId="formNotasInternas">
+                                <Form.Label>Notas Internas</Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    rows={3}
+                                    name="notas_internas"
+                                    value={formData.notas_internas}
+                                    onChange={handleChange}
+                                />
+                            </Form.Group>
+                        </Col>
+                    </Row>
+
+                    <Row className="mb-3">
+                        <Col md={6}>
+                            <Form.Group controlId="formVolumen">
+                                <Form.Label>Volumen (m³)</Form.Label>
+                                <Form.Control
+                                    type="number"
+                                    name="volumen"
+                                    value={formData.volumen}
+                                    onChange={handleChange}
+                                    min="0"
+                                    isInvalid={!!errors.volumen}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.volumen}
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                        </Col>
+                        <Col md={6}>
+                            <Form.Group controlId="formPlazoEntregaCliente">
+                                <Form.Label>Plazo de Entrega al Cliente (días)</Form.Label>
+                                <Form.Control
+                                    type="number"
+                                    name="plazo_entrega_cliente"
+                                    value={formData.plazo_entrega_cliente}
+                                    onChange={handleChange}
+                                    min="0"
+                                    isInvalid={!!errors.plazo_entrega_cliente}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.plazo_entrega_cliente}
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                        </Col>
+                    </Row>
+
+                    <Row className="mb-3">
+                        <Col md={6}>
+                            <Form.Group controlId="formDescripcionRecepcion">
+                                <Form.Label>Informacion de Recepción</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="descripcion_recepcion"
+                                    value={formData.descripcion_recepcion}
+                                    onChange={handleChange}
+                                />
+                            </Form.Group>
+                        </Col>
+                        <Col md={6}>
+                            <Form.Group controlId="formDescripcionEntrega">
+                                <Form.Label>Informacion de Entrega</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="descripcion_entrega"
+                                    value={formData.descripcion_entrega}
+                                    onChange={handleChange}
+                                />
+                            </Form.Group>
+                        </Col>
+                    </Row>
+
+                    <div className="text-center">
+                        <Button variant="primary" type="submit">
+                            Guardar
                         </Button>
                         <Button
-                            variant="danger"
-                            style={{ marginLeft: '10px' }}
+                            variant="secondary"
+                            type="button"
                             onClick={handleCancel}
-                            disabled={showToast}
+                            style={{ marginLeft: '10px' }}
                         >
                             Cancelar
                         </Button>

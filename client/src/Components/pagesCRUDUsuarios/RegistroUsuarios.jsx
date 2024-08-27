@@ -214,6 +214,25 @@ function RegistroUsuarios() {
                         </Col>
 
                         <Col md={6}>
+                            <Form.Group controlId="email">
+                                <Form.Label>Email</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="email"
+                                    placeholder="correo@email.com"
+                                    value={formData.correo}
+                                    onChange={handleChange}
+                                    isInvalid={!!errors.correo}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.correo}
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col md={6}>
                             <Form.Group controlId="telefono">
                                 <Form.Label>Número de Teléfono</Form.Label>
                                 <Form.Control
@@ -229,9 +248,7 @@ function RegistroUsuarios() {
                                 </Form.Control.Feedback>
                             </Form.Group>
                         </Col>
-                    </Row>
 
-                    <Row>
                         <Col md={6}>
                             <Form.Group controlId="contrasena">
                                 <Form.Label>Contraseña</Form.Label>
