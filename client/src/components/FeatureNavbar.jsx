@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
     Button,
     Container,
@@ -6,12 +6,26 @@ import {
     Image,
     Nav,
     Navbar,
-} from 'react-bootstrap'
-import { useLocation, useNavigate } from 'react-router-dom'
+} from 'react-bootstrap';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function FeatureNavbar() {
-    const location = useLocation()
-    const navigate = useNavigate()
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const CustomToggle = React.forwardRef(({ onClick }, ref) => (
+        <Image
+            ref={ref}
+            src="https://via.placeholder.com/30"
+            alt="Avatar"
+            className="img-fluid rounded-circle"
+            onClick={(e) => {
+                e.preventDefault();
+                onClick(e);
+            }}
+            style={{ cursor: 'pointer' }}
+        />
+    ));
 
     return (
         <Navbar bg="dark" fluid className="border-bg-black">
@@ -21,32 +35,19 @@ function FeatureNavbar() {
                     className="d-flex justify-content-center align-items-center px-0"
                     onClick={() => navigate(-1)}
                 >
-                    <i class="bi bi-arrow-left-circle text-white fs-5"></i>
+                    <i className="bi bi-arrow-left-circle text-white fs-5"></i>
                     <h4 className="text-white ms-3 mb-0">
                         {location.pathname.charAt(1).toUpperCase() +
                             location.pathname.slice(2)}
                     </h4>
                 </Button>
                 <Navbar.Collapse className="justify-content-end">
-                    <Nav>
+                    <Nav className="align-items-center">
                         <Nav.Link href="#notificaciones">
-                            <i class="bi bi-bell-fill text-white fs-5"></i>
+                            <i className="bi bi-bell-fill text-white fs-5"></i>
                         </Nav.Link>
                         <Dropdown>
-                            <Dropdown.Toggle
-                                variant="link"
-                                id="dropdown-avatar"
-                                style={{
-                                    background: 'transparent',
-                                    border: 'none',
-                                }}
-                            >
-                                <Image
-                                    src="https://via.placeholder.com/30"
-                                    alt="Avatar"
-                                    className="img-fluid rounded-circle"
-                                />
-                            </Dropdown.Toggle>
+                            <Dropdown.Toggle as={CustomToggle} id="dropdown-avatar" />
 
                             <Dropdown.Menu align="end">
                                 <Dropdown.Item href="#/profile">
@@ -69,7 +70,7 @@ function FeatureNavbar() {
                 </Navbar.Collapse>
             </Container>
         </Navbar>
-    )
+    );
 }
 
-export default FeatureNavbar
+export default FeatureNavbar;

@@ -1,5 +1,6 @@
 const Usuario = require("../modelos/Usuario");
 const Socio = require("../modelos/Socio");
+const Rol = require("../modelos/Rol");
 const sequelize = require("../database");
 
 exports.usuarioCreateService = async (usuario) => {
@@ -44,7 +45,7 @@ exports.usuarioDeleteService = async (id) => {
 
 exports.usuarioSelectAllService = async () => {
   try {
-    return await Usuario.findAll();
+    return await Usuario.findAll({ include: [Socio, Rol] });
   } catch (error) {
     throw error;
   }
@@ -60,7 +61,10 @@ exports.usuarioSelectByIdService = async (id) => {
 
 exports.usuarioSelectByNicknameService = async (nickname) => {
   try {
-    return await Usuario.findOne({ where: { nickname: nickname }, include: Socio });
+    return await Usuario.findOne({
+      where: { nickname: nickname },
+      include: Socio,
+    });
   } catch (error) {
     throw error;
   }

@@ -1,8 +1,8 @@
 import axios from "../api/AxiosInstance"
 
-const  getAllProductosRequest = async () =>{
+const  getAllRolsRequest = async () =>{
     try {
-        const response = await axios.get(`producto/`)
+        const response = await axios.get(`rol/`)
         if(!response){
             return null;
         }
@@ -12,9 +12,9 @@ const  getAllProductosRequest = async () =>{
     }
 }
 
-const getProductoByIdRequest = async(id) =>{
+const getRolByIdRequest = async(id) =>{
     try {
-        const response = await axios.get(`producto/${id}`);
+        const response = await axios.get(`rol/${id}`);
         if(!response){
             return null;
         }
@@ -24,9 +24,9 @@ const getProductoByIdRequest = async(id) =>{
     }
 }
 
-const putProductoRequest = async(id,values) =>{
+const putRolRequest = async(id,values) =>{
     try {
-        const response = await axios.put(`producto/${id}`,values);
+        const response = await axios.put(`rol/${id}`,values);
         if(!response){
             return null;
         }
@@ -36,9 +36,9 @@ const putProductoRequest = async(id,values) =>{
     }
 }
 
-const deleteProductoRequest = async(id) => {
+const deleteRolRequest = async(id) => {
     try {
-        const response = await axios.put(`producto/${id}`);
+        const response = await axios.put(`rol/${id}`);
         if(!response){
             return null;
         }
@@ -48,9 +48,9 @@ const deleteProductoRequest = async(id) => {
     }
 }
 
-const createProductoRequest = async(values) => {
+const createRolRequest = async(values) => {
     try {
-        const response = await axios.post(`/producto/`,values);
+        const response = await axios.post(`rol/`,values);
         if(!response){
             return null;
         }
@@ -61,9 +61,9 @@ const createProductoRequest = async(values) => {
 }
 
 export default {
-    getAllProductosRequest,
-    getProductoByIdRequest,
-    putProductoRequest,
-    deleteProductoRequest,
-    createProductoRequest
+    getAllRolsRequest,
+    getRolByIdRequest,
+    putRolRequest,
+    deleteRolRequest,
+    createRolRequest
 }

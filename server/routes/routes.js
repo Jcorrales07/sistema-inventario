@@ -1,13 +1,23 @@
-const {Router} = require('express')
+const { Router } = require('express')
 
-const rutasU =  require('./usuario.routes');
-const rutasS = require ('./socio.routes');
-const rutasP = require('./producto.route');
-const rutasAuth = require ('./auth.routes');
+const rutasU = require('./usuario.routes')
+const rutasS = require('./socio.routes')
+const rutasP = require('./producto.routes')
+const rutasRol = require('./rol.routes')
+const rutasAuth = require('./auth.routes')
+const rutasRolPrivilegio = require('./rolPrivilegio.routes')
+const rutasPrivilegio = require('./privilegio.routes')
+const rutasCategoria = require('./categoria.routes')
+const rutasProductoCategoria = require('./producto.categoria.routes')
 
-const router = Router();
-router.use('/usuario',rutasU);
-router.use('/socio',rutasS);
-router.use('/producto',rutasP);
-router.use('/auth',rutasAuth);
-module.exports= router;
+const router = Router()
+router.use('/rolPrivilegio', rutasRolPrivilegio)
+router.use('/usuario', rutasU)
+router.use('/socio', rutasS)
+router.use('/producto', rutasP)
+router.use('/auth', rutasAuth)
+router.use('/rol', rutasRol)
+router.use('/privilegio', rutasPrivilegio)
+router.use(rutasCategoria)
+router.use(rutasProductoCategoria)
+module.exports = router
