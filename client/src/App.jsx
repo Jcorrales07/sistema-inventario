@@ -19,6 +19,7 @@ import {
     BuscarProducto,
     CrearProducto,
 } from './components/index.js'
+import VistaUnSoloProducto from './components/pagesCRUDProductos/VistaUnSoloProducto.jsx'
 
 function App() {
     return (
@@ -31,6 +32,7 @@ function App() {
             <Route path="/productos" element={<CRUDProductosPage />} />
             <Route path="/productos/crear" element={<CrearProducto />} />
             <Route path="/productos/buscar" element={<BuscarProducto />} />
+            <Route path="/productos/ver" element={<VistaUnSoloProducto />} />
 
             <Route path="/almacenes" element={<CRUDAlmacenesPage />} />
 

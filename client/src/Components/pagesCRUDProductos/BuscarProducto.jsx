@@ -9,6 +9,7 @@ import {
     Col,
 } from 'react-bootstrap'
 import FeatureNavbar from '../FeatureNavbar'
+import { useNavigate } from 'react-router-dom'
 
 //estos productos son para efectos de mostrar como funciona falta modificarlo para que se adapte a la base de datos (merge)
 const initialProducts = [
@@ -59,10 +60,15 @@ function BuscarProducto() {
     const [editingProduct, setEditingProduct] = useState(null)
     const [showModal, setShowModal] = useState(false)
     const [search, setSearch] = useState('')
+    const navigate = useNavigate()
 
     const handleEditClick = (product) => {
         setEditingProduct(product)
         setShowModal(true)
+    }
+
+    const handleViewClick = (product) => {
+        navigate(`/productos/ver`)
     }
 
     const handleSave = () => {
@@ -91,9 +97,7 @@ function BuscarProducto() {
             <Container fluid className="mt-5">
                 <Row className="justify-content-center">
                     <Col md={8}>
-                        <h2 className="text-center mb-4">
-                            Buscar Producto
-                        </h2>
+                        <h2 className="text-center mb-4">Buscar Producto</h2>
                         <Form.Control
                             type="text"
                             placeholder="Buscar por nombre o categoría"
@@ -134,6 +138,15 @@ function BuscarProducto() {
                                                     }
                                                 >
                                                     Editar
+                                                </Button>
+                                                <Button
+                                                    variant="warning"
+                                                    size="sm"
+                                                    onClick={() =>
+                                                        handleViewClick(product)
+                                                    }
+                                                >
+                                                    Ver Detalles
                                                 </Button>
                                             </td>
                                         </tr>
