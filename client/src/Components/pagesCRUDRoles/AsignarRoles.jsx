@@ -36,7 +36,27 @@ function AsignarRoles() {
       console.log("Error al obtener los roles");
     }
 
-    setRoles(response.data.Data);
+    const r = response.data.Data.map((rol) => {
+      return { ...rol, checked: false };
+    });
+
+    const storedData = localStorage.getItem("formData");
+    if (storedData) {
+      const data = JSON.parse(storedData);
+      setFormData(data);
+
+      if (data.roles && data.roles.length > 0) {
+        const rolesToCheck = data.roles;
+
+        r.forEach((rol) => {
+          if (rolesToCheck.find((r) => r.id === rol.id)) {
+            rol.checked = true;
+          }
+        });
+      }
+    }
+
+    setRoles(r);
   };
 
   const loadPermisos = async () => {
@@ -54,20 +74,19 @@ function AsignarRoles() {
   };
 
   useEffect(() => {
-    const storedData = localStorage.getItem("formData");
-    if (storedData) {
-      setFormData(JSON.parse(storedData));
-    }
-
     loadRoles();
     loadPermisos();
   }, [newPermissions]);
 
   const handleCheckboxChange = (index) => {
-    setCheckedItems((prevState) => ({
-      ...prevState,
-      [index]: !prevState[index],
-    }));
+    const newRoles = roles.map((p, i) => {
+      if (i === index) {
+        return { ...p, checked: !p.checked };
+      }
+      return p;
+    });
+
+    setRoles(newRoles);
   };
 
   const handleCloseModal = () => {
@@ -135,23 +154,24 @@ function AsignarRoles() {
   };
 
   const handleAssignRoles = () => {
-    const selectedRoles = Object.keys(checkedItems).filter(
-      (key) => checkedItems[key]
-    );
-
     // Add code to send `selectedRoles` to your backend or database here
-    console.log("Assigning roles:", selectedRoles);
+    const rolesToAssign = roles.filter((rol) => rol.checked);
+
+    console.log("Roles to assign:", rolesToAssign);
+
+    const newForm = { ...formData, roles: rolesToAssign };
+
+    localStorage.setItem("formData", JSON.stringify(newForm));
+
     navigate(-1);
   };
 
-  const isAssignButtonDisabled = !Object.values(checkedItems).includes(true);
+  let isAssignButtonDisabled = false;
 
   useEffect(() => {
     // Check if all fields are filled and at least one permission is selected
-    const allFieldsFilled =
-      rolName.trim() !== "" && rolDescription.trim() !== "";
 
-    setFormComplete(allFieldsFilled);
+    setFormComplete(true);
   }, [rolName, rolDescription, newPermissions]);
 
   return (
@@ -205,7 +225,7 @@ function AsignarRoles() {
                     <td style={{ width: "3%" }}>
                       <Form.Check
                         type="checkbox"
-                        checked={checkedItems[i] || false}
+                        checked={rol.checked}
                         onChange={() => handleCheckboxChange(i)}
                       />
                     </td>
