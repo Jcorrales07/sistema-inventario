@@ -95,35 +95,57 @@ function RegistroUsuarios() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (formValid) {
+      setFormValid(false); // Para desactivar el boton de guardar mientras se procesa la solicitud
+
       const socio = {
         nombre: formData.nombre,
         telefono: formData.telefono,
         email: formData.correo,
-        rtn: formData.identificacion,
+        rtn: formData.numeroIdentidad,
         tipo: "individuo",
       };
 
       const usuario = {
         nickname: formData.usuario,
         contrasena: formData.contrasena,
-        rol: getRolInt(formData.rol),
+        id_rol: 1, // Por ahora vamos a asignar este rol por defecto, ya que no se puede dejar vacío
+        // Porque despues elimaremos este campo de la tabla usuarios
       };
+
+      /*
+      Los roles ya están asignados en el formulario de asignación de roles, por lo que no es necesario
+      enviarlos en el objeto usuario. Se enviarán en el siguiente paso.
+
+      */
       const apiResponse = await usuarioApi.createUsuarioSocioRequest(
         usuario,
-        socio
+        socio,
+        formData.roles
       );
 
-      if (apiResponse && apiResponse.status >= 200) {
+      if (
+        apiResponse &&
+        apiResponse.status >= 200 &&
+        apiResponse.status < 300
+      ) {
         setSuccessMessage(
           `El usuario para ${formData.nombre} fue creado exitosamente!`
         );
         setShowToast(true);
 
+        localStorage.removeItem("formData");
+
         setTimeout(() => {
           navigate(-1);
         }, 3000);
       } else {
-        setErrors({ form: "Hubo un problema con el registro" });
+        console.log(apiResponse.data.error);
+
+        if (apiResponse.data.error.includes("Unique"))
+          setErrors({
+            form: "El usuario, no. identidad, email y el telefono deber ser unicos",
+          });
+        else setErrors({ form: "Hubo un problema con el registro" });
       }
     } else {
       setErrors({
@@ -141,7 +163,7 @@ function RegistroUsuarios() {
       identificacion: "",
       numeroIdentidad: "",
       contrasena: "",
-      rol: "",
+      roles: [],
     });
     localStorage.removeItem("formData");
     setErrors({});
@@ -278,7 +300,10 @@ function RegistroUsuarios() {
                   placeholder="Roles asignados..."
                   style={{ height: "100px", resize: "none" }}
                   readOnly
-                  value={"🔺" + formData.roles.map((rol) => rol.nombre_rol).join(",\n🔺")}
+                  value={
+                    "🔺" +
+                    formData.roles.map((rol) => rol.nombre_rol).join(",\n🔺")
+                  }
                 />
               </Form.Group>
             </Col>

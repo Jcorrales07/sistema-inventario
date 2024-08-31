@@ -29,17 +29,19 @@ const BuscarUsuarios = () => {
     const fetchUsers = async () => {
       try {
         const response = await UsuairoApi.getAllUsuariosRequest();
-        console.log(response);
 
+        console.log(response.data.Data);
         const data = response.data.Data.map((user) => ({
-          name: user.Socio.nombre,
-          email: user.Socio.email,
-          username: user.nickname,
-          role: user.Rol.nombre_rol,
+          nombre: user.Socio.nombre,
+          correo: user.Socio.email,
+          usuario: user.nickname,
+          contrasena: user.contrasena,
+          roles: user.Usuario_Rols,
           active: user.active,
-          date: user.createdAt,
-          infoRol: user.Rol,
+          telefono: user.Socio.telefono,
+          numeroIdentidad: user.Socio.rtn,
           id_usuario: user.id,
+          id_socio: user.id_socio,
         }));
         setUsers(data);
       } catch (error) {
@@ -50,12 +52,12 @@ const BuscarUsuarios = () => {
   }, []);
 
   const filteredUsers = users.filter((user) => {
-    const matchesSearchTerm = user.name
+    const matchesSearchTerm = user.nombre
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
     const matchesActiveStatus =
       filterByActive === null || user.active === filterByActive;
-    const matchesRole = filterByRole === null || user.role === filterByRole;
+    const matchesRole = filterByRole === null || user.roles === filterByRole;
     return matchesSearchTerm && matchesActiveStatus && matchesRole;
   });
 
@@ -73,6 +75,12 @@ const BuscarUsuarios = () => {
   const handleCloseEditModal = () => {
     setShowEditModal(false);
     setSelectedUser(null);
+  };
+
+  const handleConfirmEdit = () => {
+    localStorage.setItem("formData", JSON.stringify(selectedUser));
+
+    handleCloseEditModal();
   };
 
   const handlePageChange = (pageNumber) => {
@@ -155,10 +163,15 @@ const BuscarUsuarios = () => {
                 {users.length > 0 ? (
                   users.map((user, index) => (
                     <tr key={index}>
-                      <td>{user.name}</td>
-                      <td>{user.email}</td>
-                      <td>{user.username}</td>
-                      <td>{user.role}</td>
+                      <td>{user.nombre}</td>
+                      <td>{user.correo}</td>
+                      <td>{user.usuario}</td>
+                      <td>
+                        {"🔺" +
+                          user.roles
+                            .map((rol) => rol.Rol.nombre_rol)
+                            .join(".\n🔺")}
+                      </td>
                       <td>{user.active ? "Sí" : "No"}</td>
                       <td>
                         <Button
@@ -292,7 +305,7 @@ const BuscarUsuarios = () => {
         <Modal.Footer>
           <Button
             variant="danger"
-            onClick={handleCloseEditModal}
+            onClick={handleConfirmEdit}
             href="/usuarios/editar"
           >
             Editar Usuario

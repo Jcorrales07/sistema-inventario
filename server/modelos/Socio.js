@@ -49,16 +49,19 @@ const Socio = db.define(
     rtn: {
       type: DataTypes.STRING(256),
       allowNull: true,
+      unique: true,
     },
 
     telefono: {
       type: DataTypes.STRING(256),
       allowNull: true,
+      unique: true,
     },
 
     email: {
       type: DataTypes.STRING(256),
       allowNull: true,
+      unique: true,
     },
 
     puesto_trabajo: {

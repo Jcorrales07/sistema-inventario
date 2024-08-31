@@ -81,13 +81,13 @@ export const createUsuarioRequest = async (values) => {
  * @param {object} socio - Los atributos del socio.
  * @returns {Promise<any>|null} La respuesta de la peticion o null en caso de error.
  */
-export const createUsuarioSocioRequest = async (usuario, socio) => {
+export const createUsuarioSocioRequest = async (usuario, socio, roles) => {
     try {
-        const response = await axiosInstance.post('usuario/socio/', { usuario, socio });
+        const response = await axiosInstance.post('usuario/socio/', { usuario, socio, roles });
         return response;
     } catch (error) {
         console.error('Error creating user and associate:', error);
-        return null;
+        return error.response;
     }
 };
 

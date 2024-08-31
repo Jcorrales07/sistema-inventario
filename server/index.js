@@ -6,17 +6,25 @@ const db = require("./database");
 const routes = require("./routes/routes");
 const PORT = process.env.PORT || 3000;
 
+const Usuario = require("./modelos/Usuario");
+const Socio = require("./modelos/Socio");
+const UsuarioRol = require("./modelos/Usuario_Rol");
+
 app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(routes);
 const initApp = async () => {
   try {
+//    await UsuarioRol.sync({ force: true, alter: true });
+ //   await Usuario.sync({ force: true, alter: true });
+  //  await Socio.sync({ force: true, alter: true });
+
     await db.authenticate();
     console.log("Conexión exitosa a la base de datos");
 
     await db
-      .sync({ force: false, alter: true})
+      .sync({ force: false, alter: true })
       .then(() => {
         console.log("Database synced without altering existing schema!");
       })

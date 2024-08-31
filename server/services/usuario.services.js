@@ -1,5 +1,8 @@
 const Usuario = require("../modelos/Usuario");
 const Socio = require("../modelos/Socio");
+const UsuarioRol = require("../modelos/Usuario_Rol");
+const RolPrivilegio = require("../modelos/Rol_Privilegio");
+const Privilegio = require("../modelos/Privilegio");
 const Rol = require("../modelos/Rol");
 const sequelize = require("../database");
 
@@ -45,7 +48,31 @@ exports.usuarioDeleteService = async (id) => {
 
 exports.usuarioSelectAllService = async () => {
   try {
-    return await Usuario.findAll({ include: [Socio, Rol] });
+    return await Usuario.findAll({
+      include: [
+        {
+          model: Socio,
+        },
+        {
+          model: UsuarioRol,
+          include: [
+            {
+              model: Rol,
+              include: [
+                {
+                  model: RolPrivilegio,
+                  include: [
+                    {
+                      model: Privilegio,
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
   } catch (error) {
     throw error;
   }
@@ -70,7 +97,7 @@ exports.usuarioSelectByNicknameService = async (nickname) => {
   }
 };
 
-exports.createUsuarioSocioService = async (usuario, socio) => {
+exports.createUsuarioSocioService = async (usuario, socio, roles) => {
   const t = await sequelize.transaction();
   try {
     const nuevoSocio = await Socio.create(socio, { transaction: t });
@@ -79,12 +106,21 @@ exports.createUsuarioSocioService = async (usuario, socio) => {
 
     const nuevoUsuario = await Usuario.create(usuario, { transaction: t });
 
+    for (let i = 0; i < roles.length; i++) {
+      const usuarioRol = {
+        id_usuario: nuevoUsuario.id,
+        id_rol: roles[i].id,
+      };
+
+      await UsuarioRol.create(usuarioRol, { transaction: t });
+    }
+
     await t.commit();
 
     return nuevoUsuario;
   } catch (error) {
     await t.rollback();
 
-    throw new Error("Error al crear el usuario y socio\n" + error);
+    throw new Error("Error al crear el usuario y socio " + error);
   }
 };
