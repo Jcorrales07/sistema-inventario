@@ -113,16 +113,12 @@ function EditarUsuarios() {
         tipo: "individuo",
       };
 
-      console.log(formData.roles)
-
       const usuario = {
         nickname: formData.usuario,
         contrasena: formData.contrasena,
         rol: 1,
         roles: formData.roles,
       };
-
-
 
       try {
         const socioResponse = await socioApi.putSocioRequest(
@@ -157,7 +153,7 @@ function EditarUsuarios() {
         setShowToast(true);
 
         setTimeout(() => {
-          navigate(-1);
+          navigate("/usuarios/buscar");
         }, 3000);
       } catch (error) {
         setErrors({ form: "Hubo un error en la solicitud." });
