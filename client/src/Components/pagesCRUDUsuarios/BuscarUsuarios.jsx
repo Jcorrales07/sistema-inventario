@@ -29,14 +29,12 @@ const BuscarUsuarios = () => {
     const fetchUsers = async () => {
       try {
         const response = await UsuairoApi.getAllUsuariosRequest();
-
-        console.log(response.data.Data);
         const data = response.data.Data.map((user) => ({
           nombre: user.Socio.nombre,
           correo: user.Socio.email,
           usuario: user.nickname,
           contrasena: user.contrasena,
-          roles: user.Usuario_Rols,
+          roles: user.Usuario_Rols.map((rol) => rol.Rol), // user.roles
           active: user.active,
           telefono: user.Socio.telefono,
           numeroIdentidad: user.Socio.rtn,
@@ -169,7 +167,7 @@ const BuscarUsuarios = () => {
                       <td>
                         {"🔺" +
                           user.roles
-                            .map((rol) => rol.Rol.nombre_rol)
+                            .map((rol) => rol.nombre_rol)
                             .join(".\n🔺")}
                       </td>
                       <td>{user.active ? "Sí" : "No"}</td>

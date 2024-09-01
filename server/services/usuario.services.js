@@ -16,16 +16,39 @@ exports.usuarioCreateService = async (usuario) => {
 
 exports.usuarioUpdateService = async (id, values) => {
   try {
+    const t = await sequelize.transaction();
+
     const usuarioEditado = await Usuario.update(values, {
       where: { id: id },
+      transaction: t,
     });
 
     if (!usuarioEditado) {
+      await t.commit();
       return null;
     }
 
+    if (values.roles) {
+      await UsuarioRol.destroy({
+        where: { id_usuario: id },
+        transaction: t,
+      });
+
+      for (let i = 0; i < values.roles.length; i++) {
+        const usuarioRol = {
+          id_usuario: id,
+          id_rol: values.roles[i].id,
+        };
+
+        await UsuarioRol.create(usuarioRol, { transaction: t });
+      }
+    }
+
+    await t.commit();
+
     return await Usuario.findByPk(id);
   } catch (error) {
+    await t.rollback();
     throw error;
   }
 };

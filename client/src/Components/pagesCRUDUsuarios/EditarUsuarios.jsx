@@ -51,8 +51,6 @@ function EditarUsuarios() {
     if (storedData) {
       setFormData(JSON.parse(storedData));
     }
-
-    console.log("user", JSON.parse(storedData));
   }, []);
 
   const validateForm = () => {
@@ -103,21 +101,6 @@ function EditarUsuarios() {
     localStorage.setItem("formData", JSON.stringify(formData));
   };
 
-  const getRolInt = (rol) => {
-    switch (rol) {
-      case "Administrador":
-        return 0;
-      case "Encargado de entradas":
-        return 1;
-      case "Encargado de salidas":
-        return 2;
-      case "Analista de compras":
-        return 3;
-      default:
-        return -1;
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (formValid) {
@@ -130,11 +113,16 @@ function EditarUsuarios() {
         tipo: "individuo",
       };
 
+      console.log(formData.roles)
+
       const usuario = {
         nickname: formData.usuario,
         contrasena: formData.contrasena,
         rol: 1,
+        roles: formData.roles,
       };
+
+
 
       try {
         const socioResponse = await socioApi.putSocioRequest(
@@ -143,7 +131,9 @@ function EditarUsuarios() {
         );
 
         if (!socioResponse || socioResponse.status >= 300) {
-          setErrors({ form: "Hubo un problema con el registro" });
+          setErrors({
+            form: "Hubo un problema con la actualizacion del socio",
+          });
           return;
         }
 
@@ -153,7 +143,9 @@ function EditarUsuarios() {
         );
 
         if (!usuarioResponse || usuarioResponse.status >= 300) {
-          setErrors({ form: "Hubo un problema con el registro" });
+          setErrors({
+            form: "Hubo un problema con la actualizacion del usuario",
+          });
           return;
         }
 
@@ -293,7 +285,7 @@ function EditarUsuarios() {
                 cols={2}
                 value={
                   "🔺" +
-                  formData.roles.map((rol) => rol.Rol.nombre_rol).join(".\n🔺")
+                  formData.roles.map((rol) => rol.nombre_rol).join(".\n🔺")
                 }
                 readOnly
               />
