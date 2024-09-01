@@ -9,13 +9,13 @@ function CrearProducto() {
         nombre: '',
         tipo: 'consumible',
         codigo_barra: '',
-        precio_venta: 0,
-        coste: 0,
+        precio_venta: '',
+        coste: '',
         puede_vender: false,
         puede_comprar: false,
         notas_internas: '',
         imagen_url: '',
-        volumen: 0,
+        volumen: '',
         plazo_entrega_cliente: 0,
         descripcion_recepcion: '',
         descripcion_entrega: '',
@@ -87,9 +87,9 @@ function CrearProducto() {
             console.log(formData)
             productoApi.createProductoRequest(formData);
             alert('Formulario enviado con éxito')
-           /* setTimeout(() => {
+            setTimeout(() => {
                 handleCancel()
-            }, 2000)*/
+            }, 2000)
         }
     }
 

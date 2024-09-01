@@ -3,7 +3,7 @@ import productoApi from '../../../api/producto.api';
 import { Container, Table, Button, Form, Modal, Row, Col } from 'react-bootstrap';
 import FeatureNavbar from '../FeatureNavbar';
 import { useNavigate } from 'react-router-dom';
-
+import axios from 'axios'
 const cargarInformacion = async (setProductsfn) => {
     const productos = await productoApi.getAllProductosRequest();
     console.log(productos.data);
@@ -62,6 +62,8 @@ function BuscarProducto() {
                 product.id === editingProduct.id ? editingProduct : product
             )
         );
+        console.log(editingProduct);
+        productoApi.putProductoRequest(editingProduct.id,editingProduct);
         setShowEditModal(false);
     };
 
@@ -74,18 +76,32 @@ function BuscarProducto() {
         }
     };
 
-    const handleFileChange = (e) => {
+    const handleFileChange = async(e) => {
         const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
+        if(file){
+            const imgData = new FormData();
+        imgData.append('file',file);
+        imgData.append('upload_preset','images_preset');
+        try {
+            let cloudName = 'dzm2nkjpj'
+            let api = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`
+
+            const res = await axios.post(api, imgData)
+            const { secure_url } = res.data
+            console.log(secure_url);
+           /* setFormData({
+                ...formData,
+                imagen_url: secure_url,
+            })*/
                 setEditingProduct({
                     ...editingProduct,
-                    imagen_url: reader.result,
+                    imagen_url: secure_url,
                 });
-            };
-            reader.readAsDataURL(file);
+        } catch (error) {
+            console.error('Upload failed:', error);
         }
+        }
+      
     };
 
     const filteredProducts = products.filter(

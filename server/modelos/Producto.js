@@ -36,7 +36,6 @@ const Producto = db.define('Producto', {
     },
     notas_internas: {
         type: DataTypes.TEXT,
-        allowNull: false,
     },
     imagen_url: {
         type: DataTypes.TEXT,
@@ -53,6 +52,11 @@ const Producto = db.define('Producto', {
     descripcion_entrega: {
         type: DataTypes.TEXT,
     },
-})
+},
+{
+    tableName:"producto"
+}
+)
+
 
 module.exports = Producto
