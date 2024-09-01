@@ -18,8 +18,8 @@ function VistaUnSoloProducto() {
     const productSelected = location.state;
     const [producto, setProducto] = useState(productSelected);
 
-    const esServicio = producto.tipo === 'Servicio';
-
+    const esServicio = producto.tipo === 'servicio';
+    console.log(productSelected);
     return (
         <div>
             <FeatureNavbar />
@@ -196,7 +196,7 @@ function VistaUnSoloProducto() {
                                     </Row>
                                     <Row className="mt-3">
                                         <Col md={6}>
-                                            <Form.Group controlId="informacion_recepcion">
+                                            <Form.Group controlId="descripcion_recepcion">
                                                 <Form.Label>
                                                     Información de Recepción
                                                 </Form.Label>
@@ -204,7 +204,7 @@ function VistaUnSoloProducto() {
                                                     as="textarea"
                                                     rows={3}
                                                     value={
-                                                        producto.informacion_recepcion
+                                                        producto.descripcion_recepcion
                                                     }
                                                     readOnly
                                                 />
@@ -219,7 +219,7 @@ function VistaUnSoloProducto() {
                                                     as="textarea"
                                                     rows={3}
                                                     value={
-                                                        producto.informacion_entrega
+                                                        producto.descripcion_entrega
                                                     }
                                                     readOnly
                                                 />

@@ -3,20 +3,20 @@ import { Form, Button, Container, Row, Col, Alert } from 'react-bootstrap'
 import FeatureNavbar from '../FeatureNavbar'
 import { useNavigate } from 'react-router-dom'
 import productoApi from '../../../api/producto.api'
-
+import axios from 'axios'
 function CrearProducto() {
     const [formData, setFormData] = useState({
         nombre: '',
-        tipo: '',
+        tipo: 'consumible',
         codigo_barra: '',
-        precio_venta: '',
-        coste: '',
+        precio_venta: 0,
+        coste: 0,
         puede_vender: false,
         puede_comprar: false,
         notas_internas: '',
         imagen_url: '',
-        volumen: '',
-        plazo_entrega_cliente: '',
+        volumen: 0,
+        plazo_entrega_cliente: 0,
         descripcion_recepcion: '',
         descripcion_entrega: '',
     })
@@ -33,11 +33,25 @@ function CrearProducto() {
         })
     }
 
-    const handleImageChange = (e) => {
-        setFormData({
-            ...formData,
-            imagen_url: e.target.files[0],
-        })
+    const handleImageChange = async (e) => {
+        const imgData = new FormData();
+        imgData.append('file',e.target.files[0]);
+        imgData.append('upload_preset','images_preset');
+        try {
+            let cloudName = 'dzm2nkjpj'
+            let api = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`
+
+            const res = await axios.post(api, imgData)
+            const { secure_url } = res.data
+            console.log(secure_url);
+            setFormData({
+                ...formData,
+                imagen_url: secure_url,
+            })
+        } catch (error) {
+            console.error('Upload failed:', error);
+        }
+        
     }
 
     const validateForm = () => {
@@ -46,7 +60,7 @@ function CrearProducto() {
         if (!formData.nombre) newErrors.push('El nombre es obligatorio.')
         if (!formData.tipo) newErrors.push('La categoría es obligatoria.')
 
-        if (formData.tipo === 'Consumible') {
+        if (formData.tipo === 'consumible') {
             if (!formData.codigo_barra)
                 newErrors.push('El código de barra es obligatorio.')
             if (!formData.precio_venta)
@@ -55,7 +69,7 @@ function CrearProducto() {
             if (!formData.volumen) newErrors.push('El volumen es obligatorio.')
             if (!formData.plazo_entrega_cliente)
                 newErrors.push('El plazo de entrega es obligatorio.')
-        } else if (formData.tipo === 'Servicio') {
+        } else if (formData.tipo === 'servicio') {
             if (!formData.precio_venta)
                 newErrors.push('El precio de venta es obligatorio.')
             if (!formData.coste) newErrors.push('El costo es obligatorio.')
@@ -71,10 +85,11 @@ function CrearProducto() {
         e.preventDefault()
         if (validateForm()) {
             console.log(formData)
+            productoApi.createProductoRequest(formData);
             alert('Formulario enviado con éxito')
-            setTimeout(() => {
+           /* setTimeout(() => {
                 handleCancel()
-            }, 2000)
+            }, 2000)*/
         }
     }
 
@@ -83,14 +98,14 @@ function CrearProducto() {
             nombre: '',
             tipo: '',
             codigo_barra: '',
-            precio_venta: '',
-            coste: '',
+            precio_venta: 0,
+            coste: 0,
             puede_vender: false,
             puede_comprar: false,
             notas_internas: '',
             imagen_url: '',
-            volumen: '10',
-            plazo_entrega_cliente: '10',
+            volumen: 0,
+            plazo_entrega_cliente: 0,
             descripcion_recepcion: 'descripcion recepcion',
             descripcion_entrega: 'descripcion entrega',
         })
@@ -145,16 +160,16 @@ function CrearProducto() {
                                     <option value="">
                                         Seleccione una categoría...
                                     </option>
-                                    <option value="Consumible">
-                                        Consumible
+                                    <option value="consumible">
+                                        consumible
                                     </option>
-                                    <option value="Servicio">Servicio</option>
+                                    <option value="servicio">servicio</option>
                                 </Form.Control>
                             </Form.Group>
                         </Col>
                     </Row>
 
-                    {formData.tipo === 'Consumible' && (
+                    {formData.tipo === 'consumible' && (
                         <Row className="mt-3">
                             <Col md={12}>
                                 <Form.Group controlId="formBarcode">
@@ -206,7 +221,7 @@ function CrearProducto() {
                         </Col>
                     </Row>
 
-                    {formData.tipo === 'Consumible' && (
+                    {formData.tipo === 'consumible' && (
                         <Row className="mt-3">
                             <Col md={6}>
                                 <Form.Group controlId="formVolume">
@@ -240,7 +255,7 @@ function CrearProducto() {
                         </Row>
                     )}
 
-                    {formData.tipo === 'Consumible' && (
+                    {formData.tipo === 'consumible' && (
                         <Row className="mt-3">
                             <Col md={6}>
                                 <Form.Group controlId="formCanBuy">
@@ -277,7 +292,7 @@ function CrearProducto() {
                     </Row>
 
                     <Row className="mt-3">
-                        {formData.tipo === 'Consumible' && (
+                        {formData.tipo === 'consumible' && (
                             <>
                                 <Form.Group controlId="formReceptionInfo">
                                     <Form.Label>

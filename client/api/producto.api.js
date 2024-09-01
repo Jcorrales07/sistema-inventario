@@ -50,7 +50,7 @@ const deleteProductoRequest = async(id) => {
 
 const createProductoRequest = async(values) => {
     try {
-        const response = await axios.post(`/producto/`,values);
+        const response = await axios.post(`producto/`,values);
         if(!response){
             return null;
         }
