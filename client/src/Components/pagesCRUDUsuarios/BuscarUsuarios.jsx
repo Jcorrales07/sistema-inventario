@@ -50,12 +50,20 @@ const BuscarUsuarios = () => {
   }, []);
 
   const filteredUsers = users.filter((user) => {
-    const matchesSearchTerm = user.nombre
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
+    const searchTermLower = searchTerm.toLowerCase();
+
+    const matchesSearchTerm =
+      user.nombre.toLowerCase().includes(searchTermLower) ||
+      user.correo.toLowerCase().includes(searchTermLower) ||
+      user.usuario.toLowerCase().includes(searchTermLower) ||
+      user.roles.toLowerCase().includes(searchTermLower) ||
+      (user.active ? "sí" : "no").includes(searchTermLower);
+
     const matchesActiveStatus =
       filterByActive === null || user.active === filterByActive;
-    const matchesRole = filterByRole === null || user.roles === filterByRole;
+
+    const matchesRole = filterByRole === null // || user.role === filterByRole;
+
     return matchesSearchTerm && matchesActiveStatus && matchesRole;
   });
 
@@ -66,6 +74,7 @@ const BuscarUsuarios = () => {
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
   const handleShowEditModal = (user) => {
+    console.log(user);
     setSelectedUser(user);
     setShowEditModal(true);
   };
@@ -110,7 +119,7 @@ const BuscarUsuarios = () => {
             <h3 className="text-center mb-4">Usuarios en base de datos</h3>
             <InputGroup className="mb-3">
               <FormControl
-                placeholder="Buscar usuario..."
+                placeholder="Escriba un nombre, correo o usuario..."
                 value={searchTerm}
                 onChange={(e) => {
                   setSearchTerm(e.target.value);
@@ -158,18 +167,13 @@ const BuscarUsuarios = () => {
                 </tr>
               </thead>
               <tbody>
-                {users.length > 0 ? (
-                  users.map((user, index) => (
+                {currentUsers.length > 0 ? (
+                  currentUsers.map((user, index) => (
                     <tr key={index}>
-                      <td>{user.nombre}</td>
-                      <td>{user.correo}</td>
-                      <td>{user.usuario}</td>
-                      <td>
-                        {"🔺" +
-                          user.roles
-                            .map((rol) => rol.nombre_rol)
-                            .join(".\n🔺")}
-                      </td>
+                      <td>{user.name}</td>
+                      <td>{user.email}</td>
+                      <td>{user.username}</td>
+                      <td>{user.role}</td>
                       <td>{user.active ? "Sí" : "No"}</td>
                       <td>
                         <Button
@@ -298,12 +302,12 @@ const BuscarUsuarios = () => {
 
       <Modal show={showEditModal} onHide={handleCloseEditModal}>
         <Modal.Body>
-          ¿Desea editar al usuario "{selectedUser?.nombre}"?
+          ¿Desea editar al usuario "{selectedUser?.name}"?
         </Modal.Body>
         <Modal.Footer>
           <Button
             variant="danger"
-            onClick={handleConfirmEdit}
+            onClick={handleCloseEditModal}
             href="/usuarios/editar"
           >
             Editar Usuario

@@ -30,6 +30,7 @@ function RegistroUsuarios() {
   const [formValid, setFormValid] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
+  const [touchedFields, setTouchedFields] = useState({});
 
   const validateForm = () => {
     let newErrors = {};
@@ -84,7 +85,9 @@ function RegistroUsuarios() {
   }, []);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    setTouchedFields({ ...touchedFields, [name]: true }); // Marca el campo como tocado
   };
 
   const handleAssignRoles = () => {
@@ -176,7 +179,7 @@ function RegistroUsuarios() {
         <Form className="w-75" onSubmit={handleSubmit}>
           <h3 className="text-center">Registro de Usuarios</h3>
 
-          <Row>
+          <Row className="mt-3">
             <Col md={6}>
               <Form.Group controlId="nombre">
                 <Form.Label>Nombre Completo</Form.Label>
@@ -186,7 +189,7 @@ function RegistroUsuarios() {
                   maxLength="50"
                   value={formData.nombre}
                   onChange={handleChange}
-                  isInvalid={!!errors.nombre}
+                  isInvalid={touchedFields.nombre && !!errors.nombre}
                 />
                 <Form.Control.Feedback type="invalid">
                   {errors.nombre}
@@ -203,7 +206,9 @@ function RegistroUsuarios() {
                   placeholder="xxxx-xxxx-xxxxx"
                   value={formData.numeroIdentidad}
                   onChange={handleChange}
-                  isInvalid={!!errors.numeroIdentidad}
+                  isInvalid={
+                    touchedFields.numeroIdentidad && !!errors.numeroIdentidad
+                  }
                 />
                 <Form.Control.Feedback type="invalid">
                   {errors.numeroIdentidad}
@@ -212,7 +217,7 @@ function RegistroUsuarios() {
             </Col>
           </Row>
 
-          <Row>
+          <Row className="mt-3">
             <Col md={6}>
               <Form.Group controlId="usuario">
                 <Form.Label>Usuario</Form.Label>
@@ -222,7 +227,7 @@ function RegistroUsuarios() {
                   maxLength="50"
                   value={formData.usuario}
                   onChange={handleChange}
-                  isInvalid={!!errors.usuario}
+                  isInvalid={touchedFields.usuario && !!errors.usuario}
                 />
                 <Form.Control.Feedback type="invalid">
                   {errors.usuario}
@@ -231,7 +236,7 @@ function RegistroUsuarios() {
             </Col>
 
             <Col md={6}>
-              <Form.Group controlId="correo">
+              <Form.Group controlId="email">
                 <Form.Label>Email</Form.Label>
                 <Form.Control
                   type="text"
@@ -239,7 +244,7 @@ function RegistroUsuarios() {
                   placeholder="correo@email.com"
                   value={formData.correo}
                   onChange={handleChange}
-                  isInvalid={!!errors.correo}
+                  isInvalid={touchedFields.correo && !!errors.correo}
                 />
                 <Form.Control.Feedback type="invalid">
                   {errors.correo}
@@ -248,7 +253,7 @@ function RegistroUsuarios() {
             </Col>
           </Row>
 
-          <Row>
+          <Row className="mt-3">
             <Col md={6}>
               <Form.Group controlId="telefono">
                 <Form.Label>Número de Teléfono</Form.Label>
@@ -258,7 +263,7 @@ function RegistroUsuarios() {
                   placeholder="+xxx xxxxxxxx"
                   value={formData.telefono}
                   onChange={handleChange}
-                  isInvalid={!!errors.telefono}
+                  isInvalid={touchedFields.telefono && !!errors.telefono}
                 />
                 <Form.Control.Feedback type="invalid">
                   {errors.telefono}
@@ -274,7 +279,7 @@ function RegistroUsuarios() {
                   name="contrasena"
                   value={formData.contrasena}
                   onChange={handleChange}
-                  isInvalid={!!errors.contrasena}
+                  isInvalid={touchedFields.contrasena && !!errors.contrasena}
                 />
                 <Form.Control.Feedback type="invalid">
                   {errors.contrasena}
@@ -283,7 +288,7 @@ function RegistroUsuarios() {
             </Col>
           </Row>
 
-          <Row className="mt-4">
+          <Row className="mt-3">
             <Col md={6}>
               <Button variant="primary" onClick={handleAssignRoles}>
                 Asignar Roles
@@ -298,10 +303,7 @@ function RegistroUsuarios() {
                   placeholder="Roles asignados..."
                   style={{ height: "100px", resize: "none" }}
                   readOnly
-                  value={
-                    "🔺" +
-                    formData.roles.map((rol) => rol.nombre_rol).join(",\n🔺")
-                  }
+                  value={formData.rol !== "Roles" ? formData.rol : ""}
                 />
               </Form.Group>
             </Col>

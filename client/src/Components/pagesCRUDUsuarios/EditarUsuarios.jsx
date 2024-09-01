@@ -34,11 +34,7 @@ function EditarUsuarios() {
   const [successMessage, setSuccessMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
 
-  const [checked, setChecked] = useState(false);
-
-  const handleToggle = () => {
-    setChecked(!checked);
-  };
+  const [activo, setActivo] = useState(false);
 
   // Validar formulario al cambiar el formData
   useEffect(() => {
@@ -52,6 +48,16 @@ function EditarUsuarios() {
       setFormData(JSON.parse(storedData));
     }
   }, []);
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleToggle = () => {
+    setActivo(!activo);
+  };
 
   const validateForm = () => {
     let newErrors = {};
@@ -187,7 +193,7 @@ function EditarUsuarios() {
       <FeatureNavbar />
       <Container
         fluid
-        className="d-flex justify-content-center align-items-center min-vh-100"
+        className="d-flex justify-content-center align-items-center min-vh-100 mt-5 mb-5"
       >
         <Form className="w-75" onSubmit={handleSubmit}>
           <h3 className="text-center mb-5">
@@ -213,42 +219,6 @@ function EditarUsuarios() {
             </Col>
 
             <Col md={6}>
-              <Form.Group controlId="numeroIdentidad">
-                <Form.Label>Número de Identidad</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="numeroIdentidad"
-                  placeholder="xxxx-xxxx-xxxxx"
-                  value={formData.numeroIdentidad}
-                  onChange={handleChange}
-                  isInvalid={!!errors.numeroIdentidad}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {errors.numeroIdentidad}
-                </Form.Control.Feedback>
-              </Form.Group>
-            </Col>
-          </Row>
-
-          <Row className="mb-3">
-            <Col md={6}>
-              <Form.Group controlId="usuario">
-                <Form.Label>Usuario</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="usuario"
-                  maxLength="50"
-                  value={formData.usuario}
-                  onChange={handleChange}
-                  isInvalid={!!errors.usuario}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {errors.usuario}
-                </Form.Control.Feedback>
-              </Form.Group>
-            </Col>
-
-            <Col md={6}>
               <Form.Group controlId="telefono">
                 <Form.Label>Número de Teléfono</Form.Label>
                 <Form.Control
@@ -267,6 +237,85 @@ function EditarUsuarios() {
           </Row>
 
           <Row className="mb-3">
+            <Col md={6}>
+              <Form.Group controlId="correo">
+                <Form.Label>Correo Electronico</Form.Label>
+                <Form.Control
+                  type="email"
+                  name="correo"
+                  maxLength="50"
+                  value={formData.correo}
+                  onChange={handleChange}
+                  isInvalid={!!errors.correo}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.correo}
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Col>
+
+            <Col md={6}>
+              <Form.Group controlId="usuario">
+                <Form.Label>Usuario</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="usuario"
+                  maxLength="50"
+                  value={formData.usuario}
+                  onChange={handleChange}
+                  isInvalid={!!errors.usuario}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.usuario}
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Col>
+          </Row>
+
+          <Row className="mt-3">
+            <Col md={6}>
+              <Form.Group controlId="numeroIdentidad">
+                <Form.Label>Número de Identidad</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="numeroIdentidad"
+                  placeholder="xxxx-xxxx-xxxxx"
+                  value={formData.numeroIdentidad}
+                  onChange={handleChange}
+                  isInvalid={!!errors.numeroIdentidad}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.numeroIdentidad}
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Col>
+
+            <Col md={6}>
+              <Form.Group controlId="contrasena">
+                <Form.Label>Contraseña</Form.Label>
+                <InputGroup>
+                  <Form.Control
+                    type={showPassword ? "text" : "password"}
+                    name="contrasena"
+                    value={formData.contrasena}
+                    onChange={handleChange}
+                    isInvalid={!!errors.contrasena}
+                  />
+                  <Button
+                    variant="outline-secondary"
+                    onClick={togglePasswordVisibility}
+                  >
+                    {showPassword ? "Ocultar" : "Mostrar"}
+                  </Button>
+                  <Form.Control.Feedback type="invalid">
+                    {errors.contrasena}
+                  </Form.Control.Feedback>
+                </InputGroup>
+              </Form.Group>
+            </Col>
+          </Row>
+
+          <Row className="mt-3 mb-3">
             <Col md={6} className="mt-4">
               <Button href="/usuarios/roles" onClick={handleAssignRoles}>
                 Asignar Roles
@@ -296,7 +345,7 @@ function EditarUsuarios() {
               <Form.Check
                 type="switch"
                 id="custom-switch"
-                checked={checked}
+                checked={activo}
                 onChange={handleToggle}
               />
             </Col>
@@ -309,7 +358,7 @@ function EditarUsuarios() {
               </Button>
             </Col>
             <Col>
-              <Button variant="secondary" onClick={handleCancel}>
+              <Button variant="danger" onClick={handleCancel}>
                 Cancelar
               </Button>
             </Col>

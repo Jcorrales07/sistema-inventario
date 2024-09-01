@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import {
     Container,
     Row,
@@ -7,53 +7,19 @@ import {
     Image,
     Button,
     ModalTitle,
-} from 'react-bootstrap'
-import FeatureNavbar from '../FeatureNavbar'
-import { useNavigate } from 'react-router-dom'
+} from 'react-bootstrap';
+import FeatureNavbar from '../FeatureNavbar';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function VistaUnSoloProducto() {
-    const navigate = useNavigate()
-    const [producto, setProducto] = useState({
-        nombre: '',
-        categoria: '', // Consumible o Servicio
-        codigo_barra: '',
-        precio_venta: '',
-        coste: '',
-        puede_vender: false,
-        puede_comprar: false,
-        notas_internas: '',
-        imagen_url: '',
-        volumen: '',
-        plazo_entrega_cliente: '',
-        descripcion_recepcion: '',
-        descripcion_entrega: '',
-    })
+    const navigate = useNavigate();
+    const location = useLocation();
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const data = {
-                nombre: 'Producto Ejemplo',
-                tipo: 'Servicio', // Cambiar a "Consumible" para probar
-                codigo_barra: '1234567890',
-                precio_venta: '100 Lps',
-                coste: '80 Lps',
-                puede_vender: true,
-                puede_comprar: true,
-                notas_internas: 'Notas internas del producto.',
-                imagen_url: 'https://via.placeholder.com/300',
-                volumen: '1 Litro',
-                plazo_entrega_cliente: '5 días',
-                descripcion_recepcion:
-                    'Descripción de la recepción del producto.',
-                descripcion_entrega: 'Descripción de la entrega del producto.',
-            }
-            setProducto(data)
-        }
-        fetchData()
-    }, [])
+    const productSelected = location.state;
+    const [producto, setProducto] = useState(productSelected);
 
-    const esServicio = producto.tipo === 'Servicio'
-
+    const esServicio = producto.tipo === 'servicio';
+    console.log(productSelected);
     return (
         <div>
             <FeatureNavbar />
@@ -84,7 +50,10 @@ function VistaUnSoloProducto() {
                             />
                         </div>
                     </Col>
-                    <Col md={8} className="d-flex flex-column justify-content-center align-items-center px-5">
+                    <Col
+                        md={8}
+                        className="d-flex flex-column justify-content-center align-items-center px-5"
+                    >
                         <ModalTitle>Producto: {producto.nombre}</ModalTitle>
                         <Form className="w-100">
                             <Row className="mt-3">
@@ -100,7 +69,7 @@ function VistaUnSoloProducto() {
                                 </Col>
                                 <Col md={4}>
                                     <Form.Group controlId="tipo">
-                                        <Form.Label>Tipo</Form.Label>
+                                        <Form.Label>Categoria</Form.Label>
                                         <Form.Control
                                             type="text"
                                             value={producto.tipo}
@@ -108,16 +77,18 @@ function VistaUnSoloProducto() {
                                         />
                                     </Form.Group>
                                 </Col>
-                                <Col md={4}>
-                                    <Form.Group controlId="codigo_barra">
-                                        <Form.Label>Código de Barra</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            value={producto.codigo_barra}
-                                            readOnly
-                                        />
-                                    </Form.Group>
-                                </Col>
+                                {!esServicio && (
+                                    <Col md={4}>
+                                        <Form.Group controlId="codigo_barra">
+                                            <Form.Label>Código de Barra</Form.Label>
+                                            <Form.Control
+                                                type="text"
+                                                value={producto.codigo_barra}
+                                                readOnly
+                                            />
+                                        </Form.Group>
+                                    </Col>
+                                )}
                             </Row>
                             <Row className="mt-3">
                                 <Col md={4}>
@@ -142,22 +113,24 @@ function VistaUnSoloProducto() {
                                         />
                                     </Form.Group>
                                 </Col>
-                                <Col md={4}>
-                                    <Form.Group controlId="puede_vender">
-                                        <Form.Label>
-                                            ¿Se puede vender? (Disponible)
-                                        </Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            value={
-                                                producto.puede_vender
-                                                    ? 'Sí'
-                                                    : 'No'
-                                            }
-                                            readOnly
-                                        />
-                                    </Form.Group>
-                                </Col>
+                                {!esServicio && (
+                                    <Col md={4}>
+                                        <Form.Group controlId="puede_vender">
+                                            <Form.Label>
+                                                ¿Se puede vender? (Disponible)
+                                            </Form.Label>
+                                            <Form.Control
+                                                type="text"
+                                                value={
+                                                    producto.puede_vender
+                                                        ? 'Sí'
+                                                        : 'No'
+                                                }
+                                                readOnly
+                                            />
+                                        </Form.Group>
+                                    </Col>
+                                )}
                             </Row>
                             {esServicio ? (
                                 <Row className="mt-3">
@@ -223,7 +196,7 @@ function VistaUnSoloProducto() {
                                     </Row>
                                     <Row className="mt-3">
                                         <Col md={6}>
-                                            <Form.Group controlId="informacion_recepcion">
+                                            <Form.Group controlId="descripcion_recepcion">
                                                 <Form.Label>
                                                     Información de Recepción
                                                 </Form.Label>
@@ -231,7 +204,7 @@ function VistaUnSoloProducto() {
                                                     as="textarea"
                                                     rows={3}
                                                     value={
-                                                        producto.informacion_recepcion
+                                                        producto.descripcion_recepcion
                                                     }
                                                     readOnly
                                                 />
@@ -246,7 +219,7 @@ function VistaUnSoloProducto() {
                                                     as="textarea"
                                                     rows={3}
                                                     value={
-                                                        producto.informacion_entrega
+                                                        producto.descripcion_entrega
                                                     }
                                                     readOnly
                                                 />
@@ -279,7 +252,7 @@ function VistaUnSoloProducto() {
                 </Row>
             </Container>
         </div>
-    )
+    );
 }
 
-export default VistaUnSoloProducto
+export default VistaUnSoloProducto;

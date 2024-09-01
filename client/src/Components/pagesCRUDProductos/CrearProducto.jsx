@@ -1,119 +1,95 @@
 import React, { useState } from 'react'
-import {
-    Form,
-    Button,
-    Container,
-    Row,
-    Col,
-    Toast,
-    ToastContainer,
-} from 'react-bootstrap'
+import { Form, Button, Container, Row, Col, Alert } from 'react-bootstrap'
 import FeatureNavbar from '../FeatureNavbar'
 import { useNavigate } from 'react-router-dom'
 import productoApi from '../../../api/producto.api'
-
+import axios from 'axios'
 function CrearProducto() {
     const [formData, setFormData] = useState({
         nombre: '',
-        tipo: '',
+        tipo: 'consumible',
         codigo_barra: '',
-        precio_venta: '',
-        coste: '',
-        puede_vender: false, // Cambiado a boolean
-        puede_comprar: false, // Cambiado a boolean
+        precio_venta: 0,
+        coste: 0,
+        puede_vender: false,
+        puede_comprar: false,
         notas_internas: '',
         imagen_url: '',
-        volumen: '10',
-        plazo_entrega_cliente: '10',
-        descripcion_recepcion: 'descripcion recepcion',
-        descripcion_entrega: 'descripcion entrega',
+        volumen: 0,
+        plazo_entrega_cliente: 0,
+        descripcion_recepcion: '',
+        descripcion_entrega: '',
     })
 
-    const [errors, setErrors] = useState({})
-    const [showToast, setShowToast] = useState(false)
-    const [toastMessage, setToastMessage] = useState('')
-    const [toastVariant, setToastVariant] = useState('success')
+    const [errors, setErrors] = useState([])
 
     const navigate = useNavigate()
 
-    const validateField = (fieldName, value) => {
-        const newErrors = { ...errors }
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target
+        setFormData({
+            ...formData,
+            [name]: type === 'checkbox' ? checked : value,
+        })
+    }
 
-        switch (fieldName) {
-            case 'nombre':
-                if (!value) {
-                    newErrors.nombre = 'El nombre es obligatorio.'
-                } else {
-                    delete newErrors.nombre
-                }
-                break
-            case 'tipo':
-                if (!value) {
-                    newErrors.tipo = 'El tipo es obligatorio.'
-                } else {
-                    delete newErrors.tipo
-                }
-                break
-            case 'codigo_barra':
-                if (!value) {
-                    newErrors.codigo_barra = 'El código de barra es obligatorio.'
-                } else {
-                    delete newErrors.codigo_barra
-                }
-                break
-            case 'precio_venta':
-                if (value <= 0) {
-                    newErrors.precio_venta = 'El precio de venta debe ser mayor que 0.'
-                } else {
-                    delete newErrors.precio_venta
-                }
-                break
-            case 'coste':
-                if (value < 0) {
-                    newErrors.coste = 'El coste no puede ser negativo.'
-                } else {
-                    delete newErrors.coste
-                }
-                break
-            case 'volumen':
-                if (value <= 0) {
-                    newErrors.volumen = 'El volumen debe ser mayor que 0.'
-                } else {
-                    delete newErrors.volumen
-                }
-                break
-            case 'plazo_entrega_cliente':
-                if (value < 0) {
-                    newErrors.plazo_entrega_cliente = 'El plazo de entrega no puede ser negativo.'
-                } else {
-                    delete newErrors.plazo_entrega_cliente
-                }
-                break
-            default:
-                break
+    const handleImageChange = async (e) => {
+        const imgData = new FormData();
+        imgData.append('file',e.target.files[0]);
+        imgData.append('upload_preset','images_preset');
+        try {
+            let cloudName = 'dzm2nkjpj'
+            let api = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`
+
+            const res = await axios.post(api, imgData)
+            const { secure_url } = res.data
+            console.log(secure_url);
+            setFormData({
+                ...formData,
+                imagen_url: secure_url,
+            })
+        } catch (error) {
+            console.error('Upload failed:', error);
+        }
+        
+    }
+
+    const validateForm = () => {
+        const newErrors = []
+
+        if (!formData.nombre) newErrors.push('El nombre es obligatorio.')
+        if (!formData.tipo) newErrors.push('La categoría es obligatoria.')
+
+        if (formData.tipo === 'consumible') {
+            if (!formData.codigo_barra)
+                newErrors.push('El código de barra es obligatorio.')
+            if (!formData.precio_venta)
+                newErrors.push('El precio de venta es obligatorio.')
+            if (!formData.coste) newErrors.push('El costo es obligatorio.')
+            if (!formData.volumen) newErrors.push('El volumen es obligatorio.')
+            if (!formData.plazo_entrega_cliente)
+                newErrors.push('El plazo de entrega es obligatorio.')
+        } else if (formData.tipo === 'servicio') {
+            if (!formData.precio_venta)
+                newErrors.push('El precio de venta es obligatorio.')
+            if (!formData.coste) newErrors.push('El costo es obligatorio.')
+            if (!formData.plazo_entrega_cliente)
+                newErrors.push('El plazo de entrega es obligatorio.')
         }
 
         setErrors(newErrors)
+        return newErrors.length === 0
     }
 
     const handleSubmit = (e) => {
         e.preventDefault()
-
-        if (isFormValid()) {
-            productoApi.createProductoRequest(formData).then((response) => {
-                console.log(response)
-            })
+        if (validateForm()) {
             console.log(formData)
-            setToastMessage('Producto guardado con éxito!')
-            setToastVariant('success')
-            setShowToast(true)
-            // setTimeout(() => {
-            //     handleCancel()
-            // }, 2000)
-        } else {
-            setToastMessage('Hay errores en el formulario.')
-            setToastVariant('danger')
-            setShowToast(true)
+            productoApi.createProductoRequest(formData);
+            alert('Formulario enviado con éxito')
+           /* setTimeout(() => {
+                handleCancel()
+            }, 2000)*/
         }
     }
 
@@ -122,277 +98,258 @@ function CrearProducto() {
             nombre: '',
             tipo: '',
             codigo_barra: '',
-            precio_venta: '',
-            coste: '',
+            precio_venta: 0,
+            coste: 0,
             puede_vender: false,
             puede_comprar: false,
             notas_internas: '',
             imagen_url: '',
-            volumen: '',
-            plazo_entrega_cliente: '',
-            descripcion_recepcion: '',
-            descripcion_entrega: '',
+            volumen: 0,
+            plazo_entrega_cliente: 0,
+            descripcion_recepcion: 'descripcion recepcion',
+            descripcion_entrega: 'descripcion entrega',
         })
-        setErrors({})
+        setErrors([])
         navigate(-1)
-    }
-
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target
-        setFormData({
-            ...formData,
-            [name]: type === 'checkbox' ? checked : value,
-        })
-        validateField(name, value)
-    }
-
-    const isFormValid = () => {
-        return (
-            formData.nombre &&
-            formData.tipo &&
-            formData.codigo_barra &&
-            formData.precio_venta > 0 &&
-            formData.coste >= 0 &&
-            formData.volumen > 0 &&
-            formData.plazo_entrega_cliente >= 0 &&
-            Object.keys(errors).length === 0
-        )
     }
 
     return (
         <div>
             <FeatureNavbar />
             <Container fluid style={{ maxWidth: '700px', marginTop: '50px' }}>
-                <ToastContainer
-                    position="bottom-center"
-                    className="p-3 text-white"
-                >
-                    <Toast
-                        onClose={() => setShowToast(false)}
-                        show={showToast}
-                        bg={toastVariant}
-                        delay={3000}
-                        autohide
-                    >
-                        <Toast.Header>
-                            <strong className="me-auto">
-                                {toastVariant === 'success' ? 'Éxito' : 'Error'}
-                            </strong>
-                        </Toast.Header>
-                        <Toast.Body>{toastMessage}</Toast.Body>
-                    </Toast>
-                </ToastContainer>
-
                 <h1 style={{ marginBottom: '30px', textAlign: 'center' }}>
                     Crear Producto
                 </h1>
+
+                {errors.length > 0 && (
+                    <Alert variant="danger">
+                        {errors.map((error, index) => (
+                            <div key={index}>{error}</div>
+                        ))}
+                    </Alert>
+                )}
+
                 <Form onSubmit={handleSubmit}>
-                    <Row className="mb-3">
+                    <Row className="mt-3">
                         <Col md={6}>
-                            <Form.Group controlId="formNombre">
-                                <Form.Label>Nombre</Form.Label>
+                            <Form.Group controlId="formProductName">
+                                <Form.Label>
+                                    Nombre
+                                    <span style={{ color: 'red' }}> *</span>
+                                </Form.Label>
                                 <Form.Control
                                     type="text"
                                     name="nombre"
                                     value={formData.nombre}
                                     onChange={handleChange}
-                                    isInvalid={!!errors.nombre}
                                 />
-                                <Form.Control.Feedback type="invalid">
-                                    {errors.nombre}
-                                </Form.Control.Feedback>
                             </Form.Group>
                         </Col>
                         <Col md={6}>
-                            <Form.Group controlId="formTipo">
-                                <Form.Label>Tipo</Form.Label>
+                            <Form.Group controlId="formCategory">
+                                <Form.Label>
+                                    Categoría
+                                    <span style={{ color: 'red' }}> *</span>
+                                </Form.Label>
                                 <Form.Control
-                                    type="text"
+                                    as="select"
                                     name="tipo"
                                     value={formData.tipo}
                                     onChange={handleChange}
-                                    isInvalid={!!errors.tipo}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {errors.tipo}
-                                </Form.Control.Feedback>
+                                >
+                                    <option value="">
+                                        Seleccione una categoría...
+                                    </option>
+                                    <option value="consumible">
+                                        consumible
+                                    </option>
+                                    <option value="servicio">servicio</option>
+                                </Form.Control>
                             </Form.Group>
                         </Col>
                     </Row>
 
-                    <Row className="mb-3">
+                    {formData.tipo === 'consumible' && (
+                        <Row className="mt-3">
+                            <Col md={12}>
+                                <Form.Group controlId="formBarcode">
+                                    <Form.Label>
+                                        Código de Barra
+                                        <span style={{ color: 'red' }}> *</span>
+                                    </Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        name="codigo_barra"
+                                        value={formData.codigo_barra}
+                                        onChange={handleChange}
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                    )}
+
+                    <Row className="mt-3">
                         <Col md={6}>
-                            <Form.Group controlId="formCodigoBarra">
-                                <Form.Label>Código de Barra</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    name="codigo_barra"
-                                    value={formData.codigo_barra}
-                                    onChange={handleChange}
-                                    isInvalid={!!errors.codigo_barra}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {errors.codigo_barra}
-                                </Form.Control.Feedback>
-                            </Form.Group>
-                        </Col>
-                        <Col md={6}>
-                            <Form.Group controlId="formPrecioVenta">
-                                <Form.Label>Precio de Venta (Lps)</Form.Label>
+                            <Form.Group controlId="formPrice">
+                                <Form.Label>
+                                    Precio de Venta (Lps)
+                                    <span style={{ color: 'red' }}> *</span>
+                                </Form.Label>
                                 <Form.Control
                                     type="number"
                                     name="precio_venta"
                                     value={formData.precio_venta}
                                     onChange={handleChange}
                                     min="0"
-                                    isInvalid={!!errors.precio_venta}
                                 />
-                                <Form.Control.Feedback type="invalid">
-                                    {errors.precio_venta}
-                                </Form.Control.Feedback>
                             </Form.Group>
                         </Col>
-                    </Row>
-
-                    <Row className="mb-3">
                         <Col md={6}>
-                            <Form.Group controlId="formCoste">
-                                <Form.Label>Coste (Lps)</Form.Label>
+                            <Form.Group controlId="formCost">
+                                <Form.Label>
+                                    Costo (Lps)
+                                    <span style={{ color: 'red' }}> *</span>
+                                </Form.Label>
                                 <Form.Control
                                     type="number"
                                     name="coste"
                                     value={formData.coste}
                                     onChange={handleChange}
                                     min="0"
-                                    isInvalid={!!errors.coste}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {errors.coste}
-                                </Form.Control.Feedback>
-                            </Form.Group>
-                        </Col>
-                        <Col md={6}>
-                            <Form.Group controlId="formImagenUrl">
-                                <Form.Label>URL de Imagen</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    name="imagen_url"
-                                    value={formData.imagen_url}
-                                    onChange={handleChange}
                                 />
                             </Form.Group>
                         </Col>
                     </Row>
 
-                    <Row className="mb-3">
-                        <Col md={6}>
-                            <Form.Group controlId="formPuedeVender">
-                                <Form.Label>¿Puede Vender? (Salidas)</Form.Label>
-                                <Form.Check
-                                    type="switch"
-                                    name="puede_vender"
-                                    label={formData.puede_vender ? 'Sí' : 'No'}
-                                    checked={formData.puede_vender}
-                                    onChange={handleChange}
-                                />
-                            </Form.Group>
-                        </Col>
-                        <Col md={6}>
-                            <Form.Group controlId="formPuedeComprar">
-                                <Form.Label>¿Puede Comprar? (Entradas)</Form.Label>
-                                <Form.Check
-                                    type="switch"
-                                    name="puede_comprar"
-                                    label={formData.puede_comprar ? 'Sí' : 'No'}
-                                    checked={formData.puede_comprar}
-                                    onChange={handleChange}
-                                />
-                            </Form.Group>
-                        </Col>
-                    </Row>
+                    {formData.tipo === 'consumible' && (
+                        <Row className="mt-3">
+                            <Col md={6}>
+                                <Form.Group controlId="formVolume">
+                                    <Form.Label>
+                                        Volumen (m³)
+                                        <span style={{ color: 'red' }}> *</span>
+                                    </Form.Label>
+                                    <Form.Control
+                                        type="number"
+                                        name="volumen"
+                                        value={formData.volumen}
+                                        onChange={handleChange}
+                                        min="0"
+                                    />
+                                </Form.Group>
+                            </Col>
 
-                    <Row className="mb-3">
+                            <Col md={6}>
+                                <Form.Group controlId="formCanSell">
+                                    <Form.Label>
+                                        ¿Se puede vender? (Salidas)
+                                    </Form.Label>
+                                    <Form.Check
+                                        type="checkbox"
+                                        name="puede_vender"
+                                        checked={formData.puede_vender}
+                                        onChange={handleChange}
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                    )}
+
+                    {formData.tipo === 'consumible' && (
+                        <Row className="mt-3">
+                            <Col md={6}>
+                                <Form.Group controlId="formCanBuy">
+                                    <Form.Label>
+                                        ¿Se puede comprar? (Entradas)
+                                    </Form.Label>
+                                    <Form.Check
+                                        type="checkbox"
+                                        name="puede_comprar"
+                                        checked={formData.puede_comprar}
+                                        onChange={handleChange}
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                    )}
+
+                    <Row className="mt-3">
                         <Col md={12}>
-                            <Form.Group controlId="formNotasInternas">
-                                <Form.Label>Notas Internas</Form.Label>
-                                <Form.Control
-                                    as="textarea"
-                                    rows={3}
-                                    name="notas_internas"
-                                    value={formData.notas_internas}
-                                    onChange={handleChange}
-                                />
-                            </Form.Group>
-                        </Col>
-                    </Row>
-
-                    <Row className="mb-3">
-                        <Col md={6}>
-                            <Form.Group controlId="formVolumen">
-                                <Form.Label>Volumen (m³)</Form.Label>
-                                <Form.Control
-                                    type="number"
-                                    name="volumen"
-                                    value={formData.volumen}
-                                    onChange={handleChange}
-                                    min="0"
-                                    isInvalid={!!errors.volumen}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {errors.volumen}
-                                </Form.Control.Feedback>
-                            </Form.Group>
-                        </Col>
-                        <Col md={6}>
-                            <Form.Group controlId="formPlazoEntregaCliente">
-                                <Form.Label>Plazo de Entrega al Cliente (días)</Form.Label>
+                            <Form.Group controlId="formDeliveryTime">
+                                <Form.Label>
+                                    Plazo de Entrega al Cliente (días)
+                                    <span style={{ color: 'red' }}> *</span>
+                                </Form.Label>
                                 <Form.Control
                                     type="number"
                                     name="plazo_entrega_cliente"
                                     value={formData.plazo_entrega_cliente}
                                     onChange={handleChange}
                                     min="0"
-                                    isInvalid={!!errors.plazo_entrega_cliente}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {errors.plazo_entrega_cliente}
-                                </Form.Control.Feedback>
-                            </Form.Group>
-                        </Col>
-                    </Row>
-
-                    <Row className="mb-3">
-                        <Col md={6}>
-                            <Form.Group controlId="formDescripcionRecepcion">
-                                <Form.Label>Informacion de Recepción</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    name="descripcion_recepcion"
-                                    value={formData.descripcion_recepcion}
-                                    onChange={handleChange}
-                                />
-                            </Form.Group>
-                        </Col>
-                        <Col md={6}>
-                            <Form.Group controlId="formDescripcionEntrega">
-                                <Form.Label>Informacion de Entrega</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    name="descripcion_entrega"
-                                    value={formData.descripcion_entrega}
-                                    onChange={handleChange}
                                 />
                             </Form.Group>
                         </Col>
                     </Row>
 
-                    <div className="text-center">
+                    <Row className="mt-3">
+                        {formData.tipo === 'consumible' && (
+                            <>
+                                <Form.Group controlId="formReceptionInfo">
+                                    <Form.Label>
+                                        Información de Recepción
+                                    </Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        name="descripcion_recepcion"
+                                        value={formData.descripcion_recepcion}
+                                        onChange={handleChange}
+                                    />
+                                </Form.Group>
+
+                                <Form.Group controlId="formDeliveryInfo">
+                                    <Form.Label>
+                                        Información de Entrega
+                                    </Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        name="descripcion_entrega"
+                                        value={formData.descripcion_entrega}
+                                        onChange={handleChange}
+                                    />
+                                </Form.Group>
+                            </>
+                        )}
+                    </Row>
+
+                    <Row className="mt-3">
+                        <Form.Group controlId="formInternalNotes">
+                            <Form.Label>Notas internas</Form.Label>
+                            <Form.Control
+                                as="textarea"
+                                name="notas_internas"
+                                value={formData.notas_internas}
+                                onChange={handleChange}
+                            />
+                        </Form.Group>
+                    </Row>
+
+                    <Row className="mt-3">
+                        <Form.Group controlId="formProductImage">
+                            <Form.Label>Imagen del Producto</Form.Label>
+                            <Form.Control
+                                type="file"
+                                name="imagen_url"
+                                onChange={handleImageChange}
+                            />
+                        </Form.Group>
+                    </Row>
+
+                    <div style={{ textAlign: 'center', marginTop: '50px', marginBottom: '20px' }}>
                         <Button variant="primary" type="submit">
-                            Guardar
+                            Crear Producto
                         </Button>
                         <Button
-                            variant="secondary"
-                            type="button"
+                            variant="danger"
                             onClick={handleCancel}
                             style={{ marginLeft: '10px' }}
                         >
