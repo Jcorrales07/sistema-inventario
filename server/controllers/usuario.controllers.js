@@ -77,11 +77,12 @@ exports.usuarioSelectByIdController = async (req, res) => {
 
 exports.createUsuarioSocioController = async (req, res) => {
   try {
-    const { usuario, socio } = req.body;
+    const { usuario, socio, roles} = req.body;
 
     const nuevoUsuario = await usuarioServices.createUsuarioSocioService(
       usuario,
-      socio
+      socio,
+      roles 
     );
 
     if (!nuevoUsuario) {
