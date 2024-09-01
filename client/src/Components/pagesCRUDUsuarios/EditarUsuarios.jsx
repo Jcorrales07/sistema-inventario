@@ -8,6 +8,7 @@ import {
   Row,
   Col,
   Alert,
+  InputGroup,
   Toast,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
@@ -46,6 +47,8 @@ function EditarUsuarios() {
     const storedData = localStorage.getItem("formData");
     if (storedData) {
       setFormData(JSON.parse(storedData));
+
+      setActivo(JSON.parse(storedData).active);
     }
   }, []);
 
@@ -95,8 +98,6 @@ function EditarUsuarios() {
       newErrors.rol = "Debe seleccionar un rol.";
     }
 
-    console.log("NEW ERRORS", newErrors);
-
     setErrors(newErrors);
     setFormValid(Object.keys(newErrors).length === 0);
   };
@@ -125,6 +126,7 @@ function EditarUsuarios() {
         nickname: formData.usuario,
         contrasena: formData.contrasena,
         roles: formData.roles,
+        active: activo,
       };
 
       try {
@@ -340,7 +342,7 @@ function EditarUsuarios() {
 
           <Row>
             <Col md={6}>
-              <Form.Label>Desactivar cuenta:</Form.Label>
+              <Form.Label>Cuenta Activa:</Form.Label>
               <br />
               <Form.Check
                 type="switch"

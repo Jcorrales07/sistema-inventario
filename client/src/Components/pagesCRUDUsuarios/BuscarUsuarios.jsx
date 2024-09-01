@@ -12,6 +12,7 @@ import {
 } from "react-bootstrap";
 import FeatureNavbar from "../FeatureNavbar";
 import UsuairoApi from "../../../api/usuario.api";
+import rolApi from "../../../api/rol.api";
 
 const BuscarUsuarios = () => {
   const [showFilterModal, setShowFilterModal] = useState(false);
@@ -20,6 +21,7 @@ const BuscarUsuarios = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [roles, setRoles] = useState([]);
   const [filterByActive, setFilterByActive] = useState(null);
   const [filterByRole, setFilterByRole] = useState(null);
   const [users, setUsers] = useState([]);
@@ -29,7 +31,7 @@ const BuscarUsuarios = () => {
     const fetchUsers = async () => {
       try {
         const response = await UsuairoApi.getAllUsuariosRequest();
-        const data = response.data.Data.map((user) => ({
+        let data = response.data.Data.map((user) => ({
           nombre: user.Socio.nombre,
           correo: user.Socio.email,
           usuario: user.nickname,
@@ -41,11 +43,33 @@ const BuscarUsuarios = () => {
           id_usuario: user.id,
           id_socio: user.id_socio,
         }));
+
+        data = data.filter((user) => user.roles.some((rol) => rol.id !== 1));
+
         setUsers(data);
       } catch (error) {
         console.error(error);
       }
     };
+
+    const fetchRoles = async () => {
+      try {
+        const response = await rolApi.getAllRolsRequest();
+
+        if (!response && response.status >= 300) {
+          console.log("Error al obtener los roles");
+        }
+
+        const r = response.data.Data;
+
+        console.log(r);
+        setRoles(r);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchRoles();
     fetchUsers();
   }, []);
 
@@ -56,13 +80,14 @@ const BuscarUsuarios = () => {
       user.nombre.toLowerCase().includes(searchTermLower) ||
       user.correo.toLowerCase().includes(searchTermLower) ||
       user.usuario.toLowerCase().includes(searchTermLower) ||
-      user.roles.toLowerCase().includes(searchTermLower) ||
       (user.active ? "sí" : "no").includes(searchTermLower);
 
     const matchesActiveStatus =
       filterByActive === null || user.active === filterByActive;
 
-    const matchesRole = filterByRole === null // || user.role === filterByRole;
+    const matchesRole =
+      filterByRole === null ||
+      user.roles.some((rol) => rol.id === filterByRole.id);
 
     return matchesSearchTerm && matchesActiveStatus && matchesRole;
   });
@@ -170,10 +195,13 @@ const BuscarUsuarios = () => {
                 {currentUsers.length > 0 ? (
                   currentUsers.map((user, index) => (
                     <tr key={index}>
-                      <td>{user.name}</td>
-                      <td>{user.email}</td>
-                      <td>{user.username}</td>
-                      <td>{user.role}</td>
+                      <td>{user.nombre}</td>
+                      <td>{user.correo}</td>
+                      <td>{user.usuario}</td>
+                      <td>
+                        {"🔺" +
+                          user.roles.map((rol) => rol.nombre_rol).join(".\n🔺")}
+                      </td>
                       <td>{user.active ? "Sí" : "No"}</td>
                       <td>
                         <Button
@@ -235,46 +263,19 @@ const BuscarUsuarios = () => {
           <Modal.Title>Filtrar por Rol</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Button
-            variant="primary"
-            className="w-100 mb-2"
-            onClick={() => {
-              setFilterByRole("Administrador");
-              setShowRoleModal(false);
-            }}
-          >
-            Administrador
-          </Button>
-          <Button
-            variant="primary"
-            className="w-100 mb-2"
-            onClick={() => {
-              setFilterByRole("Encargado de Entradas");
-              setShowRoleModal(false);
-            }}
-          >
-            Encargado de Entradas
-          </Button>
-          <Button
-            variant="primary"
-            className="w-100 mb-2"
-            onClick={() => {
-              setFilterByRole("Encargado de Salidas");
-              setShowRoleModal(false);
-            }}
-          >
-            Encargado de Salidas
-          </Button>
-          <Button
-            variant="primary"
-            className="w-100 mb-2"
-            onClick={() => {
-              setFilterByRole("Analista de Compras");
-              setShowRoleModal(false);
-            }}
-          >
-            Analista de Compras
-          </Button>
+          {roles.map((rol, i) => (
+            <Button
+              key={i}
+              variant="primary"
+              className="w-100 mb-2"
+              onClick={() => {
+                setFilterByRole(rol);
+                setShowRoleModal(false);
+              }}
+            >
+              {rol.nombre_rol}
+            </Button>
+          ))}
         </Modal.Body>
       </Modal>
 
@@ -302,12 +303,12 @@ const BuscarUsuarios = () => {
 
       <Modal show={showEditModal} onHide={handleCloseEditModal}>
         <Modal.Body>
-          ¿Desea editar al usuario "{selectedUser?.name}"?
+          ¿Desea editar al usuario "{selectedUser?.nombre}"?
         </Modal.Body>
         <Modal.Footer>
           <Button
             variant="danger"
-            onClick={handleCloseEditModal}
+            onClick={handleConfirmEdit}
             href="/usuarios/editar"
           >
             Editar Usuario

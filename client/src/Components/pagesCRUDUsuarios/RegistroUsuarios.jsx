@@ -303,7 +303,9 @@ function RegistroUsuarios() {
                   placeholder="Roles asignados..."
                   style={{ height: "100px", resize: "none" }}
                   readOnly
-                  value={formData.rol !== "Roles" ? formData.rol : ""}
+                  value={
+                    "🔺" + formData.roles.map((rol) => rol.nombre_rol).join(".\n🔺")
+                  }
                 />
               </Form.Group>
             </Col>
