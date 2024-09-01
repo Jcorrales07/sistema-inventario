@@ -19,13 +19,10 @@ const Usuario = db.define(
     nickname: {
       type: DataTypes.STRING(256),
       allowNull: false,
+      unique: true,
     },
     contrasena: {
       type: DataTypes.STRING(256),
-      allowNull: false,
-    },
-    id_rol: {
-      type: DataTypes.INTEGER,
       allowNull: false,
     },
     active: {

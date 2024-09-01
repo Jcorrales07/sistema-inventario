@@ -1,4 +1,4 @@
-import axiosInstance from "./client/src/api/AxiosInstance.js"
+import axiosInstance from "./AxiosInstance.js"
 
 const  getAllSociosRequest = async () =>{
     try {

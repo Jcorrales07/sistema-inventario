@@ -4,13 +4,23 @@ import { Button, Container, Row, Table, Form, Modal } from "react-bootstrap";
 import { useNavigate, useLocation } from "react-router-dom";
 import rolApi from "../../../api/rol.api";
 import privilegioApi from "../../../api/privilegio.api";
+import rolPrivilegioApi from "../../../api/rolPrivilegio.api";
 
 function AsignarRoles() {
   const [checkedItems, setCheckedItems] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [rolName, setRolName] = useState("");
   const [rolDescription, setRolDescription] = useState("");
-  const [newPermissions, setNewPermissions] = useState({});
+  const [newPermissions, setNewPermissions] = useState([
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  ]);
+
   const [formComplete, setFormComplete] = useState(false);
   const [formData, setFormData] = useState({});
 
@@ -26,9 +36,27 @@ function AsignarRoles() {
       console.log("Error al obtener los roles");
     }
 
-    console.log("Roles obtenidos: ", response);
+    const r = response.data.Data.map((rol) => {
+      return { ...rol, checked: false };
+    });
 
-    setRoles(response.data.Data);
+    const storedData = localStorage.getItem("formData");
+    if (storedData) {
+      const data = JSON.parse(storedData);
+      setFormData(data);
+
+      if (data.roles && data.roles.length > 0) {
+        const rolesToCheck = data.roles;
+
+        r.forEach((rol) => {
+          if (rolesToCheck.find((r) => r.id === rol.id)) {
+            rol.checked = true;
+          }
+        });
+      }
+    }
+
+    setRoles(r);
   };
 
   const loadPermisos = async () => {
@@ -38,26 +66,27 @@ function AsignarRoles() {
       console.log("Error al obtener los permisos");
     }
 
-    console.log("Permisos obtenidos: ", response);
+    const p = response.data.Data.map((permiso) => {
+      return { ...permiso, checked: false };
+    });
 
-    setPermisos(response.data.Data);
+    setPermisos(p);
   };
 
   useEffect(() => {
-    const storedData = localStorage.getItem("formData");
-    if (storedData) {
-      setFormData(JSON.parse(storedData));
-    }
-
     loadRoles();
     loadPermisos();
-  }, []);
+  }, [newPermissions]);
 
   const handleCheckboxChange = (index) => {
-    setCheckedItems((prevState) => ({
-      ...prevState,
-      [index]: !prevState[index],
-    }));
+    const newRoles = roles.map((p, i) => {
+      if (i === index) {
+        return { ...p, checked: !p.checked };
+      }
+      return p;
+    });
+
+    setRoles(newRoles);
   };
 
   const handleCloseModal = () => {
@@ -74,54 +103,75 @@ function AsignarRoles() {
     setFormComplete(false);
   };
 
-  const handleCreateRole = () => {
+  const handleCreateRole = async () => {
     const roleData = {
       nombre_rol: rolName,
       descripcion: rolDescription,
-      permissions: Object.keys(newPermissions).filter(
-        (key) => newPermissions[key]
-      ),
     };
 
-    console.log("Creating role with data:", roleData);
+    const privilegios = permisos.filter((p) => p.checked);
+
+    const responseRol = await rolApi.createRolRequest(roleData);
+
+    if (!responseRol && responseRol.status >= 300) {
+      console.log("Error al crear el rol");
+      return;
+    }
+
+    const rol = responseRol.data.Data;
+
+    privilegios.forEach(async (privilegio) => {
+      const rolPrivilegioData = {
+        id_rol: rol.id,
+        id_privilegio: privilegio.id,
+      };
+
+      const responseRolPrivilegio =
+        await rolPrivilegioApi.createRolPrivilegioRequest(rolPrivilegioData);
+
+      if (!responseRolPrivilegio && responseRolPrivilegio.status >= 300) {
+        console.log("Error al asignar privilegios al rol");
+        return;
+      }
+    });
 
     // Add code to send `roleData` to your backend or database here
+
+    await loadRoles();
 
     handleCloseModal(); // This will reset the form and close the modal
   };
 
-  const handlePermissionChange = (index) => {
-    console.log(index);
+  const handlePermissionChange = async (index) => {
+    const newPermisos = permisos.map((p, i) => {
+      if (i === index) {
+        return { ...p, checked: !p.checked };
+      }
+      return p;
+    });
 
-    const permiso = permisos[index];
-    console.log(permiso);
-
-    setNewPermissions((prevState) => ({
-      ...prevState,
-      [index]: !prevState[index],
-    }));
+    setPermisos(newPermisos);
   };
 
   const handleAssignRoles = () => {
-    const selectedRoles = Object.keys(checkedItems).filter(
-      (key) => checkedItems[key]
-    );
-
     // Add code to send `selectedRoles` to your backend or database here
-    console.log("Assigning roles:", selectedRoles);
+    const rolesToAssign = roles.filter((rol) => rol.checked);
+
+    console.log("Roles to assign:", rolesToAssign);
+
+    const newForm = { ...formData, roles: rolesToAssign };
+
+    localStorage.setItem("formData", JSON.stringify(newForm));
+
     navigate(-1);
   };
 
-  const isAssignButtonDisabled = !Object.values(checkedItems).includes(true);
+  let isAssignButtonDisabled = false;
 
   useEffect(() => {
     // Check if all fields are filled and at least one permission is selected
-    const allFieldsFilled =
-      rolName.trim() !== "" &&
-      rolDescription.trim() !== "" &&
-      Object.values(newPermissions).includes(true);
 
-    setFormComplete(allFieldsFilled);
+    setFormComplete(true);
   }, [rolName, rolDescription, newPermissions]);
 
   return (
@@ -175,7 +225,7 @@ function AsignarRoles() {
                     <td style={{ width: "3%" }}>
                       <Form.Check
                         type="checkbox"
-                        checked={checkedItems[i] || false}
+                        checked={rol.checked}
                         onChange={() => handleCheckboxChange(i)}
                       />
                     </td>
@@ -246,7 +296,7 @@ function AsignarRoles() {
                       <td style={{ width: "3%" }}>
                         <Form.Check
                           type="checkbox"
-                          checked={newPermissions[i] || false}
+                          checked={p.checked}
                           onChange={() => handlePermissionChange(i)}
                         />
                       </td>
