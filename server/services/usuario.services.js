@@ -113,7 +113,29 @@ exports.usuarioSelectByNicknameService = async (nickname) => {
   try {
     return await Usuario.findOne({
       where: { nickname: nickname },
-      include: Socio,
+      include: [
+        {
+          model: Socio,
+        },
+        {
+          model: UsuarioRol,
+          include: [
+            {
+              model: Rol,
+              include: [
+                {
+                  model: RolPrivilegio,
+                  include: [
+                    {
+                      model: Privilegio,
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
     });
   } catch (error) {
     throw error;

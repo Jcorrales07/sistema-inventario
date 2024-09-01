@@ -108,8 +108,6 @@ function RegistroUsuarios() {
       const usuario = {
         nickname: formData.usuario,
         contrasena: formData.contrasena,
-        id_rol: 1, // Por ahora vamos a asignar este rol por defecto, ya que no se puede dejar vacío
-        // Porque despues elimaremos este campo de la tabla usuarios
       };
 
       /*

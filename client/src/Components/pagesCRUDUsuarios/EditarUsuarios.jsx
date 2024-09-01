@@ -89,6 +89,8 @@ function EditarUsuarios() {
       newErrors.rol = "Debe seleccionar un rol.";
     }
 
+    console.log("NEW ERRORS", newErrors);
+
     setErrors(newErrors);
     setFormValid(Object.keys(newErrors).length === 0);
   };
@@ -116,7 +118,6 @@ function EditarUsuarios() {
       const usuario = {
         nickname: formData.usuario,
         contrasena: formData.contrasena,
-        rol: 1,
         roles: formData.roles,
       };
 

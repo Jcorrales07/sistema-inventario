@@ -25,10 +25,6 @@ const Usuario = db.define(
       type: DataTypes.STRING(256),
       allowNull: false,
     },
-    id_rol: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
     active: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
