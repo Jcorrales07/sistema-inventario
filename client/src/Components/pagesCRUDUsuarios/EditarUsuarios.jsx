@@ -195,7 +195,7 @@ function EditarUsuarios() {
       <FeatureNavbar />
       <Container
         fluid
-        className="d-flex justify-content-center align-items-center min-vh-100 mt-5 mb-5"
+        className="d-flex justify-content-center align-items-center mt-5 mb-5"
       >
         <Form className="w-75" onSubmit={handleSubmit}>
           <h3 className="text-center mb-5">

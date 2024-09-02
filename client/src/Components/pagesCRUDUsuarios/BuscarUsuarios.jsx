@@ -137,11 +137,11 @@ const BuscarUsuarios = () => {
       <FeatureNavbar />
       <Container
         fluid
-        className="d-flex flex-column align-items-center min-vh-100 p-4"
+        className="d-flex flex-column align-items-center p-4"
       >
         <Row className="w-100 mb-4">
           <Col md={8} lg={6} className="mx-auto">
-            <h3 className="text-center mb-4">Usuarios en base de datos</h3>
+            <h3 className="text-center mt-3 mb-5">Usuarios en base de datos</h3>
             <InputGroup className="mb-3">
               <FormControl
                 placeholder="Escriba un nombre, correo o usuario..."
@@ -155,7 +155,7 @@ const BuscarUsuarios = () => {
           </Col>
         </Row>
         <Row className="w-100 mb-4">
-          <Col md={8} lg={6} className="mx-auto">
+          <Col md={8} className="mx-auto">
             <Table striped bordered hover variant="dark">
               <thead>
                 <tr>

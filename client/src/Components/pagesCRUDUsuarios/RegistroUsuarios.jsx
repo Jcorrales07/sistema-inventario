@@ -175,8 +175,8 @@ function RegistroUsuarios() {
   return (
     <div>
       <FeatureNavbar />
-      <Container className="d-flex justify-content-center align-items-center min-vh-100">
-        <Form className="w-75" onSubmit={handleSubmit}>
+      <Container fluid className="d-flex justify-content-center align-items-center">
+        <Form className="w-75" style={{ marginTop: "8rem" }} onSubmit={handleSubmit}>
           <h3 className="text-center">Registro de Usuarios</h3>
 
           <Row className="mt-3">

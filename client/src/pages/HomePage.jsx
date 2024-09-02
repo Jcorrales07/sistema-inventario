@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useState } from "react";
+import React, { act, forwardRef, useEffect, useRef, useState } from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 // prettier-ignore
@@ -9,6 +9,8 @@ import {
 } from 'react-bootstrap'
 
 import "bootstrap/dist/css/bootstrap.min.css";
+import toast from "react-hot-toast";
+import { useLocation } from "react-router-dom";
 
 const buttons = [
   {
@@ -56,8 +58,11 @@ function HomePage() {
     username: "",
     roles: [],
     privilegios: [],
+    activo: false,
   });
   const [date, setDate] = useState("Fecha");
+  const location = useLocation();
+  const toastShown = useRef(false);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -72,6 +77,13 @@ function HomePage() {
       );
     }, 1000);
   }, []);
+
+  useEffect(() => {
+    if (location.pathname === "/home" && !toastShown.current) {
+      toast.success("Inicio de sesión exitoso!");
+      toastShown.current = true;
+    }
+  }, [location]);
 
   const CustomToggle = forwardRef(({ onClick }, ref) => (
     <Image
