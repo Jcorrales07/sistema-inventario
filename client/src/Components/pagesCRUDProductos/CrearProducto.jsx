@@ -8,7 +8,7 @@ import toast from 'react-hot-toast'
 function CrearProducto() {
     const [formData, setFormData] = useState({
         nombre: '',
-        tipo: 'consumible',
+        tipo: '',
         codigo_barra: '',
         precio_venta: '',
         coste: '',

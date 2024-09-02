@@ -25,7 +25,6 @@ const initApp = async () => {
         console.error("Parent error:", error.parent);
         console.error("Error details:", error);
       });
-
     app.listen(PORT, () => {
       console.log(`Servidor corriendo en el puerto ${PORT}`);
     });

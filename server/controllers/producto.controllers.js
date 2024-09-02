@@ -15,8 +15,6 @@ exports.productoUpdateController = async (req, res) => {
     try {
         const id = req.params.id
         const updatedProducto = req.body
-        console.log("El id es: "+ id);
-        console.log("Datos " +updatedProducto)
         const productoUpdate = await producto.productoUpdateService(
             id,
             updatedProducto
