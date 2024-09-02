@@ -27,12 +27,10 @@ const Producto = db.define('Producto', {
         allowNull: false,
     },
     puede_vender: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
+        type: DataTypes.BOOLEAN,    
     },
     puede_comprar: {
         type: DataTypes.BOOLEAN,
-        allowNull: false,
     },
     notas_internas: {
         type: DataTypes.TEXT,

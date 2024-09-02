@@ -7,7 +7,7 @@ import axios from 'axios'
 function CrearProducto() {
     const [formData, setFormData] = useState({
         nombre: '',
-        tipo: 'consumible',
+        tipo: '',
         codigo_barra: '',
         precio_venta: '',
         coste: '',

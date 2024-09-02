@@ -2,28 +2,34 @@ const Producto = require('../modelos/Producto')
 
 exports.productoCreateService = async (productoData, res) => {
     try {
-        const producto = Producto.create(productoData)
-        return producto
+        const producto = await Producto.create(productoData);
+        return producto;
     } catch (error) {
-        res.status(400).json({ message: 'Error durante la creación de Socio' })
+        return res.status(400).json({ message: 'Error durante la creación del producto', error: error.message });
     }
 }
 
 exports.productoUpdateService = async (id, productoUpdate, res) => {
     try {
-        const productoUpdateService = await Producto.update(productoUpdate, {
-            where: { id },
-        })
-        if (!productoUpdateService) {
-            return null
+        if (productoUpdate.codigo_barra) {
+            const existingProduct = await Producto.findOne({
+                where: { codigo_barra: productoUpdate.codigo_barra, id: { [Op.ne]: id } }
+            });
+            if (existingProduct) {
+                return res.status(400).json({ message: 'El código de barra ya existe en otro producto.' });
+            }
         }
-        return await Producto.findByPk(id)
+
+        const productoUpdateService = await Producto.update(productoUpdate, { where: { id } });
+        if (!productoUpdateService) {
+            return null;
+        }
+        return await Producto.findByPk(id);
     } catch (error) {
-        res.status(404).json({
-            message: 'Id invalido, no existe u ocrurrio algún error',
-        })
+        res.status(500).json({ message: 'Error durante la actualización del producto', error: error.message });
     }
 }
+
 
 exports.productoDeleteService = async (id, res) => {
     try {
