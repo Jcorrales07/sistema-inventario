@@ -162,8 +162,8 @@ function EditarUsuarios() {
         setShowToast(true);
 
         setTimeout(() => {
-          navigate("/usuarios/buscar");
-        }, 3000);
+          navigate(-1);
+        }, 2000);
       } catch (error) {
         setErrors({ form: "Hubo un error en la solicitud." });
       }

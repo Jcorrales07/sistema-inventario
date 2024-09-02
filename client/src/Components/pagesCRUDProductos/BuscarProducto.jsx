@@ -8,31 +8,39 @@ import {
     Modal,
     Row,
     Col,
+    Pagination,
+    Image,
 } from 'react-bootstrap'
 import FeatureNavbar from '../FeatureNavbar'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+
 const cargarInformacion = async (setProductsfn) => {
-    const productos = await productoApi.getAllProductosRequest()
-    console.log(productos.data)
-    if (productos.status === 200) {
-        const Products = productos.data.Data.map((item) => ({
-            id: item.id,
-            nombre: item.nombre,
-            tipo: item.tipo,
-            codigo_barra: item.codigo_barra,
-            precio_venta: item.precio_venta,
-            coste: item.coste,
-            puede_comprar: item.puede_comprar,
-            notas_internas: item.notas_internas,
-            volumen: item.volumen,
-            descripcion_recepcion: item.descripcion_recepcion,
-            descripcion_entrega: item.descripcion_entrega,
-            plazo_entrega_cliente: item.plazo_entrega_cliente,
-            imagen_url: item.imagen_url,
-            puede_vender: item.puede_vender,
-        }))
-        setProductsfn(Products)
+    const savedProducts = localStorage.getItem('productos')
+    if (savedProducts) {
+        setProductsfn(JSON.parse(savedProducts))
+    } else {
+        const productos = await productoApi.getAllProductosRequest()
+        if (productos.status === 200) {
+            const Products = productos.data.Data.map((item) => ({
+                id: item.id,
+                nombre: item.nombre,
+                tipo: item.tipo,
+                codigo_barra: item.codigo_barra,
+                precio_venta: item.precio_venta,
+                coste: item.coste,
+                puede_comprar: item.puede_comprar,
+                notas_internas: item.notas_internas,
+                volumen: item.volumen,
+                descripcion_recepcion: item.descripcion_recepcion,
+                descripcion_entrega: item.descripcion_entrega,
+                plazo_entrega_cliente: item.plazo_entrega_cliente,
+                imagen_url: item.imagen_url,
+                puede_vender: item.puede_vender,
+            }))
+            setProductsfn(Products)
+            localStorage.setItem('productos', JSON.stringify(Products))
+        }
     }
 }
 
@@ -42,12 +50,14 @@ function BuscarProducto() {
     const [viewingProduct, setViewingProduct] = useState(null)
     const [showEditModal, setShowEditModal] = useState(false)
     const [search, setSearch] = useState('')
+    const [currentPage, setCurrentPage] = useState(1)
+    const [productsPerPage] = useState(5) // Cantidad de productos por página
 
     const navigate = useNavigate()
 
     useEffect(() => {
         cargarInformacion(setProducts)
-    }, []) // El array vacío [] asegura que useEffect solo se ejecute una vez cuando el componente se monta.
+    }, [])
 
     const handleEditClick = (product) => {
         setEditingProduct(product)
@@ -55,7 +65,6 @@ function BuscarProducto() {
     }
 
     const handleViewClick = (productId) => {
-        // Encuentra el producto completo en la lista de productos
         const selectedProduct = products.find((p) => p.id === productId)
 
         if (selectedProduct) {
@@ -63,13 +72,16 @@ function BuscarProducto() {
         }
     }
 
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber)
+    }
+
     const handleSave = () => {
-        setProducts(
-            products.map((product) =>
-                product.id === editingProduct.id ? editingProduct : product
-            )
+        const updatedProducts = products.map((product) =>
+            product.id === editingProduct.id ? editingProduct : product
         )
-        console.log(editingProduct)
+        setProducts(updatedProducts)
+        localStorage.setItem('productos', JSON.stringify(updatedProducts))
         productoApi.putProductoRequest(editingProduct.id, editingProduct)
         setShowEditModal(false)
     }
@@ -95,15 +107,10 @@ function BuscarProducto() {
 
                 const res = await axios.post(api, imgData)
                 const { secure_url } = res.data
-                console.log(secure_url)
-                /* setFormData({
-                ...formData,
-                imagen_url: secure_url,
-            })*/
-                setEditingProduct({
-                    ...editingProduct,
+                setEditingProduct((prevState) => ({
+                    ...prevState,
                     imagen_url: secure_url,
-                })
+                }))
             } catch (error) {
                 console.error('Upload failed:', error)
             }
@@ -115,6 +122,18 @@ function BuscarProducto() {
             product.nombre.toLowerCase().includes(search.toLowerCase()) ||
             product.tipo.toLowerCase().includes(search.toLowerCase())
     )
+
+    // Obtener los productos actuales según la página
+    const indexOfLastProduct = currentPage * productsPerPage
+    const indexOfFirstProduct = indexOfLastProduct - productsPerPage
+    const currentProducts = filteredProducts.slice(
+        indexOfFirstProduct,
+        indexOfLastProduct
+    )
+
+    const totalPages = Math.ceil(filteredProducts.length / productsPerPage)
+
+    const paginate = (pageNumber) => setCurrentPage(pageNumber)
 
     return (
         <div>
@@ -148,8 +167,8 @@ function BuscarProducto() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredProducts.length > 0 ? (
-                                    filteredProducts.map((product) => (
+                                {currentProducts.length > 0 ? (
+                                    currentProducts.map((product) => (
                                         <tr key={product.id}>
                                             <td>{product.nombre}</td>
                                             <td>{product.tipo}</td>
@@ -189,6 +208,31 @@ function BuscarProducto() {
                             </tbody>
                         </Table>
 
+                        {/* Paginación */}
+                        <Pagination className="justify-content-center">
+                            <Pagination.Prev
+                                onClick={() =>
+                                    handlePageChange(currentPage - 1)
+                                }
+                                disabled={currentPage === 1}
+                            />
+                            {[...Array(totalPages)].map((_, idx) => (
+                                <Pagination.Item
+                                    key={idx + 1}
+                                    active={idx + 1 === currentPage}
+                                    onClick={() => paginate(idx + 1)}
+                                >
+                                    {idx + 1}
+                                </Pagination.Item>
+                            ))}
+                            <Pagination.Next
+                                onClick={() =>
+                                    handlePageChange(currentPage + 1)
+                                }
+                                disabled={currentPage === totalPages}
+                            />
+                        </Pagination>
+
                         {/* Modal para Editar Producto */}
                         <Modal
                             show={showEditModal}
@@ -200,7 +244,7 @@ function BuscarProducto() {
                             </Modal.Header>
                             <Modal.Body>
                                 <Form>
-                                    <Form.Group>
+                                    <Form.Group className="mb-3">
                                         <Form.Label>
                                             Nombre del Producto
                                         </Form.Label>
@@ -211,23 +255,23 @@ function BuscarProducto() {
                                             onChange={handleChange}
                                         />
                                     </Form.Group>
-                                    <Form.Group>
-                                        <Form.Label>Tipo</Form.Label>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Categoria</Form.Label>
                                         <Form.Control
                                             as="select"
                                             name="tipo"
                                             value={editingProduct?.tipo || ''}
                                             onChange={handleChange}
                                         >
-                                            <option value="Consumible">
-                                                Consumible
+                                            <option value="consumible">
+                                                consumible
                                             </option>
-                                            <option value="Servicio">
-                                                Servicio
+                                            <option value="servicio">
+                                                servicio
                                             </option>
                                         </Form.Control>
                                     </Form.Group>
-                                    <Form.Group>
+                                    <Form.Group className="mb-3">
                                         <Form.Label>Precio de Venta</Form.Label>
                                         <Form.Control
                                             type="number"
@@ -240,7 +284,7 @@ function BuscarProducto() {
                                             min="0"
                                         />
                                     </Form.Group>
-                                    <Form.Group>
+                                    <Form.Group className="mb-3">
                                         <Form.Label>Coste</Form.Label>
                                         <Form.Control
                                             type="number"
@@ -250,9 +294,9 @@ function BuscarProducto() {
                                             min="0"
                                         />
                                     </Form.Group>
-                                    {editingProduct?.tipo === 'Consumible' && (
+                                    {editingProduct?.tipo === 'consumible' && (
                                         <>
-                                            <Form.Group>
+                                            <Form.Group className="mb-3">
                                                 <Form.Label>
                                                     Código de Barra
                                                 </Form.Label>
@@ -266,7 +310,7 @@ function BuscarProducto() {
                                                     onChange={handleChange}
                                                 />
                                             </Form.Group>
-                                            <Form.Group>
+                                            <Form.Group className="mb-3">
                                                 <Form.Label>Volumen</Form.Label>
                                                 <Form.Control
                                                     type="number"
@@ -281,7 +325,7 @@ function BuscarProducto() {
                                             </Form.Group>
                                         </>
                                     )}
-                                    <Form.Group>
+                                    <Form.Group className="mb-3">
                                         <Form.Label>
                                             Plazo de Entrega al Cliente (días)
                                         </Form.Label>
@@ -304,16 +348,56 @@ function BuscarProducto() {
                                             type="file"
                                             onChange={handleFileChange}
                                         />
-                                        {editingProduct?.imagen_url && (
-                                            <img
-                                                src={editingProduct.imagen_url}
-                                                alt="Producto"
-                                                style={{
-                                                    width: '100%',
-                                                    marginTop: '10px',
-                                                }}
-                                            />
-                                        )}
+                                        <div className="d-flex justify-content-center mb-4">
+                                            {editingProduct?.imagen_url && (
+                                                <Image
+                                                    src={
+                                                        editingProduct.imagen_url
+                                                    }
+                                                    alt="Imagen del producto"
+                                                    style={{
+                                                        maxWidth: '300px',
+                                                        maxHeight: '300px',
+                                                        marginTop: '10px',
+                                                    }}
+                                                />
+                                            )}
+                                        </div>
+                                    </Form.Group>
+
+                                    <Form.Group>
+                                        <Form.Check
+                                            type="checkbox"
+                                            name="puede_comprar"
+                                            label="¿Puede Comprar?"
+                                            checked={
+                                                editingProduct?.puede_comprar ||
+                                                false
+                                            }
+                                            onChange={handleChange}
+                                        />
+                                        <Form.Check
+                                            type="checkbox"
+                                            name="puede_vender"
+                                            label="¿Puede Vender?"
+                                            checked={
+                                                editingProduct?.puede_vender ||
+                                                false
+                                            }
+                                            onChange={handleChange}
+                                        />
+                                    </Form.Group>
+                                    <Form.Group className="mt-3">
+                                        <Form.Label>Notas Internas</Form.Label>
+                                        <Form.Control
+                                            as="textarea"
+                                            name="notas_internas"
+                                            value={
+                                                editingProduct?.notas_internas ||
+                                                ''
+                                            }
+                                            onChange={handleChange}
+                                        />
                                     </Form.Group>
                                 </Form>
                             </Modal.Body>
@@ -325,7 +409,7 @@ function BuscarProducto() {
                                     Cancelar
                                 </Button>
                                 <Button variant="primary" onClick={handleSave}>
-                                    Guardar
+                                    Guardar Cambios
                                 </Button>
                             </Modal.Footer>
                         </Modal>

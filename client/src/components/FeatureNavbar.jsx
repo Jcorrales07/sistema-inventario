@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
     Button,
     Container,
@@ -6,12 +6,12 @@ import {
     Image,
     Nav,
     Navbar,
-} from 'react-bootstrap';
-import { useLocation, useNavigate } from 'react-router-dom';
+} from 'react-bootstrap'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 function FeatureNavbar() {
-    const location = useLocation();
-    const navigate = useNavigate();
+    const location = useLocation()
+    const navigate = useNavigate()
 
     const CustomToggle = React.forwardRef(({ onClick }, ref) => (
         <Image
@@ -20,12 +20,12 @@ function FeatureNavbar() {
             alt="Avatar"
             className="img-fluid rounded-circle"
             onClick={(e) => {
-                e.preventDefault();
-                onClick(e);
+                e.preventDefault()
+                onClick(e)
             }}
             style={{ cursor: 'pointer' }}
         />
-    ));
+    ))
 
     return (
         <Navbar bg="dark" fluid className="border-bg-black">
@@ -47,7 +47,10 @@ function FeatureNavbar() {
                             <i className="bi bi-bell-fill text-white fs-5"></i>
                         </Nav.Link>
                         <Dropdown>
-                            <Dropdown.Toggle as={CustomToggle} id="dropdown-avatar" />
+                            <Dropdown.Toggle
+                                as={CustomToggle}
+                                id="dropdown-avatar"
+                            />
 
                             <Dropdown.Menu align="end">
                                 <Dropdown.Item href="#/profile">
@@ -58,9 +61,11 @@ function FeatureNavbar() {
                                 </Dropdown.Item>
                                 <Dropdown.Item
                                     href="/"
-                                    onClick={() =>
+                                    onClick={() => {
                                         localStorage.removeItem('user')
-                                    }
+                                        localStorage.removeItem('productos')
+                                        localStorage.removeItem('users')
+                                    }}
                                 >
                                     Logout
                                 </Dropdown.Item>
@@ -70,7 +75,7 @@ function FeatureNavbar() {
                 </Navbar.Collapse>
             </Container>
         </Navbar>
-    );
+    )
 }
 
-export default FeatureNavbar;
+export default FeatureNavbar

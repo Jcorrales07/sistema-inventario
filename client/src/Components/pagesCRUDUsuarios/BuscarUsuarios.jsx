@@ -112,6 +112,8 @@ const BuscarUsuarios = () => {
   const handleConfirmEdit = () => {
     localStorage.setItem("formData", JSON.stringify(selectedUser));
 
+    console.log(localStorage.getItem("formData"));
+
     handleCloseEditModal();
   };
 

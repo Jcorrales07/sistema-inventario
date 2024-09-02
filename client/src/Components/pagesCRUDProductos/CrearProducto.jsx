@@ -4,6 +4,7 @@ import FeatureNavbar from '../FeatureNavbar'
 import { useNavigate } from 'react-router-dom'
 import productoApi from '../../../api/producto.api'
 import axios from 'axios'
+import toast from 'react-hot-toast'
 function CrearProducto() {
     const [formData, setFormData] = useState({
         nombre: '',
@@ -81,15 +82,19 @@ function CrearProducto() {
         return newErrors.length === 0
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
         if (validateForm()) {
             console.log(formData)
-            productoApi.createProductoRequest(formData);
-            alert('Formulario enviado con éxito')
-            setTimeout(() => {
-                handleCancel()
-            }, 2000)
+            const apiResponse = await productoApi.createProductoRequest(formData)
+
+            console.log(apiResponse)
+            // toast.success('Producto creado con éxito')
+
+
+            // setTimeout(() => {
+            //     handleCancel()
+            // }, 2000)
         }
     }
 
