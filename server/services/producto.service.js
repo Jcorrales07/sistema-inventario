@@ -11,14 +11,14 @@ exports.productoCreateService = async (productoData, res) => {
 
 exports.productoUpdateService = async (id, productoUpdate, res) => {
     try {
-        if (productoUpdate.codigo_barra) {
-            const existingProduct = await Producto.findOne({
-                where: { codigo_barra: productoUpdate.codigo_barra, id: { [Op.ne]: id } }
-            });
-            if (existingProduct) {
-                return res.status(400).json({ message: 'El código de barra ya existe en otro producto.' });
-            }
-        }
+        // if (productoUpdate.codigo_barra) {
+        //     const existingProduct = await Producto.findOne({
+        //         where: { codigo_barra: productoUpdate.codigo_barra, id: { [Op.ne]: id } }
+        //     });
+        //     if (existingProduct) {
+        //         return res.status(400).json({ message: 'El código de barra ya existe en otro producto.' });
+        //     }
+        // }
 
         const productoUpdateService = await Producto.update(productoUpdate, { where: { id } });
         if (!productoUpdateService) {

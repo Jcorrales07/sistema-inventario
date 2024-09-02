@@ -5,6 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import rolApi from "../../../api/rol.api";
 import privilegioApi from "../../../api/privilegio.api";
 import rolPrivilegioApi from "../../../api/rolPrivilegio.api";
+import toast from "react-hot-toast";
 
 function AsignarRoles() {
   const [checkedItems, setCheckedItems] = useState({});
@@ -136,6 +137,7 @@ function AsignarRoles() {
     });
 
     // Add code to send `roleData` to your backend or database here
+    toast.success("Rol creado correctamente");
 
     await loadRoles();
 

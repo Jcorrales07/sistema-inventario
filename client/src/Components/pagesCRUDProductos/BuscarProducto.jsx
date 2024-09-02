@@ -14,6 +14,7 @@ import {
 import FeatureNavbar from '../FeatureNavbar'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import toast from 'react-hot-toast'
 
 const cargarInformacion = async (setProductsfn) => {
     // const savedProducts = localStorage.getItem('productos')
@@ -39,7 +40,7 @@ const cargarInformacion = async (setProductsfn) => {
                 puede_vender: item.puede_vender,
             }))
             setProductsfn(Products)
-            localStorage.setItem('productos', JSON.stringify(Products))
+            // localStorage.setItem('productos', JSON.stringify(Products))
         }
     // }
 }
@@ -76,15 +77,23 @@ function BuscarProducto() {
         setCurrentPage(pageNumber)
     }
 
-    const handleSave = () => {
+    const handleSave = async () => {
         const updatedProducts = products.map((product) =>
             product.id === editingProduct.id ? editingProduct : product
         )
-        setProducts(updatedProducts)
-        localStorage.setItem('productos', JSON.stringify(updatedProducts))
-        productoApi.putProductoRequest(editingProduct.id, editingProduct)
-        setShowEditModal(false)
+        // Solo actualiza el estado local después de la confirmación de la API
+        const apiResponse = await productoApi.putProductoRequest(editingProduct.id, editingProduct)
+        console.log(apiResponse);
+        if (apiResponse.status === 200 || apiResponse.status === 201) {
+            toast.success('Se han guardado los cambios exitosamente')
+            setProducts(updatedProducts)
+            setShowEditModal(false)
+        } else {
+            console.error('Error al guardar los cambios:', apiResponse)
+            // Manejar el error adecuadamente, tal vez mostrar un mensaje de error al usuario.
+        }
     }
+    
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target
