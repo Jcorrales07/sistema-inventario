@@ -1,12 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import productoApi from '../../../api/producto.api';
-import { Container, Table, Button, Form, Modal, Row, Col } from 'react-bootstrap';
-import FeatureNavbar from '../FeatureNavbar';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react'
+import productoApi from '../../../api/producto.api'
+import {
+    Container,
+    Table,
+    Button,
+    Form,
+    Modal,
+    Row,
+    Col,
+} from 'react-bootstrap'
+import FeatureNavbar from '../FeatureNavbar'
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 const cargarInformacion = async (setProductsfn) => {
-    const productos = await productoApi.getAllProductosRequest();
-    console.log(productos.data);
+    const productos = await productoApi.getAllProductosRequest()
+    console.log(productos.data)
     if (productos.status === 200) {
         const Products = productos.data.Data.map((item) => ({
             id: item.id,
@@ -23,92 +31,90 @@ const cargarInformacion = async (setProductsfn) => {
             plazo_entrega_cliente: item.plazo_entrega_cliente,
             imagen_url: item.imagen_url,
             puede_vender: item.puede_vender,
-        }));
-        setProductsfn(Products);
+        }))
+        setProductsfn(Products)
     }
-};
+}
 
 function BuscarProducto() {
-    const [products, setProducts] = useState([]);
-    const [editingProduct, setEditingProduct] = useState(null);
-    const [viewingProduct, setViewingProduct] = useState(null);
-    const [showEditModal, setShowEditModal] = useState(false);
-    const [search, setSearch] = useState('');
+    const [products, setProducts] = useState([])
+    const [editingProduct, setEditingProduct] = useState(null)
+    const [viewingProduct, setViewingProduct] = useState(null)
+    const [showEditModal, setShowEditModal] = useState(false)
+    const [search, setSearch] = useState('')
 
-    const navigate = useNavigate();
+    const navigate = useNavigate()
 
     useEffect(() => {
-        cargarInformacion(setProducts);
-    }, []); // El array vacío [] asegura que useEffect solo se ejecute una vez cuando el componente se monta.
+        cargarInformacion(setProducts)
+    }, []) // El array vacío [] asegura que useEffect solo se ejecute una vez cuando el componente se monta.
 
     const handleEditClick = (product) => {
-        setEditingProduct(product);
-        setShowEditModal(true);
-    };
+        setEditingProduct(product)
+        setShowEditModal(true)
+    }
 
     const handleViewClick = (productId) => {
         // Encuentra el producto completo en la lista de productos
-        const selectedProduct = products.find(p => p.id === productId);
+        const selectedProduct = products.find((p) => p.id === productId)
 
         if (selectedProduct) {
-            navigate('/productos/ver', { state: selectedProduct });
+            navigate('/productos/ver', { state: selectedProduct })
         }
-    };
-
+    }
 
     const handleSave = () => {
         setProducts(
             products.map((product) =>
                 product.id === editingProduct.id ? editingProduct : product
             )
-        );
-        console.log(editingProduct);
-        productoApi.putProductoRequest(editingProduct.id,editingProduct);
-        setShowEditModal(false);
-    };
+        )
+        console.log(editingProduct)
+        productoApi.putProductoRequest(editingProduct.id, editingProduct)
+        setShowEditModal(false)
+    }
 
     const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
+        const { name, value, type, checked } = e.target
         if (type === 'checkbox') {
-            setEditingProduct({ ...editingProduct, [name]: checked });
+            setEditingProduct({ ...editingProduct, [name]: checked })
         } else {
-            setEditingProduct({ ...editingProduct, [name]: value });
+            setEditingProduct({ ...editingProduct, [name]: value })
         }
-    };
+    }
 
-    const handleFileChange = async(e) => {
-        const file = e.target.files[0];
-        if(file){
-            const imgData = new FormData();
-        imgData.append('file',file);
-        imgData.append('upload_preset','images_preset');
-        try {
-            let cloudName = 'dzm2nkjpj'
-            let api = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`
+    const handleFileChange = async (e) => {
+        const file = e.target.files[0]
+        if (file) {
+            const imgData = new FormData()
+            imgData.append('file', file)
+            imgData.append('upload_preset', 'images_preset')
+            try {
+                let cloudName = 'dzm2nkjpj'
+                let api = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`
 
-            const res = await axios.post(api, imgData)
-            const { secure_url } = res.data
-            console.log(secure_url);
-           /* setFormData({
+                const res = await axios.post(api, imgData)
+                const { secure_url } = res.data
+                console.log(secure_url)
+                /* setFormData({
                 ...formData,
                 imagen_url: secure_url,
             })*/
                 setEditingProduct({
                     ...editingProduct,
                     imagen_url: secure_url,
-                });
-        } catch (error) {
-            console.error('Upload failed:', error);
+                })
+            } catch (error) {
+                console.error('Upload failed:', error)
+            }
         }
-        }
-      
-    };
+    }
 
     const filteredProducts = products.filter(
         (product) =>
             product.nombre.toLowerCase().includes(search.toLowerCase()) ||
             product.tipo.toLowerCase().includes(search.toLowerCase())
-    );
+    )
 
     return (
         <div>
@@ -116,7 +122,9 @@ function BuscarProducto() {
             <Container fluid className="mt-5">
                 <Row className="justify-content-center">
                     <Col md={10}>
-                        <h2 className="text-center mb-4">Gestión de Productos</h2>
+                        <h2 className="text-center mb-4">
+                            Productos en base de datos
+                        </h2>
                         <Form.Control
                             type="text"
                             placeholder="Buscar por nombre o tipo"
@@ -151,14 +159,20 @@ function BuscarProducto() {
                                                 <Button
                                                     variant="warning"
                                                     size="sm"
-                                                    onClick={() => handleEditClick(product)}
+                                                    onClick={() =>
+                                                        handleEditClick(product)
+                                                    }
                                                 >
                                                     Editar
                                                 </Button>{' '}
                                                 <Button
                                                     variant="primary"
                                                     size="sm"
-                                                    onClick={() => handleViewClick(product.id)}
+                                                    onClick={() =>
+                                                        handleViewClick(
+                                                            product.id
+                                                        )
+                                                    }
                                                 >
                                                     Ver Producto
                                                 </Button>
@@ -173,7 +187,6 @@ function BuscarProducto() {
                                     </tr>
                                 )}
                             </tbody>
-
                         </Table>
 
                         {/* Modal para Editar Producto */}
@@ -194,9 +207,7 @@ function BuscarProducto() {
                                         <Form.Control
                                             type="text"
                                             name="nombre"
-                                            value={
-                                                editingProduct?.nombre || ''
-                                            }
+                                            value={editingProduct?.nombre || ''}
                                             onChange={handleChange}
                                         />
                                     </Form.Group>
@@ -322,7 +333,7 @@ function BuscarProducto() {
                 </Row>
             </Container>
         </div>
-    );
+    )
 }
 
-export default BuscarProducto;
+export default BuscarProducto

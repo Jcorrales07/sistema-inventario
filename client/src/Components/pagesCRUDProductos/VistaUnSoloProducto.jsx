@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import {
     Container,
     Row,
@@ -7,19 +7,19 @@ import {
     Image,
     Button,
     ModalTitle,
-} from 'react-bootstrap';
-import FeatureNavbar from '../FeatureNavbar';
-import { useNavigate, useLocation } from 'react-router-dom';
+} from 'react-bootstrap'
+import FeatureNavbar from '../FeatureNavbar'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 function VistaUnSoloProducto() {
-    const navigate = useNavigate();
-    const location = useLocation();
+    const navigate = useNavigate()
+    const location = useLocation()
 
-    const productSelected = location.state;
-    const [producto, setProducto] = useState(productSelected);
+    const productSelected = location.state
+    const [producto, setProducto] = useState(productSelected)
 
-    const esServicio = producto.tipo === 'servicio';
-    console.log(productSelected);
+    const esServicio = producto.tipo === 'servicio'
+    console.log(productSelected)
     return (
         <div>
             <FeatureNavbar />
@@ -44,9 +44,10 @@ function VistaUnSoloProducto() {
                             }}
                         >
                             <Image
-                                src={producto.imagen_url}
+                                src={`${producto.imagen_url}?q_auto,f_auto`}
                                 fluid
                                 style={{ maxHeight: '100%', maxWidth: '100%' }}
+                                loading='lazy'
                             />
                         </div>
                     </Col>
@@ -80,7 +81,9 @@ function VistaUnSoloProducto() {
                                 {!esServicio && (
                                     <Col md={4}>
                                         <Form.Group controlId="codigo_barra">
-                                            <Form.Label>Código de Barra</Form.Label>
+                                            <Form.Label>
+                                                Código de Barra
+                                            </Form.Label>
                                             <Form.Control
                                                 type="text"
                                                 value={producto.codigo_barra}
@@ -252,7 +255,7 @@ function VistaUnSoloProducto() {
                 </Row>
             </Container>
         </div>
-    );
+    )
 }
 
-export default VistaUnSoloProducto;
+export default VistaUnSoloProducto
