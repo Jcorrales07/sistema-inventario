@@ -27,11 +27,23 @@ function CrearProducto() {
     const navigate = useNavigate()
 
     const handleChange = (e) => {
-        const { name, value, type, checked } = e.target
-        setFormData({
-            ...formData,
-            [name]: type === 'checkbox' ? checked : value,
-        })
+        const { name, value, type, checked } = e.target;
+        let updatedValue = type === 'checkbox' ? checked : value;
+    
+        // Si el tipo es "servicio", asignar valores por defecto a "volumen" y "codigo_barra"
+        if (name === "tipo" && value === "servicio") {
+            setFormData({
+                ...formData,
+                [name]: updatedValue,
+                codigo_barra: '0000000000000',  // valor por defecto para el código de barras
+                volumen: 0, // valor por defecto para el volumen
+            });
+        } else {
+            setFormData({
+                ...formData,
+                [name]: updatedValue,
+            });
+        }
     }
 
     const handleImageChange = async (e) => {
@@ -89,12 +101,14 @@ function CrearProducto() {
             const apiResponse = await productoApi.createProductoRequest(formData)
 
             console.log(apiResponse)
-            // toast.success('Producto creado con éxito')
-
-
-            // setTimeout(() => {
-            //     handleCancel()
-            // }, 2000)
+            if (apiResponse.status === 201) {
+                toast.success('Producto creado con éxito')
+                setTimeout(() => {
+                    handleCancel()
+                }, 2000)
+            } else {
+                toast.error('Error al crear el producto')
+            }
         }
     }
 

@@ -16,10 +16,10 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
 const cargarInformacion = async (setProductsfn) => {
-    const savedProducts = localStorage.getItem('productos')
-    if (savedProducts) {
-        setProductsfn(JSON.parse(savedProducts))
-    } else {
+    // const savedProducts = localStorage.getItem('productos')
+    // if (savedProducts) {
+    //     setProductsfn(JSON.parse(savedProducts))
+    // } else {
         const productos = await productoApi.getAllProductosRequest()
         if (productos.status === 200) {
             const Products = productos.data.Data.map((item) => ({
@@ -41,7 +41,7 @@ const cargarInformacion = async (setProductsfn) => {
             setProductsfn(Products)
             localStorage.setItem('productos', JSON.stringify(Products))
         }
-    }
+    // }
 }
 
 function BuscarProducto() {
