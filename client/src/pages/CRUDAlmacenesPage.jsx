@@ -1,13 +1,34 @@
 import React from 'react'
 import FeatureNavbar from '../components/FeatureNavbar'
-import { Container } from 'react-bootstrap'
+import { Button, Container } from 'react-bootstrap'
 
 function CRUDAlmacenesPage() {
     return (
         <div>
             <FeatureNavbar />
             <Container fluid>
-                <h3>Almacenes</h3>
+                <Container
+                    fluid
+                    className="d-flex justify-content-center align-items-center"
+                    style={{ height: '90vh' }}
+                >
+                    <div className="d-flex  gap-3">
+                        <Button
+                            variant="dark"
+                            size="lg"
+                            href="/almacenes/crear"
+                        >
+                            Crear nuevo Almacén
+                        </Button>
+                        <Button
+                            variant="dark"
+                            size="lg"
+                            href="/almacenes/buscar"
+                        >
+                            Buscar Almacén
+                        </Button>
+                    </div>
+                </Container>
             </Container>
         </div>
     )
