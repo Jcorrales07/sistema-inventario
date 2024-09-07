@@ -11,6 +11,8 @@ import BuscarProducto from './pagesCRUDProductos/BuscarProducto'
 
 import BuscarAlmacenes from './pagesCRUDAlmacenes/BuscarAlmacenes'
 
+import NuevoRecepcion from './pagesCRUDOperaciones/NuevoRecepcion'
+
 export {
     FeatureNavbar,
     RegistroUsuarios,
@@ -20,4 +22,7 @@ export {
     BuscarProducto,
     CrearProducto,
     BuscarAlmacenes,
+
+    NuevoRecepcion,
+    
 }
