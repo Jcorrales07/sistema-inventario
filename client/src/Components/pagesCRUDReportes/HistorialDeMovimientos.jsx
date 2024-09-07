@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react';
 
-function HistorialDeMovimientos() {
-    
+const HistorialDeMovimientos = () => {
     return (
-        <div className="historial-container">
-            <h1>Historial De Movimientos</h1>
+        <div>
+            <h1>Historial de Movimientos</h1>
         </div>
-    )
-}export default HistorialDeMovimientos
+    );
+}; export default HistorialDeMovimientos;
+

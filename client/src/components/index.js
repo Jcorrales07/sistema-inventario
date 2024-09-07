@@ -10,6 +10,7 @@ import CrearProducto from './pagesCRUDProductos/CrearProducto'
 import BuscarProducto from './pagesCRUDProductos/BuscarProducto'
 
 import Existencias from './pagesCRUDReportes/Existencias'
+import HistorialDeMovimientos from './pagesCRUDReportes/HistorialDeMovimientos'
 
 
 export {
@@ -20,4 +21,6 @@ export {
     AsignarRoles,
     BuscarProducto,
     CrearProducto,
+    Existencias, 
+    HistorialDeMovimientos,
 }

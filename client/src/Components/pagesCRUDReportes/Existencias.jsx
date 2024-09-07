@@ -1,13 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-
-function Existencias() {
-    
-return (
-        <div className="existencias-container">
+const Existencias = () => {
+    return (
+        <div>
             <h1>Existencias</h1>
         </div>
     );
-}
-
-export default Existencias;
+}; export default Existencias;

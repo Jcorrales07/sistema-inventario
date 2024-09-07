@@ -14,7 +14,7 @@ function CRUDReportesPage() {
                         <Button
                         variant = "dark"
                         size = "lg"
-                        href = ""
+                        href = "/reportes/existencias"
                         >
                             Existencias
                         </Button>
@@ -22,7 +22,7 @@ function CRUDReportesPage() {
                         <Button
                         variant = "dark"
                         size = "lg"
-                        href = "">
+                        href = "/reportes/historial">
                            Historial de Moviemientos 
                         </Button>
 
