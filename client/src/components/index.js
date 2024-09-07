@@ -9,6 +9,9 @@ import AsignarRoles from './pagesCRUDRoles/AsignarRoles'
 import CrearProducto from './pagesCRUDProductos/CrearProducto'
 import BuscarProducto from './pagesCRUDProductos/BuscarProducto'
 
+import Existencias from './pagesCRUDReportes/Existencias'
+
+
 export {
     FeatureNavbar,
     RegistroUsuarios,

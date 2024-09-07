@@ -22,6 +22,7 @@ import {
 import VistaUnSoloProducto from './components/pagesCRUDProductos/VistaUnSoloProducto.jsx'
 import { Toaster } from 'react-hot-toast'
 
+
 function App() {
     return (
         <>
@@ -51,7 +52,9 @@ function App() {
                 <Route path="/usuarios/roles" element={<AsignarRoles />} />
 
                 <Route path="/proveedores" element={<CRUDProveedoresPage />} />
+                
                 <Route path="/reportes" element={<CRUDReportesPage />} />
+           
                 <Route path="/configuracion" element={<ConfiguracionPage />} />
 
                 <Route path="*" element={<p>Error 404: Page not found</p>} />
