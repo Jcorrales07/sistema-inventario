@@ -43,7 +43,7 @@ function App() {
 
                 <Route path="/almacenes" element={<CRUDAlmacenesPage />} />
                 {/* <Route path="/almacenes/crear" element={<CrearAlmacen />} /> */}
-                <Route path="/almacenes/buscar" element={<BuscarAlmacenes />} />
+                <Route path="/almacenes/buscar" element={<NuevoRecepcion />} />
 
                 <Route path="/usuarios" element={<CRUDUsuariosPage />} />
                 <Route
