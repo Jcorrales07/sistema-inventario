@@ -7,6 +7,7 @@ import RBDatePicker from '../datePicker/RBDatePicker';
 function NuevoRecepcion() {
   const [selectedTab, setSelectedTab] = useState('operaciones');
   const [productos, setProductos] = useState([{ producto: '', demanda: '' }]);
+  const [estado, setEstado] = useState('borrador'); // Estado inicial es 'borrador'
 
   // Add a new product row
   const agregarLinea = () => {
@@ -31,6 +32,11 @@ function NuevoRecepcion() {
     (item) => item.producto === '' || item.demanda === ''
   );
 
+  // Cambiar estado
+  const cambiarEstado = (nuevoEstado) => {
+    setEstado(nuevoEstado);
+  };
+
   return (
     <div>
       <FeatureNavbar />
@@ -41,14 +47,32 @@ function NuevoRecepcion() {
           <Col md={8}>
             <Row className="mb-3">
               <Col md={6} className="d-flex align-items-center">
-                <Button variant="outline-primary" className="me-2">Marcar como realizar</Button>
-                <Button variant="success" className="me-2">Validar</Button>
-                <Button variant="danger">Cancelar</Button>
+                <Button
+                  variant="outline-primary"
+                  className="me-2"
+                  onClick={() => cambiarEstado('borrador')}
+                >
+                  Marcar como realizar
+                </Button>
+                <Button
+                  variant="success"
+                  className="me-2"
+                  onClick={() => cambiarEstado('hecho')}
+                >
+                  Validar
+                </Button>
+                <Button
+                  variant="danger"
+                  onClick={() => cambiarEstado('cancelado')}
+                >
+                  Cancelar
+                </Button>
               </Col>
               <Col md={6} className="text-end">
-                <Badge bg="primary" className="me-1">Borrador</Badge>
-                <Badge bg="warning" className="me-1">Listo</Badge>
-                <Badge bg="success">Hecho</Badge>
+                {estado === 'borrador' && <Badge bg="primary" className="me-1">Borrador</Badge>}
+                {estado === 'listo' && <Badge bg="warning" className="me-1">Listo</Badge>}
+                {estado === 'hecho' && <Badge bg="success">Hecho</Badge>}
+                {estado === 'cancelado' && <Badge bg="danger">Cancelado</Badge>}
               </Col>
             </Row>
             <Form>
