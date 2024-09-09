@@ -331,10 +331,7 @@ function EditarUsuarios() {
                 placeholder="Roles asignados..."
                 style={{ height: "100px", resize: "none" }}
                 cols={2}
-                value={
-                  "🔺" +
-                  formData.roles.map((rol) => rol.nombre_rol).join(".\n🔺")
-                }
+                value={formData.roles.map((rol) => rol.nombre_rol).join(".\n")}
                 readOnly
               />
             </Col>
@@ -354,14 +351,14 @@ function EditarUsuarios() {
           </Row>
 
           <Row className="mt-3">
-            <Col>
+            <Col md={6} className="text-end">
               <Button variant="primary" type="submit" disabled={!formValid}>
                 Aplicar Cambios
               </Button>
             </Col>
-            <Col>
+            <Col md={6}>
               <Button variant="danger" onClick={handleCancel}>
-                Cancelar
+                Cancelar Edicion
               </Button>
             </Col>
           </Row>

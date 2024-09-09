@@ -201,8 +201,7 @@ const BuscarUsuarios = () => {
                       <td>{user.correo}</td>
                       <td>{user.usuario}</td>
                       <td>
-                        {"🔺" +
-                          user.roles.map((rol) => rol.nombre_rol).join(".\n🔺")}
+                        {user.roles.map((rol) => rol.nombre_rol).join(".\n")}
                       </td>
                       <td>{user.active ? "Sí" : "No"}</td>
                       <td>
@@ -210,7 +209,7 @@ const BuscarUsuarios = () => {
                           variant="outline-light"
                           onClick={() => handleShowEditModal(user)}
                         >
-                          {" ••• "}
+                          {"✏️"}
                         </Button>
                       </td>
                     </tr>
