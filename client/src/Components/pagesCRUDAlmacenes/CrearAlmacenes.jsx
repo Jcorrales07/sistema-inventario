@@ -9,7 +9,7 @@ import {
     ToastContainer,
 } from 'react-bootstrap'
 import FeatureNavbar from '../FeatureNavbar'
-
+import ApiAlmacenes from '../../../api/almacen.api'
 function CrearAlmacenes() {
     const [formData, setFormData] = useState({
         nombreAlmacen: '',
@@ -78,6 +78,7 @@ function CrearAlmacenes() {
             setToastMessage('Guardado con éxito.')
             setShowToast(true)
             console.log(formData)
+            ApiAlmacenes.createAlmacenRequest(formData);
         }
     }
 

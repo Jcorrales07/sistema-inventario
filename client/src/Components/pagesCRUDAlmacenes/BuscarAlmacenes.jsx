@@ -8,7 +8,7 @@ import {
 } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import FeatureNavbar from '../FeatureNavbar'
-
+import ApiAlmacenes from '../../../api/almacen.api'
 const dummyAlmacenes = [
     {
         id: 1,
@@ -103,21 +103,16 @@ function BuscarAlmacenes() {
     const [currentPage, setCurrentPage] = useState(1)
     const recordsPerPage = 10
     const navigate = useNavigate()
+    
 
-    // useEffect(() => {
-    //     // Simulación de llamada a la API para traer los almacenes
-    //     fetch('/api/almacenes') // Ajusta la ruta de la API según corresponda
-    //         .then((response) => response.json())
-    //         .then((data) => {
-    //             setAlmacenes(data)
-    //             setFilteredAlmacenes(data) // Iniciar con todos los registros
-    //         })
-    //         .catch((error) => console.error('Error fetching almacenes:', error))
-    // }, [])
-
-    useEffect(() => {
-        setAlmacenes(dummyAlmacenes)
-        setFilteredAlmacenes(dummyAlmacenes) // Iniciar con todos los registros
+    useEffect( () => {
+        const fetchAlmacenes = async () => {
+            const almacen = await ApiAlmacenes.getAllAlmacenesRequest()
+            console.log(almacen.data.Data);
+        setAlmacenes(almacen.data.Data);
+        setFilteredAlmacenes(almacen.data.Data) // Iniciar con todos los registros
+      }
+        fetchAlmacenes()
     }, [])
 
     const handleSearch = (e) => {

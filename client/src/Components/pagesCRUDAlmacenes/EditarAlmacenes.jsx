@@ -10,7 +10,7 @@ import {
 } from 'react-bootstrap'
 import FeatureNavbar from '../FeatureNavbar'
 import { useLocation } from 'react-router-dom'
-
+import ApiAlmacen from '../../../api/almacen.api'
 function EditarAlmacen() {
     const location = useLocation()
     const almacenSeleccionado = location.state.almacen
@@ -36,10 +36,12 @@ function EditarAlmacen() {
             setToastVariant('danger')
             setToastMessage('Todos los campos deben ser completados.')
             setShowToast(true)
+
             return
         }
 
         // Aquí puedes manejar la actualización del almacén
+       // ApiAlmacen.putAlmacenRequest(almacen);
         setToastVariant('success')
         setToastMessage('Almacén actualizado con éxito.')
         setShowToast(true)
