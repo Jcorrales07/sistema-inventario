@@ -4,8 +4,7 @@ const { Op } = require("sequelize");
 const Socios = require("../modelos/Socio");
 const OperacionProducto = require("../modelos/Operacion_Producto");
 const Producto = require("../modelos/Producto");
-const Almacen = require("../modelos/Almacen");
-const Socio = require("../modelos/Socio");
+const Almacen = require("../modelos/Almacenes");
 
 exports.operacionCreateService = async (operacionData, res) => {
   try {
@@ -191,26 +190,30 @@ exports.operacionObtenerInventarioService = async (res, idAlmacen) => {
   }
 };
 
-const calTotalOperaciones = (operaciones) => {
-  const totalOperaciones = operaciones.map((operacion) => {
-    let desde;
-    let hasta;
+const calTotalOperaciones = async (operaciones) => {
+  const totalOperaciones = await Promise.all(
+    operaciones.map(async (operacion) => {
+      let desde;
+      let hasta;
 
-    if (operacion.dataValues.tipo === 0) {
-      desde = Socios.findByPk(operacion.dataValues.from);
-      hasta = Almacen.findByPk(operacion.dataValues.to);
-    } else {
-      desde = Almacen.findByPk(operacion.dataValues.from);
-      hasta = Socios.findByPk(operacion.dataValues.to);
-    }
+      if (operacion.dataValues.tipo === 0) {
+        desde = await Socios.findByPk(operacion.dataValues.from);
+        hasta = await Almacen.findByPk(operacion.dataValues.to);
+      } else {
+        desde = await Almacen.findByPk(operacion.dataValues.from);
+        hasta = await Socios.findByPk(operacion.dataValues.to);
+      }
 
-    return {
-      ...operacion.toJSON(),
-      cantidad: operacion.dataValues.Operacion_Productos[0].cantidad,
-      desde,
-      hasta,
-    };
-  });
+      const op = {
+        ...operacion.toJSON(),
+        cantidad: operacion.dataValues.Operacion_Productos[0].cantidad,
+        desde: desde.toJSON(),
+        hasta: hasta.toJSON(),
+      };
+
+      return op;
+    })
+  );
 
   return totalOperaciones;
 };
@@ -235,7 +238,9 @@ exports.operacionesByProductoService = async (res, idProducto) => {
       ],
     });
 
-    return calTotalOperaciones(operaciones);
+    const his = await calTotalOperaciones(operaciones);
+
+    return his;
   } catch (error) {
     console.log(error);
     res.satatus(500).json({ message: "No hay registros", error });
