@@ -55,6 +55,8 @@ function App() {
                 
 
                 <Route path="/almacenes/recibidos" element={<Recibidos />} />
+                <Route path="/almacenes/nuevo-recepcion" element={<NuevoRecepcion />} />
+
 
                 <Route path="/usuarios" element={<CRUDUsuariosPage />} />
                 <Route
