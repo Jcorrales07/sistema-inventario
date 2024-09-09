@@ -1,14 +1,34 @@
-import React from 'react'
-import FeatureNavbar from '../components/FeatureNavbar'
-import { Container } from 'react-bootstrap'
+import React from "react";
+import { Button, Container } from "react-bootstrap";
+import { FeatureNavbar } from "../components";
+
 
 function CRUDReportesPage() {
     return (
         <div>
             <FeatureNavbar />
-            <Container fluid>
-                <h3>Reportes</h3>
-            </Container>
+                <Container fluid className="d-flex justify-content-center align-items-center"
+                style={{height: "90vh"}}>
+                    <div className="d-flex gap-3">
+
+                        <Button
+                        variant = "dark"
+                        size = "lg"
+                        href = "/reportes/existencias"
+                        >
+                            Existencias
+                        </Button>
+
+                        <Button
+                        variant = "dark"
+                        size = "lg"
+                        href = "/reportes/historial">
+                           Historial de Moviemientos 
+                        </Button>
+
+                    </div>
+                
+                </Container>
         </div>
     )
 }
