@@ -40,6 +40,33 @@ exports.operacionDeleteService = async (id, res) => {
   }
 };
 
+const findDesdeHasta = async (operaciones) => {
+  const operacionesConDesdeHasta = await Promise.all(
+    operaciones.map(async (operacion) => {
+      let desde;
+      let hasta;
+
+      if (operacion.dataValues.tipo === 0) {
+        desde = await Socios.findByPk(operacion.dataValues.from);
+        hasta = await Almacen.findByPk(operacion.dataValues.to);
+      } else {
+        desde = await Almacen.findByPk(operacion.dataValues.from);
+        hasta = await Socios.findByPk(operacion.dataValues.to);
+      }
+
+      const op = {
+        ...operacion.toJSON(),
+        desde: desde.toJSON(),
+        hasta: hasta.toJSON(),
+      };
+
+      return op;
+    })
+  );
+
+  return operacionesConDesdeHasta;
+};
+
 exports.operacionSelectAllService = async (res) => {
   try {
     const operacions = await Operacion.findAll({
@@ -60,7 +87,8 @@ exports.operacionSelectAllService = async (res) => {
       ],
     });
 
-    return operacions;
+    const operacionesConDesdeHasta = await findDesdeHasta(operacions);
+    return operacionesConDesdeHasta;
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "No hay registros", error });
