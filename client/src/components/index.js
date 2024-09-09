@@ -11,7 +11,7 @@ import BuscarProducto from './pagesCRUDProductos/BuscarProducto'
 
 import Existencias from './pagesCRUDReportes/Existencias'
 import HistorialDeMovimientos from './pagesCRUDReportes/HistorialDeMovimientos'
-
+import Recibidos from './pagesCRUDOperaciones/Recibidos'
 
 export {
     FeatureNavbar,
@@ -23,4 +23,5 @@ export {
     CrearProducto,
     Existencias, 
     HistorialDeMovimientos,
+    Recibidos,
 }

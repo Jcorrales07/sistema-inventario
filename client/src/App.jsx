@@ -9,6 +9,7 @@ import {
     CRUDProveedoresPage,
     CRUDReportesPage,
     ConfiguracionPage,
+   
 } from './pages'
 
 import {
@@ -20,6 +21,7 @@ import {
     CrearProducto,
     Existencias,
     HistorialDeMovimientos,
+    Recibidos,
 } from './components/index.js'
 import VistaUnSoloProducto from './components/pagesCRUDProductos/VistaUnSoloProducto.jsx'
 import { Toaster } from 'react-hot-toast'
@@ -43,6 +45,7 @@ function App() {
                 />
 
                 <Route path="/almacenes" element={<CRUDAlmacenesPage />} />
+                <Route path="/almacenes/recibidos" element={<Recibidos />} />
 
                 <Route path="/usuarios" element={<CRUDUsuariosPage />} />
                 <Route

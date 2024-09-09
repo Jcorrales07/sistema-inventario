@@ -6,6 +6,7 @@ import CRUDProveedoresPage from './CRUDProveedoresPage'
 import CRUDReportesPage from './CRUDReportesPage'
 import ConfiguracionPage from './ConfiguracionPage'
 
+
 export {
     HomePage,
     CRUDProductosPage,
@@ -14,4 +15,5 @@ export {
     CRUDProveedoresPage,
     CRUDReportesPage,
     ConfiguracionPage,
+    
 }
