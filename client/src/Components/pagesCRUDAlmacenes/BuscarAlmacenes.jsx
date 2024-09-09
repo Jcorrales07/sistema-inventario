@@ -12,73 +12,85 @@ import FeatureNavbar from '../FeatureNavbar'
 const dummyAlmacenes = [
     {
         id: 1,
-        nombre: 'Almacén Central',
+        nombreAlmacen: 'Almacén Central',
+        nombreCorto: 'AC',
         ubicacion: 'Planta Baja - Sector A',
         direccion: 'Av. Siempre Viva 123, Ciudad',
     },
     {
         id: 2,
-        nombre: 'Almacén Norte',
+        nombreAlmacen: 'Almacén Norte',
+        nombreCorto: 'AN',
         ubicacion: 'Planta Alta - Sector B',
         direccion: 'Calle Falsa 456, Ciudad',
     },
     {
         id: 3,
-        nombre: 'Almacén Sur',
+        nombreAlmacen: 'Almacén Sur',
+        nombreCorto: 'AS',
         ubicacion: 'Subsuelo - Sector C',
         direccion: 'Avenida Principal 789, Ciudad',
     },
     {
         id: 4,
-        nombre: 'Depósito Este',
+        nombreAlmacen: 'Depósito Este',
+        nombreCorto: 'DE',
         ubicacion: 'Planta Baja - Sector D',
         direccion: 'Camino Verde 321, Ciudad',
     },
     {
         id: 5,
-        nombre: 'Depósito Oeste',
+        nombreAlmacen: 'Depósito Oeste',
+        nombreCorto: 'DO',
         ubicacion: 'Planta Alta - Sector E',
         direccion: 'Ruta Azul 654, Ciudad',
     },
     {
         id: 6,
-        nombre: 'Almacén Externo',
+        nombreAlmacen: 'Almacén Externo',
+        nombreCorto: 'AE',
         ubicacion: 'Planta Baja - Sector F',
         direccion: 'Calle Larga 987, Afueras',
     },
     {
         id: 7,
-        nombre: 'Almacén Temporal',
+        nombreAlmacen: 'Almacén Temporal',
+        nombreCorto: 'AT',
         ubicacion: 'Subsuelo - Sector G',
         direccion: 'Carretera Norte 159, Ciudad',
     },
     {
         id: 8,
-        nombre: 'Almacén Frigorífico',
+        nombreAlmacen: 'Almacén Frigorífico',
+        nombreCorto: 'AF',
         ubicacion: 'Planta Baja - Sector H',
         direccion: 'Avenida Fría 753, Ciudad',
     },
     {
         id: 9,
-        nombre: 'Depósito de Químicos',
+        nombreAlmacen: 'Depósito de Químicos',
+        nombreCorto: 'DQ',
         ubicacion: 'Planta Alta - Sector I',
         direccion: 'Zona Industrial 246, Ciudad',
     },
     {
         id: 10,
-        nombre: 'Depósito General',
+        nombreAlmacen: 'Depósito General',
+        nombreCorto: 'DG',
         ubicacion: 'Subsuelo - Sector J',
         direccion: 'Paseo Comercial 357, Ciudad',
     },
     {
         id: 11,
-        nombre: 'Almacén Secundario',
+        nombreAlmacen: 'Almacén Secundario',
+        nombreCorto: 'AS',
         ubicacion: 'Planta Baja - Sector K',
         direccion: 'Callejón Central 101, Ciudad',
     },
     {
         id: 12,
-        nombre: 'Almacén Tercero',
+        nombreAlmacen: 'Almacén Tercero',
+        nombreCorto: 'AT',
         ubicacion: 'Subsuelo - Sector L',
         direccion: 'Carril Sur 202, Ciudad',
     },
@@ -120,9 +132,9 @@ function BuscarAlmacenes() {
         setFilteredAlmacenes(filtered)
     }
 
-    const handleEdit = () => {
+    const handleEdit = (selectedAlmacen) => {
         // Redirigir a la pantalla de edición del almacén
-        navigate(`/almacenes/editar/`)
+        navigate(`/almacenes/editar/`, { state: { almacen: selectedAlmacen } })
     }
 
     const handleNew = () => {
@@ -194,14 +206,14 @@ function BuscarAlmacenes() {
                                         key={almacen.id}
                                         className="align-middle"
                                     >
-                                        <td>{almacen.nombre}</td>
+                                        <td>{almacen.nombreAlmacen}</td>
                                         <td>{almacen.ubicacion}</td>
                                         <td>{almacen.direccion}</td>
                                         <td className="text-center">
                                             <Button
                                                 variant=""
                                                 className="border"
-                                                onClick={() => handleEdit()}
+                                                onClick={() => handleEdit(almacen)}
                                             >
                                                 ✏️
                                             </Button>

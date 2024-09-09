@@ -9,7 +9,9 @@ import AsignarRoles from './pagesCRUDRoles/AsignarRoles'
 import CrearProducto from './pagesCRUDProductos/CrearProducto'
 import BuscarProducto from './pagesCRUDProductos/BuscarProducto'
 
+import CrearAlmacenes from './pagesCRUDAlmacenes/CrearAlmacenes'
 import BuscarAlmacenes from './pagesCRUDAlmacenes/BuscarAlmacenes'
+import AlmacenContainer from './pagesCRUDAlmacenes/EditarAlmacenes'
 
 import NuevoRecepcion from './pagesCRUDOperaciones/NuevoRecepcion'
 
@@ -22,6 +24,8 @@ export {
     BuscarProducto,
     CrearProducto,
     BuscarAlmacenes,
+    CrearAlmacenes,
+    AlmacenContainer,
 
     NuevoRecepcion,
     
