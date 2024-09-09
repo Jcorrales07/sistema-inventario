@@ -7,6 +7,15 @@ router.get(
   "/inventario",
   operacionController.operacionObtenerInventarioController
 );
+router.get(
+  "/inventario/:id",
+  operacionController.operacionObtenerInventarioPorAlmacenController
+);
+
+router.get(
+  "/producto/:id",
+  operacionController.operacionesObtenerPorProductoController
+);
 router.post("/", operacionController.operacionCreateController);
 router.put("/:id", operacionController.operacionUpdateController);
 router.delete("/:id", operacionController.operacionDeleteController);
