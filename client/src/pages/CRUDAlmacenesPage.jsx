@@ -27,6 +27,13 @@ function CRUDAlmacenesPage() {
                         >
                             Buscar Almacén
                         </Button>
+                        <Button
+                        variant = "dark"
+                        size = "lg"
+                        href = "/almacenes/recibidos"
+                        >
+                            Recibidos
+                        </Button>
                     </div>
                 </Container>
             </Container>

@@ -16,7 +16,7 @@ import AlmacenContainer from './pagesCRUDAlmacenes/EditarAlmacenes'
 import NuevoRecepcion from './pagesCRUDOperaciones/NuevoRecepcion'
 import Existencias from './pagesCRUDReportes/Existencias'
 import HistorialDeMovimientos from './pagesCRUDReportes/HistorialDeMovimientos'
-
+import Recibidos from './pagesCRUDOperaciones/Recibidos'
 
 export {
     FeatureNavbar,
@@ -34,4 +34,5 @@ export {
     
     Existencias, 
     HistorialDeMovimientos,
+    Recibidos,
 }
