@@ -10,17 +10,19 @@ import {
 } from 'react-bootstrap'
 import FeatureNavbar from '../FeatureNavbar'
 import ApiAlmacenes from '../../../api/almacen.api'
+import { useNavigate } from 'react-router-dom'
 function CrearAlmacenes() {
+    const navigate = useNavigate()
     const [formData, setFormData] = useState({
-        nombreAlmacen: '',
-        nombreCorto: '',
+        nombre: '',
+        nombre_corto: '',
         direccion: '',
     })
 
     const [isModified, setIsModified] = useState(false)
     const [errors, setErrors] = useState({
-        nombreAlmacen: '',
-        nombreCorto: '',
+        nombre: '',
+        nombre_corto: '',
         direccion: '',
     })
 
@@ -29,8 +31,8 @@ function CrearAlmacenes() {
 
     useEffect(() => {
         setIsModified(
-            formData.nombreAlmacen.trim() !== '' &&
-                formData.nombreCorto.trim() !== '' &&
+            formData.nombre.trim() !== '' &&
+                formData.nombre_corto.trim() !== '' &&
                 formData.direccion.trim() !== '' &&
                 !Object.values(errors).some((error) => error !== '')
         )
@@ -41,7 +43,7 @@ function CrearAlmacenes() {
         setFormData({ ...formData, [name]: value })
 
         switch (name) {
-            case 'nombreAlmacen':
+            case 'nombre':
                 setErrors({
                     ...errors,
                     [name]:
@@ -50,7 +52,7 @@ function CrearAlmacenes() {
                             : '',
                 })
                 break
-            case 'nombreCorto':
+            case 'nombre_corto':
                 setErrors({
                     ...errors,
                     [name]:
@@ -73,24 +75,32 @@ function CrearAlmacenes() {
         }
     }
 
-    const handleApplyChanges = () => {
+    const handleApplyChanges = async () => {
         if (isModified) {
-            setToastMessage('Guardado con éxito.')
-            setShowToast(true)
-            console.log(formData)
-            ApiAlmacenes.createAlmacenRequest(formData);
+            // console.log(formData)
+            const response = await ApiAlmacenes.createAlmacenRequest(formData)
+
+            console.log(response)
+            if (response.statusText === 'Created') {
+                setToastMessage('Guardado con éxito.')
+                setShowToast(true)
+                setIsModified(false)
+                setTimeout(() => {
+                    navigate(-1)
+                }, 2000)
+            }
         }
     }
 
     const handleCancel = () => {
         setFormData({
-            nombreAlmacen: '',
-            nombreCorto: '',
+            nombre: '',
+            nombre_corto: '',
             direccion: '',
         })
         setErrors({
-            nombreAlmacen: '',
-            nombreCorto: '',
+            nombre: '',
+            nombre_corto: '',
             direccion: '',
         })
         setToastMessage('Acción cancelada.')
@@ -100,7 +110,10 @@ function CrearAlmacenes() {
     return (
         <div>
             <FeatureNavbar />
-            <Container fluid className="d-flex justify-content-center align-items-center">
+            <Container
+                fluid
+                className="d-flex justify-content-center align-items-center"
+            >
                 <div className="w-100" style={{ maxWidth: '600px' }}>
                     <h2 className="my-4" style={{ textAlign: 'center' }}>
                         Crear nuevo Almacén
@@ -108,18 +121,18 @@ function CrearAlmacenes() {
                     <Form>
                         <Row className="mb-3">
                             <Col md={6}>
-                                <Form.Group controlId="formNombreAlmacen">
+                                <Form.Group controlId="formNombre">
                                     <Form.Label>Nombre del Almacén</Form.Label>
                                     <Form.Control
                                         type="text"
-                                        name="nombreAlmacen"
+                                        name="nombre"
                                         placeholder="Ingrese el nombre del almacén"
-                                        value={formData.nombreAlmacen}
+                                        value={formData.nombre}
                                         onChange={handleInputChange}
-                                        isInvalid={!!errors.nombreAlmacen}
+                                        isInvalid={!!errors.nombre}
                                     />
                                     <Form.Control.Feedback type="invalid">
-                                        {errors.nombreAlmacen}
+                                        {errors.nombre}
                                     </Form.Control.Feedback>
                                 </Form.Group>
                             </Col>
@@ -128,15 +141,15 @@ function CrearAlmacenes() {
                                     <Form.Label>Nombre Corto</Form.Label>
                                     <Form.Control
                                         type="text"
-                                        name="nombreCorto"
+                                        name="nombre_corto"
                                         placeholder="Ingrese el nombre corto"
-                                        value={formData.nombreCorto}
+                                        value={formData.nombre_corto}
                                         onChange={handleInputChange}
-                                        isInvalid={!!errors.nombreCorto}
+                                        isInvalid={!!errors.nombre_corto}
                                         maxLength={5}
                                     />
                                     <Form.Control.Feedback type="invalid">
-                                        {errors.nombreCorto}
+                                        {errors.nombre_corto}
                                     </Form.Control.Feedback>
                                 </Form.Group>
                             </Col>
@@ -167,7 +180,10 @@ function CrearAlmacenes() {
                                 >
                                     Crear Almacen
                                 </Button>
-                                <Button variant="secondary" onClick={handleCancel}>
+                                <Button
+                                    variant="danger"
+                                    onClick={handleCancel}
+                                >
                                     Cancelar
                                 </Button>
                             </Col>
@@ -182,7 +198,9 @@ function CrearAlmacenes() {
                             autohide
                         >
                             <Toast.Header>
-                                <strong className="me-auto">Notificación</strong>
+                                <strong className="me-auto">
+                                    Notificación
+                                </strong>
                             </Toast.Header>
                             <Toast.Body>{toastMessage}</Toast.Body>
                         </Toast>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     Button,
     Form,
@@ -9,51 +9,67 @@ import {
     Col,
 } from 'react-bootstrap'
 import FeatureNavbar from '../FeatureNavbar'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import ApiAlmacen from '../../../api/almacen.api'
+
 function EditarAlmacen() {
+    const navigate = useNavigate()
     const location = useLocation()
     const almacenSeleccionado = location.state.almacen
-    console.log(almacenSeleccionado);
-    // Datos iniciales del almacén
-    const [almacen, setAlmacen] = useState(almacenSeleccionado)
+    console.log(almacenSeleccionado)
 
+    const [almacen, setAlmacen] = useState(almacenSeleccionado)
     const [showToast, setShowToast] = useState(false)
     const [toastMessage, setToastMessage] = useState('')
     const [toastVariant, setToastVariant] = useState('success')
+    const [isFormComplete, setIsFormComplete] = useState(false)
+    const [isSubmitting, setIsSubmitting] = useState(false)
+
+    // Verificar si todos los campos están llenos
+    useEffect(() => {
+        const { nombre, nombre_corto, direccion } = almacen
+        if (nombre && nombre_corto && direccion) {
+            setIsFormComplete(true)
+        } else {
+            setIsFormComplete(false)
+        }
+    }, [almacen])
 
     const handleChange = (e) => {
         const { name, value } = e.target
         setAlmacen((prev) => ({ ...prev, [name]: value }))
     }
 
-    const handleApplyChanges = () => {
-        if (
-            !almacen.nombreAlmacen ||
-            !almacen.nombreCorto ||
-            !almacen.direccion
-        ) {
-            setToastVariant('danger')
-            setToastMessage('Todos los campos deben ser completados.')
+    const handleApplyChanges = async () => {
+        if (!isFormComplete) return
+
+        setIsSubmitting(true)
+
+        const response = await ApiAlmacen.putAlmacenRequest(almacen.id, almacen)
+
+        console.log(response)
+
+        if (response.statusText === 'Created') {
+            setToastVariant('success')
+            setToastMessage('Almacén actualizado con éxito.')
             setShowToast(true)
 
-            return
+            setTimeout(() => {
+                navigate(-1)
+            }, 2000)
+        } else {
+            setToastVariant('danger')
+            setToastMessage('Error al actualizar el almacén.')
+            setShowToast(true)
+            setIsSubmitting(false)
         }
-
-        // Aquí puedes manejar la actualización del almacén
-       // ApiAlmacen.putAlmacenRequest(almacen);
-        setToastVariant('success')
-        setToastMessage('Almacén actualizado con éxito.')
-        setShowToast(true)
     }
 
     const handleCancel = () => {
-        // Aquí puedes manejar la cancelación
         console.log('Edición cancelada')
     }
 
     const handleCloseToast = () => setShowToast(false)
-    
 
     return (
         <div>
@@ -66,13 +82,13 @@ function EditarAlmacen() {
                     <h2 className="my-4 text-center">Editar Almacén</h2>
                     <Form>
                         <Row className="mb-3">
-                            <Form.Group as={Col} controlId="formNombreAlmacen">
+                            <Form.Group as={Col} controlId="formNombre">
                                 <Form.Label>Nombre del Almacén</Form.Label>
                                 <Form.Control
                                     type="text"
                                     placeholder="Ingrese el nombre del almacén"
-                                    name="nombreAlmacen"
-                                    value={almacen.nombreAlmacen}
+                                    name="nombre"
+                                    value={almacen.nombre}
                                     onChange={handleChange}
                                 />
                             </Form.Group>
@@ -81,8 +97,8 @@ function EditarAlmacen() {
                                 <Form.Control
                                     type="text"
                                     placeholder="Ingrese el nombre corto"
-                                    name="nombreCorto"
-                                    value={almacen.nombreCorto}
+                                    name="nombre_corto"
+                                    value={almacen.nombre_corto}
                                     onChange={handleChange}
                                 />
                             </Form.Group>
@@ -99,19 +115,23 @@ function EditarAlmacen() {
                             />
                         </Form.Group>
 
-                        <div className="d-flex justify-content-end">
-                            <Button
-                                variant="secondary"
-                                className="me-2"
-                                onClick={handleCancel}
-                            >
-                                Cancelar
-                            </Button>
+                        <div className="d-flex justify-content-center">
                             <Button
                                 variant="primary"
                                 onClick={handleApplyChanges}
+                                disabled={!isFormComplete || isSubmitting}
                             >
-                                Aplicar cambios
+                                {isSubmitting
+                                    ? 'Guardando...'
+                                    : 'Aplicar cambios'}
+                            </Button>
+                            <Button
+                                variant="danger"
+                                className="mx-3"
+                                onClick={handleCancel}
+                                disabled={isSubmitting}
+                            >
+                                Cancelar Edicion
                             </Button>
                         </div>
                     </Form>

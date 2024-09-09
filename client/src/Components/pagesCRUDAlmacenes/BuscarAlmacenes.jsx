@@ -9,6 +9,7 @@ import {
 import { useNavigate } from 'react-router-dom'
 import FeatureNavbar from '../FeatureNavbar'
 import ApiAlmacenes from '../../../api/almacen.api'
+
 const dummyAlmacenes = [
     {
         id: 1,
@@ -103,20 +104,26 @@ function BuscarAlmacenes() {
     const [currentPage, setCurrentPage] = useState(1)
     const recordsPerPage = 10
     const navigate = useNavigate()
-    
 
-    useEffect( () => {
+    useEffect(() => {
         const fetchAlmacenes = async () => {
             const almacen = await ApiAlmacenes.getAllAlmacenesRequest()
-            console.log(almacen.data.Data);
-        setAlmacenes(almacen.data.Data);
-        setFilteredAlmacenes(almacen.data.Data) // Iniciar con todos los registros
-      }
+            console.log(almacen.data.Data)
+
+            const newAlmacenes = [...almacen.data.Data]
+            newAlmacenes.map((almacen) => {
+                (almacen.ubicacion = `${almacen.nombre_corto}/Existencias`)
+            })
+
+            setAlmacenes(newAlmacenes)
+            setFilteredAlmacenes(newAlmacenes) // Iniciar con todos los registros
+        }
         fetchAlmacenes()
     }, [])
 
     const handleSearch = (e) => {
         const term = e.target.value.toLowerCase()
+        console.log(term);
         setSearchTerm(term)
         const filtered = almacenes.filter(
             (almacen) =>
@@ -201,14 +208,16 @@ function BuscarAlmacenes() {
                                         key={almacen.id}
                                         className="align-middle"
                                     >
-                                        <td>{almacen.nombreAlmacen}</td>
-                                        <td>{almacen.ubicacion}</td>
+                                        <td>{almacen.nombre}</td>
+                                        <td>{`${almacen.nombre_corto}/Existencias`}</td>
                                         <td>{almacen.direccion}</td>
                                         <td className="text-center">
                                             <Button
                                                 variant=""
                                                 className="border"
-                                                onClick={() => handleEdit(almacen)}
+                                                onClick={() =>
+                                                    handleEdit(almacen)
+                                                }
                                             >
                                                 ✏️
                                             </Button>
