@@ -103,8 +103,11 @@ function CrearAlmacenes() {
             nombre_corto: '',
             direccion: '',
         })
-        setToastMessage('Acción cancelada.')
+        setToastMessage('Creacion cancelada.')
         setShowToast(true)
+        setTimeout(() => {
+            navigate(-1)
+        }, 2000)
     }
 
     return (

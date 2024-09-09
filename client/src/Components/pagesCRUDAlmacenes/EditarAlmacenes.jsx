@@ -66,7 +66,12 @@ function EditarAlmacen() {
     }
 
     const handleCancel = () => {
-        console.log('Edición cancelada')
+        setToastVariant('')
+        setToastMessage('Creacion cancelada.')
+        setShowToast(true)
+        setTimeout(() => {
+            navigate(-1)
+        }, 2000)
     }
 
     const handleCloseToast = () => setShowToast(false)
