@@ -5,6 +5,7 @@ const morgan = require("morgan");
 const db = require("./database");
 const routes = require("./routes/routes");
 const PORT = process.env.PORT || 3000;
+const OperacionProducto = require("./modelos/Operacion_Producto");
 
 app.use(cors());
 app.use(morgan("dev"));
@@ -25,6 +26,7 @@ const initApp = async () => {
         console.error("Parent error:", error.parent);
         console.error("Error details:", error);
       });
+
     app.listen(PORT, () => {
       console.log(`Servidor corriendo en el puerto ${PORT}`);
     });

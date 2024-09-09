@@ -10,6 +10,8 @@ const rutasPrivilegio = require("./privilegio.routes");
 const rutasCategoria = require("./categoria.routes");
 const rutasProductoCategoria = require("./producto.categoria.routes");
 const rutasUsuarioRol = require("./usuarioRol.routes");
+const rutasOperacion = require("./operacion.routes");
+const rutasOperacionProducto = require("./operacionProducto.routes");
 
 const router = Router();
 router.use("/rolPrivilegio", rutasRolPrivilegio);
@@ -22,4 +24,7 @@ router.use("/privilegio", rutasPrivilegio);
 router.use(rutasCategoria);
 router.use(rutasProductoCategoria);
 router.use("/usuarioRol", rutasUsuarioRol);
+router.use("/operacion", rutasOperacion);
+router.use("/operacionProducto", rutasOperacionProducto);
+
 module.exports = router;
