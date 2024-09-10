@@ -52,8 +52,10 @@ function Recibidos() {
     // Apply search term and filter criteria
     let filtered = data;
 
+    console.log("filtered", filterEstado);
+
     if (filterEstado) {
-      filtered = filtered.filter((item) => item.estado === filterEstado);
+      filtered = filtered.filter((item) => item.estado === parseInt(filterEstado));
     }
 
     if (searchTerm) {
@@ -150,10 +152,10 @@ function Recibidos() {
                 onChange={handleFilterChange}
               >
                 <option value="">Todos</option>
-                <option value="Hecho">Hecho</option>
-                <option value="Borrador">Borrador</option>
-                <option value="Listo">Listo</option>
-                <option value="Cancelado">Cancelado</option>
+                <option value={3}>Hecho</option>
+                <option value={0}>Borrador</option>
+                <option value={2}>Listo</option>
+                <option value={1}>Cancelado</option>
               </Form.Control>
               <Button
                 variant="secondary"

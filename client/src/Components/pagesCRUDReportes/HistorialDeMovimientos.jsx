@@ -149,7 +149,7 @@ const HistorialDeMovimientos = () => {
     switch (state) {
       case 0:
         return (
-          <Badge variant="danger" bg="danger">
+          <Badge variant="warning" bg="warning">
             Borrador
           </Badge>
         );
