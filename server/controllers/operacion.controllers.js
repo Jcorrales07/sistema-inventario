@@ -95,12 +95,20 @@ exports.operacionObtenerInventarioPorAlmacenController = async (req, res) => {
 exports.operacionesObtenerPorProductoController = async (req, res) => {
   try {
     const { id } = req.params;
-    const operacions = await operacion.operacionesByProductoService(
-      res,
-      id
-    );
+    const operacions = await operacion.operacionesByProductoService(res, id);
     res.json({ Data: operacions });
   } catch (error) {
     res.status(404).json({ message: "Error durante el inventario", error });
+  }
+};
+
+exports.getSiguienteOperacionController = async (req, res) => {
+  try {
+    const operacions = await operacion.getSiguienteOperacionService();
+    res.json(operacions);
+  } catch (error) {
+    res
+      .status(404)
+      .json({ message: "Error al obtener la siguiente operacion" });
   }
 };

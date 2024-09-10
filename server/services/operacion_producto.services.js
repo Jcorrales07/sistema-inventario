@@ -1,4 +1,5 @@
 const OperacionProducto = require("../modelos/Operacion_Producto");
+const sequelize = require("../database");
 
 exports.operacionProductoCreateService = async (operacionProductoData, res) => {
   try {
@@ -65,5 +66,51 @@ exports.operacionProductoSelectByIdService = async (id, res) => {
     return operacionProducto;
   } catch (error) {
     res.status(404).json({ message: "Id no encontrado" });
+  }
+};
+
+exports.operacionProductoChangeProductoService = async (
+  idOperacion,
+  productos
+) => {
+  try {
+    const t = await sequelize.transaction();
+
+    console.log(productos);
+    console.log(idOperacion);
+    await OperacionProducto.destroy(
+      {
+        where: {
+          id_operacion: idOperacion,
+        },
+      },
+      { transaction: t }
+    );
+
+    let prods = [];
+
+    for (const element of productos) {
+      const p = {
+        id_operacion: idOperacion,
+        id_producto: element.id,
+        cantidad: element.demanda,
+        in_stock: element.demanda,
+      };
+
+      const operacionProducto = await OperacionProducto.create(p, {
+        transaction: t,
+      });
+
+      prods.push(operacionProducto);
+    }
+
+    await t.commit();
+
+    return prods;
+  } catch (error) {
+    console.log(error);
+    t.rollback();
+
+    return null;
   }
 };

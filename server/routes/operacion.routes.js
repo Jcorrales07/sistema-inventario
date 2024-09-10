@@ -4,6 +4,10 @@ const operacionController = require("../controllers/operacion.controllers");
 const router = Router();
 router.get("/", operacionController.operacionSelectAllController);
 router.get(
+  "/sigOperacion",
+  operacionController.getSiguienteOperacionController
+);
+router.get(
   "/inventario",
   operacionController.operacionObtenerInventarioController
 );

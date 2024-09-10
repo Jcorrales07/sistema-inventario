@@ -22,19 +22,15 @@ const Operacion = db.define(
     },
     from: {
       type: DataTypes.INTEGER,
-      allowNull: false,
     },
     to: {
       type: DataTypes.INTEGER,
-      allowNull: false,
     },
     referencia: {
       type: DataTypes.STRING(256),
-      allowNull: false,
     },
     fecha_programada: {
       type: DataTypes.DATE,
-      allowNull: false,
     },
     fecha_efectiva: {
       type: DataTypes.DATE,

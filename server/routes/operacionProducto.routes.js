@@ -7,6 +7,12 @@ router.get(
   operacionProductoController.operacionProductoSelectAllController
 );
 router.post("/", operacionProductoController.operacionProductoCreateController);
+
+router.post(
+  "/changeProducts/:id",
+  operacionProductoController.operacionProductoChangeProductoControlloer
+);
+
 router.put(
   "/:id",
   operacionProductoController.operacionProductoUpdateController

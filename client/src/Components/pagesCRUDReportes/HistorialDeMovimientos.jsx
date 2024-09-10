@@ -13,7 +13,7 @@ import {
 } from "react-bootstrap";
 import FeatureNavbar from "../FeatureNavbar";
 import operacionApi from "../../../api/operacion.api";
-import { set } from "date-fns";
+import { format } from "date-fns";
 
 // Datos de ejemplo
 
@@ -54,7 +54,7 @@ const HistorialDeMovimientos = () => {
           let cantidad = opProducto.cantidad;
 
           data.push({
-            fecha: fecha,
+            fecha: format(new Date(fecha), "yyyy-MM-dd HH:mm"),
             referencia: referencia,
             producto: producto,
             desde: desde,

@@ -53,6 +53,7 @@ const LoginSignup = () => {
                         roles: roles,
                         privilegios: privilegios,
                         active: response.data.Data.active,
+                        id_socio: response.data.Data.id_socio
                     }
 
                     localStorage.setItem('user', JSON.stringify(user))

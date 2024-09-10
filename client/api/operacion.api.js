@@ -96,9 +96,9 @@ const createOperacionRequest = async (values) => {
   }
 };
 
-const getObtenerSiguienteOperacionRequest = async () => {
+const getSiguienteOperacionRequest = async () => {
   try {
-    const response = await axiosInstance.get(`operacion/nextOperation`);
+    const response = await axiosInstance.get(`operacion/sigOperacion`);
     if (!response) {
       return null;
     }
@@ -110,7 +110,7 @@ const getObtenerSiguienteOperacionRequest = async () => {
 
 export default {
   getAllOperacionsRequest,
-  getObtenerSiguienteOperacionRequest,
+  getSiguienteOperacionRequest,
   getOperacionByIdRequest,
   putOperacionRequest,
   deleteOperacionRequest,

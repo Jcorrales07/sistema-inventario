@@ -47,17 +47,25 @@ const findDesdeHasta = async (operaciones) => {
       let hasta;
 
       if (operacion.dataValues.tipo === 0) {
-        desde = await Socios.findByPk(operacion.dataValues.from);
-        hasta = await Almacen.findByPk(operacion.dataValues.to);
+        desde = operacion.dataValues.from
+          ? await Socios.findByPk(operacion.dataValues.from)
+          : null;
+        hasta = operacion.dataValues.to
+          ? await Almacen.findByPk(operacion.dataValues.to)
+          : null;
       } else {
-        desde = await Almacen.findByPk(operacion.dataValues.from);
-        hasta = await Socios.findByPk(operacion.dataValues.to);
+        desde = operacion.dataValues.from
+          ? await Almacen.findByPk(operacion.dataValues.from)
+          : null;
+        hasta = operacion.dataValues.to
+          ? await Socios.findByPk(operacion.dataValues.to)
+          : null;
       }
 
       const op = {
         ...operacion.toJSON(),
-        desde: desde.toJSON(),
-        hasta: hasta.toJSON(),
+        desde: desde ? desde.toJSON() : null,
+        hasta: hasta ? hasta.toJSON() : null,
       };
 
       return op;
@@ -269,6 +277,30 @@ exports.operacionesByProductoService = async (res, idProducto) => {
     const his = await calTotalOperaciones(operaciones);
 
     return his;
+  } catch (error) {
+    console.log(error);
+    res.satatus(500).json({ message: "No hay registros", error });
+  }
+};
+
+exports.getSiguienteOperacionService = async (res) => {
+  try {
+    const operacionesEntrada = await Operacion.findAndCountAll({
+      where: {
+        tipo: 0,
+      },
+    });
+
+    const operacionesSalida = await Operacion.findAndCountAll({
+      where: {
+        tipo: 1,
+      },
+    });
+
+    return {
+      entrada: operacionesEntrada.count + 1,
+      salida: operacionesSalida.count + 1,
+    };
   } catch (error) {
     console.log(error);
     res.satatus(500).json({ message: "No hay registros", error });

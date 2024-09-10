@@ -41,12 +41,10 @@ exports.operacionProductoDeleteController = async (req, res) => {
     console.log(id);
     const deleteoperacionProducto =
       await operacionProducto.operacionProductoDeleteService(id);
-    res
-      .status(201)
-      .json({
-        data: deleteoperacionProducto,
-        message: "operacionProducto eliminado exitosamente",
-      });
+    res.status(201).json({
+      data: deleteoperacionProducto,
+      message: "operacionProducto eliminado exitosamente",
+    });
   } catch (error) {
     res.status(404).json({ message: "Id no encontrado" });
   }
@@ -74,5 +72,20 @@ exports.operacionProductoSelectByIdController = async (req, res) => {
     res.json({ Data: operacionProductos });
   } catch (error) {
     res.status(404).json({ message: "Id no encontrado" });
+  }
+};
+
+exports.operacionProductoChangeProductoControlloer = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const operacionProductoUpdate =
+      await operacionProducto.operacionProductoChangeProductoService(
+        id,
+        req.body
+      );
+    res.json({ Data: operacionProductoUpdate });
+  } catch (error) {
+    res.status(404).json({ message: "Id no encontrado" , ...error});
   }
 };

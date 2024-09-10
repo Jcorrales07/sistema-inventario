@@ -203,6 +203,9 @@ function HomePage() {
               </Navbar.Brand>
               <Navbar.Collapse className="justify-content-end">
                 <Nav className="align-items-center">
+                  <Nav.Link href="/home">
+                    <i className="bi bi-house-fill text-white fs-5"></i>
+                  </Nav.Link>
                   <Nav.Link href="#notificaciones">
                     <i className="bi bi-bell-fill text-white fs-5"></i>
                   </Nav.Link>
