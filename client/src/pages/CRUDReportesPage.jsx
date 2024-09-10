@@ -23,7 +23,7 @@ function CRUDReportesPage() {
                         variant = "dark"
                         size = "lg"
                         href = "/reportes/historial">
-                           Historial de Moviemientos 
+                           Historial de Movimientos 
                         </Button>
 
                     </div>
