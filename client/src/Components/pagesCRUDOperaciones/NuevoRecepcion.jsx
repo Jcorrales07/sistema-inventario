@@ -374,7 +374,7 @@ function NuevoRecepcion() {
       toast.success("Estado actualizado exitosamente");
 
       setInterval(() => {
-        navigate("/almacenes/recibidos");
+        navigate(-1);
       }, 1000);
     }
 
