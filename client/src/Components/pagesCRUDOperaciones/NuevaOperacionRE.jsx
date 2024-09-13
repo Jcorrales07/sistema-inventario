@@ -15,7 +15,7 @@ import operacionProductoApi from "../../../api/operacionProducto.api";
 
 import toast from "react-hot-toast";
 
-function NuevoRecepcion() {
+function NuevaOperacionRE({tipo}) {
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState("operaciones");
   const [productos, setProductos] = useState([
@@ -30,7 +30,7 @@ function NuevoRecepcion() {
   const [selectedSocio, setSelectedSocio] = useState(-1);
   const [selectedAlmacen, setSelectedAlmacen] = useState(-1);
   const [fechaProgramada, setFechaProgramada] = useState("");
-  const [referencia, setReferencia] = useState("Nuevo Recepcion");
+  const [referencia, setReferencia] = useState(`Nueva ${tipo === 'recibir' ? 'Recepción' : 'Entrega'}`);
 
   const [operacion, setOperacion] = useState(null);
 
@@ -418,7 +418,7 @@ function NuevoRecepcion() {
                   className="me-2"
                   onClick={() => cambiarEstado(2)}
                 >
-                  Marcar como realizar
+                  Realizar
                 </Button>
                 <Button
                   variant="success"
@@ -482,8 +482,7 @@ function NuevoRecepcion() {
                   <Form.Group className="mb-3">
                     <Form.Label>Tipo de operación</Form.Label>
                     <Form.Select disabled={true}>
-                      <option>unitec4: Recibidos</option>
-                      <option>Operación B</option>
+                      <option>unitec4: {tipo === "recibidos" ? "Recibidos" : "Entregas"}</option>
                     </Form.Select>
                   </Form.Group>
                 </Col>
@@ -625,4 +624,4 @@ function NuevoRecepcion() {
   );
 }
 
-export default NuevoRecepcion;
+export default NuevaOperacionRE;

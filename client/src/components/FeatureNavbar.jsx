@@ -15,7 +15,7 @@ const dropdowns = [
         options: [
             { name: 'Almacenes', link: '/almacenes/buscar' },
             { name: 'Recibidos', link: '/almacenes/recibidos' },
-            { name: 'Entregados', link: '/almacenes/entregados' },
+            { name: 'Entregas', link: '/almacenes/entregas' },
         ],
         rolePermissions: [4],
     },

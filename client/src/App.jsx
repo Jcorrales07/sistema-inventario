@@ -20,12 +20,12 @@ import {
     BuscarProducto,
     CrearProducto,
     BuscarAlmacenes,
-    NuevoRecepcion,
+    NuevaOperacionRE,
     CrearAlmacenes,
     AlmacenContainer,
     Existencias,
     HistorialDeMovimientos,
-    Recibidos,
+    RecibidosEntregasScreen,
 } from './components/index.js'
 import VistaUnSoloProducto from './components/pagesCRUDProductos/VistaUnSoloProducto.jsx'
 import { Toaster } from 'react-hot-toast'
@@ -54,8 +54,11 @@ function App() {
                 <Route path="/almacenes/editar" element={<AlmacenContainer />} />
                 
 
-                <Route path="/almacenes/recibidos" element={<Recibidos />} />
-                <Route path="/almacenes/nuevo-recepcion" element={<NuevoRecepcion />} />
+                <Route path="/almacenes/recibidos" element={<RecibidosEntregasScreen tipo="recibidos" />} />
+                <Route path="/almacenes/entregas" element={<RecibidosEntregasScreen tipo="entregas" />} />
+                <Route path="/almacenes/nueva-recepcion" element={<NuevaOperacionRE tipo="recibir" />} />
+                <Route path="/almacenes/nueva-entrega" element={<NuevaOperacionRE tipo="entregar" />} />
+
 
 
                 <Route path="/usuarios" element={<CRUDUsuariosPage />} />

@@ -5,7 +5,7 @@ import { Container, Row, Col, Table, Form, Button, Pagination, Badge } from 'rea
 import operacionApi from "../../../api/operacion.api";
 
 import { format } from "date-fns";
-function Recibidos() {
+function RecibidosEntregasScreen({tipo}) {
   const [data, setData] = useState([
     // Add more rows if needed
   ]);
@@ -127,7 +127,7 @@ function Recibidos() {
     <div>
       <FeatureNavbar />
       <Container fluid>
-        <h1 className="mt-3">Recibidos</h1>
+        <h1 className="mt-3">{tipo === "recibidos" ? "Recibidos" : "Entregas"}</h1>
         <Row className="mt-4 mb-4">
           <Col xs={12} md={6}>
             <Form.Control
@@ -138,10 +138,10 @@ function Recibidos() {
             />
             <Button
               variant="primary"
-              href="/almacenes/nuevo-recepcion"
+              href={`/almacenes/${tipo === "recibidos" ? "nueva-recepcion" : "nueva-entrega"}`}
               className="mt-3"
             >
-              Nuevo Recibidos
+              Nueva {tipo === "recibidos" ? "Recepción" : "Entrega"}
             </Button>
           </Col>
           <Col>
@@ -225,4 +225,4 @@ function Recibidos() {
   );
 }
 
-export default Recibidos;
+export default RecibidosEntregasScreen;

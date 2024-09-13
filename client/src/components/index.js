@@ -13,10 +13,10 @@ import CrearAlmacenes from './pagesCRUDAlmacenes/CrearAlmacenes'
 import BuscarAlmacenes from './pagesCRUDAlmacenes/BuscarAlmacenes'
 import AlmacenContainer from './pagesCRUDAlmacenes/EditarAlmacenes'
 
-import NuevoRecepcion from './pagesCRUDOperaciones/NuevoRecepcion'
+import NuevaOperacionRE from './pagesCRUDOperaciones/NuevaOperacionRE'
 import Existencias from './pagesCRUDReportes/Existencias'
 import HistorialDeMovimientos from './pagesCRUDReportes/HistorialDeMovimientos'
-import Recibidos from './pagesCRUDOperaciones/Recibidos'
+import RecibidosEntregasScreen from './pagesCRUDOperaciones/RecibidosEntregasScreen'
 
 export {
     FeatureNavbar,
@@ -30,9 +30,9 @@ export {
     CrearAlmacenes,
     AlmacenContainer,
 
-    NuevoRecepcion,
+    NuevaOperacionRE,
     
     Existencias, 
     HistorialDeMovimientos,
-    Recibidos,
+    RecibidosEntregasScreen,
 }
