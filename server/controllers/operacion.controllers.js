@@ -112,3 +112,13 @@ exports.getSiguienteOperacionController = async (req, res) => {
       .json({ message: "Error al obtener la siguiente operacion" });
   }
 };
+
+exports.validarOperacionEntregaController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const operacions = await operacion.validarOperacionEntregaService(id);
+    res.json(operacions);
+  } catch (error) {
+    res.status(404).json({ message: "Error al validar la operacion" });
+  }
+};

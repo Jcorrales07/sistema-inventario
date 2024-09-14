@@ -16,6 +16,11 @@ router.get(
   operacionController.operacionObtenerInventarioPorAlmacenController
 );
 
+router.put(
+  "/validarEntrega/:id",
+  operacionController.validarOperacionEntregaController
+);
+
 router.get(
   "/producto/:id",
   operacionController.operacionesObtenerPorProductoController

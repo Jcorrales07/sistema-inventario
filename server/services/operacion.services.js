@@ -1,5 +1,6 @@
 const Operacion = require("../modelos/Operacion");
 const { Op } = require("sequelize");
+const Sequelize = require("../database");
 
 const Socios = require("../modelos/Socio");
 const OperacionProducto = require("../modelos/Operacion_Producto");
@@ -302,6 +303,104 @@ exports.getSiguienteOperacionService = async (res) => {
       salida: operacionesSalida.count + 1,
     };
   } catch (error) {
+    console.log(error);
+    res.satatus(500).json({ message: "No hay registros", error });
+  }
+};
+
+const actualizarInStockProductosEntregas = async (operacionProductos, t) => {
+  for (const op of operacionProductos) {
+    let cantidad_entrega = op.dataValues.cantidad;
+
+    const operacionesProductoRecibido = await Operacion.findAll({
+      where: {
+        estado: 3,
+        tipo: 0,
+      },
+      include: [
+        {
+          model: OperacionProducto,
+          where: {
+            id_producto: op.dataValues.id_producto,
+            in_stock: {
+              [Op.gt]: 0,
+            },
+          },
+        },
+      ],
+    });
+
+    for (const opRecibido of operacionesProductoRecibido) {
+      const opRecibidoProducto = opRecibido.dataValues.Operacion_Productos.find(
+        (opRec) => opRec.id_producto === op.id_producto
+      );
+
+      if (opRecibidoProducto.in_stock >= cantidad_entrega) {
+        opRecibidoProducto.in_stock -= cantidad_entrega;
+        cantidad_entrega = 0;
+      } else {
+        cantidad_entrega -= opRecibidoProducto.in_stock;
+        opRecibidoProducto.in_stock = 0;
+      }
+
+      await OperacionProducto.update(
+        { in_stock: opRecibidoProducto.in_stock },
+        {
+          where: {
+            id: opRecibidoProducto.id,
+          },
+          transaction: t,
+        }
+      );
+
+      if (cantidad_entrega === 0) {
+        break;
+      }
+    }
+  }
+};
+
+exports.validarOperacionEntregaService = async (idOperacion, res = null) => {
+  try {
+    const t = await Sequelize.transaction();
+
+    const operacion = await Operacion.findByPk(
+      idOperacion,
+      {
+        include: [
+          {
+            model: OperacionProducto,
+            attributes: ["in_stock", "id", "cantidad", "id_producto"],
+          },
+        ],
+      },
+      { transaction: t }
+    );
+
+    if (!operacion) {
+      return new Error("Operación no encontrada");
+    }
+
+    const operacionProductos = operacion.dataValues.Operacion_Productos;
+
+    await actualizarInStockProductosEntregas(operacionProductos, t);
+
+    await Operacion.update(
+      { estado: 3 },
+      {
+        where: {
+          id: idOperacion,
+        },
+        transaction: t,
+      }
+    );
+
+    await t.commit();
+
+    return operacion;
+  } catch (error) {
+    await t.rollback();
+
     console.log(error);
     res.satatus(500).json({ message: "No hay registros", error });
   }
