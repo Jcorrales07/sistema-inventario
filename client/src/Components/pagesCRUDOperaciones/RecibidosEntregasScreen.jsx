@@ -5,7 +5,7 @@ import { Container, Row, Col, Table, Form, Button, Pagination, Badge } from 'rea
 import operacionApi from "../../../api/operacion.api";
 
 import { format } from "date-fns";
-function RecibidosEntregasScreen({tipo}) {
+function RecibidosEntregasScreen({ tipo }) {
   const [data, setData] = useState([
     // Add more rows if needed
   ]);
@@ -26,6 +26,8 @@ function RecibidosEntregasScreen({tipo}) {
       }
 
       const data = response.data.Data.map((item) => ({
+        id: item.id,
+        tipo: item.tipo,
         referencia: item.referencia,
         desde: item.desde ? item.desde.nombre : "",
         a: item.hasta ? item.hasta.nombre : "",
@@ -55,7 +57,9 @@ function RecibidosEntregasScreen({tipo}) {
     console.log("filtered", filterEstado);
 
     if (filterEstado) {
-      filtered = filtered.filter((item) => item.estado === parseInt(filterEstado));
+      filtered = filtered.filter(
+        (item) => item.estado === parseInt(filterEstado)
+      );
     }
 
     if (searchTerm) {
@@ -71,6 +75,16 @@ function RecibidosEntregasScreen({tipo}) {
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
+  };
+
+  const handleOnClickOperacion = (operacion) => {
+    localStorage.setItem("selectedOperacion", operacion.id);
+
+    if (operacion.tipo === 0) {
+      window.location.href = `/almacenes/nueva-recepcion/`;
+    } else {
+      window.location.href = `/almacenes/nueva-entrega/`;
+    }
   };
 
   const handleFilterChange = (e) => {
@@ -127,7 +141,9 @@ function RecibidosEntregasScreen({tipo}) {
     <div>
       <FeatureNavbar />
       <Container fluid>
-        <h1 className="mt-3">{tipo === "recibidos" ? "Recibidos" : "Entregas"}</h1>
+        <h1 className="mt-3">
+          {tipo === "recibidos" ? "Recibidos" : "Entregas"}
+        </h1>
         <Row className="mt-4 mb-4">
           <Col xs={12} md={6}>
             <Form.Control
@@ -138,7 +154,9 @@ function RecibidosEntregasScreen({tipo}) {
             />
             <Button
               variant="primary"
-              href={`/almacenes/${tipo === "recibidos" ? "nueva-recepcion" : "nueva-entrega"}`}
+              href={`/almacenes/${
+                tipo === "recibidos" ? "nueva-recepcion" : "nueva-entrega"
+              }`}
               className="mt-3"
             >
               Nueva {tipo === "recibidos" ? "Recepción" : "Entrega"}
@@ -181,7 +199,12 @@ function RecibidosEntregasScreen({tipo}) {
           </thead>
           <tbody>
             {currentPageData.map((item, index) => (
-              <tr key={index}>
+              <tr
+                key={index}
+                onDoubleClick={() => {
+                  handleOnClickOperacion(item);
+                }}
+              >
                 <td>{item.referencia}</td>
                 <td>{item.desde}</td>
                 <td>{item.a}</td>

@@ -64,6 +64,8 @@ function NuevaOperacionRE({ tipo }) {
     `Nueva ${tipo === "recibir" ? "Recepción" : "Entrega"}`
   );
 
+  const [loadingGuardarProducto, setLoadingGuardarProducto] = useState(false);
+
   const [operacion, setOperacion] = useState(null);
 
   const handleLoadProductosOperacion = (OperacionProductos) => {
@@ -82,6 +84,7 @@ function NuevaOperacionRE({ tipo }) {
   };
 
   const handleGuardarProductos = async () => {
+    setLoadingGuardarProducto(true);
     if (!operacion) {
       console.error("No se ha creado la operacion");
       toast.error("Primero debe crear una operación");
@@ -105,6 +108,8 @@ function NuevaOperacionRE({ tipo }) {
     } catch (error) {
       console.error("Error creating operacion productos: ", error);
     }
+
+    setLoadingGuardarProducto(false);
   };
 
   const loadReferencia = async (idAlmacen) => {
@@ -273,6 +278,8 @@ function NuevaOperacionRE({ tipo }) {
       setSelectedAlmacen(i_almacen);
 
       setSelectedSocio(i_socio);
+
+      setEstado(response.data.Data.estado);
 
       handleLoadProductosOperacion(response.data.Data.Operacion_Productos);
     } catch (error) {
@@ -484,6 +491,7 @@ function NuevaOperacionRE({ tipo }) {
                   variant="outline-primary"
                   className="me-2"
                   onClick={() => cambiarEstado(2)}
+                  disabled={estado === 2 || estado === 3}
                 >
                   Realizar
                 </Button>
@@ -491,10 +499,15 @@ function NuevaOperacionRE({ tipo }) {
                   variant="success"
                   className="me-2"
                   onClick={() => cambiarEstado(3)}
+                  disabled={estado === 3}
                 >
                   Validar
                 </Button>
-                <Button variant="danger" onClick={() => cambiarEstado(0)}>
+                <Button
+                  variant="danger"
+                  onClick={() => cambiarEstado(0)}
+                  disabled={estado === 3}
+                >
                   Cancelar
                 </Button>
               </Col>
@@ -701,7 +714,8 @@ function NuevaOperacionRE({ tipo }) {
                   disabled={
                     isAgregarLineaDisabled ||
                     estado === 3 ||
-                    productos.length === 0
+                    productos.length === 0 ||
+                    loadingGuardarProducto
                   }
                   onClick={handleGuardarProductos}
                 >
