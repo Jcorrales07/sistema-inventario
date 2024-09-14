@@ -108,7 +108,20 @@ const getSiguienteOperacionRequest = async () => {
   }
 };
 
+const handleValidarOperacionEntregaRequest = async (id) => {
+  try {
+    const response = await axiosInstance.put(`operacion/validarEntrega/${id}`);
+    if (!response) {
+      return null;
+    }
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+
 export default {
+  handleValidarOperacionEntregaRequest,
   getAllOperacionsRequest,
   getSiguienteOperacionRequest,
   getOperacionByIdRequest,
