@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 // prettier-ignore
-import { Container, Row, Col, Form, Button, Tabs, Tab, Table, Badge, Image, ListGroup } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Tabs, Tab, Table, Badge, Image, ListGroup, ListGroupItem } from 'react-bootstrap';
 import FeatureNavbar from "../FeatureNavbar";
 import RBDatePicker from "../datePicker/RBDatePicker";
 import almacenApi from "../../../api/almacen.api";
@@ -16,37 +16,6 @@ import { es } from "date-fns/locale";
 import operacionProductoApi from "../../../api/operacionProducto.api";
 
 import toast from "react-hot-toast";
-
-const messages = [
-  {
-    user: "John Doe",
-    date: "2022-01-01T14:30:00.000Z",
-    message: "Hello, world! Just wanted to say hi!",
-  },
-  {
-    user: "Jane Doe",
-    date: "2022-01-02T09:45:00.000Z",
-    message: "Hi, John! How was your weekend?",
-  },
-  {
-    user: "Bob Smith",
-    date: "2022-01-03T12:00:00.000Z",
-    message: "Hey team, just a reminder that our meeting is at 2 PM today.",
-  },
-  {
-    user: "Alice Johnson",
-    date: "2022-01-04T16:15:00.000Z",
-    message:
-      "Hi, everyone! Just wanted to share this interesting article I found: https://example.com/article",
-  },
-  {
-    user: "John Doe",
-    date: "2022-01-05T10:30:00.000Z",
-    message: "Thanks, Alice! I`ll have to check that out.",
-  },
-];
-
-const user = localStorage.getItem("user");
 
 function NuevaOperacionRE({ tipo }) {
   const navigate = useNavigate();
@@ -403,7 +372,7 @@ function NuevaOperacionRE({ tipo }) {
 
         message =
           "Ha cambiado el socio de origen ➜ " +
-          socios.find((e) => e.id === parseInt(value)) +
+          socios.find((e) => e.id === parseInt(value)).nombre +
           ".";
 
         if (tipo === "entregar") {
@@ -854,9 +823,9 @@ function NuevaOperacionRE({ tipo }) {
           </Col>
           <Col md={4} className="mt-4 mt-md-0">
             <h5>Historial de acciones</h5>
-            <ul className="list-unstyled">
+            <ListGroup className="overflow-auto" style={{ maxHeight: "700px" }}>
               {actividades.length === 0 ? (
-                <div className="d-flex align-items-center">
+                <ListGroup.Item className="d-flex align-items-center">
                   <div className="ms-3">
                     <div className="d-flex flex-row align-content-center align-items-center">
                       <div className="fw-bold">Sistema</div>
@@ -867,10 +836,14 @@ function NuevaOperacionRE({ tipo }) {
 
                     <div>Sin actividades</div>
                   </div>
-                </div>
+                </ListGroup.Item>
               ) : (
                 actividades.map((message, index) => (
-                  <li key={index} className="mb-4 d-flex">
+                  <ListGroup.Item
+                    key={index}
+                    className="mb-4 d-flex"
+                    style={{ border: "none" }}
+                  >
                     <Image
                       src={`https://placehold.co/40x40/c5ec53/000?text=${
                         message.user.charAt(0) +
@@ -900,10 +873,10 @@ function NuevaOperacionRE({ tipo }) {
                         <div>{message.message}</div>
                       </div>
                     </div>
-                  </li>
+                  </ListGroup.Item>
                 ))
               )}
-            </ul>
+            </ListGroup>
           </Col>
         </Row>
       </Container>
