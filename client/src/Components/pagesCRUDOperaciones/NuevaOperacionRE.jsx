@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 // prettier-ignore
-import { Container, Row, Col, Form, Button, Tabs, Tab, Table, Badge, Image } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Tabs, Tab, Table, Badge, Image, ListGroup } from 'react-bootstrap';
 import FeatureNavbar from "../FeatureNavbar";
 import RBDatePicker from "../datePicker/RBDatePicker";
 import almacenApi from "../../../api/almacen.api";
 import productoApi from "../../../api/producto.api";
 import operacionApi from "../../../api/operacion.api";
 import socioApi from "../../../api/socio.api";
+import actividad_operacionApi from "../../../api/actividad_operacion.api";
 import { set } from "date-fns";
 
 import { format } from "date-fns";
@@ -45,12 +46,16 @@ const messages = [
   },
 ];
 
+const user = localStorage.getItem("user");
+
 function NuevaOperacionRE({ tipo }) {
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState("operaciones");
   const [productos, setProductos] = useState([
     { producto: "", demanda: "", id: -1 },
   ]);
+
+  const [actividades, setActividades] = useState([]);
   const [estado, setEstado] = useState(0); // Estado inicial es 'borrador'
   const [almacenes, setAlmacenes] = useState([]);
   const [socios, setSocios] = useState([]);
@@ -67,6 +72,54 @@ function NuevaOperacionRE({ tipo }) {
   const [loadingGuardarProducto, setLoadingGuardarProducto] = useState(false);
 
   const [operacion, setOperacion] = useState(null);
+
+  const loadActividades = async (id) => {
+    try {
+      const response =
+        await actividad_operacionApi.getActividadesByOperacionRequest(id);
+
+      if (!response || response.status < 200 || response.status >= 300) {
+        console.error("Error fetching actividades: ", response);
+        return;
+      }
+
+      console.log("Actividades: ", response.data);
+
+      const acts = response.data.map((act) => ({
+        user: act.Socio.nombre,
+        date: act.fecha,
+        message: act.texto,
+      }));
+
+      setActividades(acts);
+    } catch (error) {
+      console.error("Error fetching actividades: ", error);
+    }
+  };
+
+  const handleCrearActividad = async (message) => {
+    const userData = JSON.parse(localStorage.getItem("user"));
+
+    const actividad = {
+      id_operacion: operacion.id,
+      id_socio: userData.id_socio,
+      texto: message,
+      fecha: new Date().toISOString(),
+    };
+
+    try {
+      const response = await actividad_operacionApi.createActividadRequest(
+        actividad
+      );
+
+      if (!response || response.status < 200 || response.status >= 300) {
+        console.error("Error creating actividad: ", response);
+        return;
+      }
+    } catch (error) {
+      console.error("Error creating actividad: ", error);
+    }
+  };
 
   const handleLoadProductosOperacion = (OperacionProductos) => {
     if (OperacionProductos.length === 0) {
@@ -101,6 +154,16 @@ function NuevaOperacionRE({ tipo }) {
         console.error("Error creating operacion productos: ", response);
         return;
       }
+
+      const message =
+        productos.length === 0
+          ? "Ha eliminado los productos"
+          : "'Ha actualizado los productos de la operación: \n" +
+            productos.map((p) => p.producto + ": " + p.demanda).join("\n") +
+            "'";
+
+      console.log("Message: ", message);
+      await handleCrearActividad(message);
 
       loadOperacion(operacion.id);
 
@@ -185,7 +248,7 @@ function NuevaOperacionRE({ tipo }) {
     }
   };
 
-  const handleCrearOperacion = async (atributos) => {
+  const handleCrearOperacion = async (atributos, message) => {
     const userData = JSON.parse(localStorage.getItem("user"));
 
     const operacion = {
@@ -224,6 +287,27 @@ function NuevaOperacionRE({ tipo }) {
       }
 
       localStorage.setItem("selectedOperacion", response.data.Data.id);
+
+      const actividad = {
+        id_operacion: response.data.Data.id,
+        id_socio: userData.id_socio,
+        texto: message,
+        fecha: new Date().toISOString(),
+      };
+
+      const responseActividad =
+        await actividad_operacionApi.createActividadRequest(actividad);
+
+      if (
+        !responseActividad ||
+        responseActividad.status < 200 ||
+        responseActividad.status >= 300
+      ) {
+        console.error("Error creating actividad: ", responseActividad);
+        return;
+      }
+
+      await loadOperacion(response.data.Data.id);
     } catch (error) {
       console.error("Error creating operacion: ", error);
     }
@@ -282,13 +366,18 @@ function NuevaOperacionRE({ tipo }) {
       setEstado(response.data.Data.estado);
 
       handleLoadProductosOperacion(response.data.Data.Operacion_Productos);
+
+      await loadActividades(id);
     } catch (error) {
       console.error("Error fetching operacion: ", error);
     }
   };
 
+  const handleGenerarMensaje = (atributo, ext) => {};
+
   const handleChangeField = async (field, value) => {
     let atributos = {};
+    let message = "";
 
     switch (field) {
       case "estado":
@@ -312,6 +401,11 @@ function NuevaOperacionRE({ tipo }) {
           from: value,
         };
 
+        message =
+          "Ha cambiado el socio de origen ➜ " +
+          socios.find((e) => e.id === parseInt(value)) +
+          ".";
+
         if (tipo === "entregar") {
           const almacen = almacenes.find(
             (almacen) => almacen.id === parseInt(value)
@@ -327,6 +421,9 @@ function NuevaOperacionRE({ tipo }) {
               ...atributos,
               referencia: newRef,
             };
+
+            message =
+              "Ha cambiado el almacen de origen ➜ " + almacen.nombre + ".";
           } else {
             const ref = await loadReferencia(parseInt(value));
 
@@ -334,6 +431,11 @@ function NuevaOperacionRE({ tipo }) {
               ...atributos,
               referencia: ref,
             };
+
+            message =
+              "Ha cambiado el almacen de origen ➜ " +
+              almacenes.find((e) => e.id === parseInt(value)).nombre +
+              ".";
           }
         }
 
@@ -343,6 +445,11 @@ function NuevaOperacionRE({ tipo }) {
         atributos = {
           fecha_programada: value,
         };
+
+        message =
+          "Ha cambiado la fecha programada de la operación ➜ " +
+          new Date(value).toLocaleString() +
+          ".";
 
         break;
 
@@ -374,6 +481,13 @@ function NuevaOperacionRE({ tipo }) {
               referencia: ref,
             };
           }
+
+          message = "Ha cambiado el almacen de destino ➜ " + almacen.nombre;
+        } else {
+          message =
+            "Ha cambiado el socio de destino ➜ " +
+            socios.find((e) => e.id === parseInt(value)).nombre +
+            ".";
         }
 
         break;
@@ -383,9 +497,11 @@ function NuevaOperacionRE({ tipo }) {
       // vamos a actualizar la operacion
 
       await handleUpdateOperacion(atributos);
+
+      await handleCrearActividad(message);
       await loadOperacion(operacion.id);
     } else {
-      await handleCrearOperacion(atributos);
+      await handleCrearOperacion(atributos, message);
     }
   };
 
@@ -445,6 +561,13 @@ function NuevaOperacionRE({ tipo }) {
         await handleChangeField("estado", nuevoEstado);
       }
 
+      if (nuevoEstado === 2) {
+        await handleCrearActividad("Operación marcada como realizada");
+      }
+
+      if (nuevoEstado === 3) {
+        await handleCrearActividad("Operación marcada como validada");
+      }
       toast.success("Estado actualizado exitosamente");
 
       setInterval(() => {
@@ -732,35 +855,54 @@ function NuevaOperacionRE({ tipo }) {
           <Col md={4} className="mt-4 mt-md-0">
             <h5>Historial de acciones</h5>
             <ul className="list-unstyled">
-              {messages.map((message, index) => (
-                <li key={index} className="mb-4 d-flex">
-                  <Image
-                    src={`https://placehold.co/40x40/c5ec53/000?text=${
-                      message.user.charAt(0) +
-                      message.user.split(" ")[1].charAt(0)
-                    }`}
-                    rounded
-                    style={{
-                      width: "40px",
-                      height: "40px",
-                    }}
-                  />
-                  <div className="d-flex align-items-center">
-                    <div className="ms-3">
-                      <div className="d-flex flex-row align-content-center align-items-center">
-                        <div className="fw-bold">{message.user}</div>
-                        <small className="text-muted ms-1">
-                          {format(new Date(message.date), "dd/MM/yy hh:mm a", {
-                            locale: es,
-                          })}
-                        </small>
-                      </div>
-
-                      <div>{message.message}</div>
+              {actividades.length === 0 ? (
+                <div className="d-flex align-items-center">
+                  <div className="ms-3">
+                    <div className="d-flex flex-row align-content-center align-items-center">
+                      <div className="fw-bold">Sistema</div>
+                      <small className="text-muted ms-1">
+                        ??/??/?? ??:?? ??
+                      </small>
                     </div>
+
+                    <div>Sin actividades</div>
                   </div>
-                </li>
-              ))}
+                </div>
+              ) : (
+                actividades.map((message, index) => (
+                  <li key={index} className="mb-4 d-flex">
+                    <Image
+                      src={`https://placehold.co/40x40/c5ec53/000?text=${
+                        message.user.charAt(0) +
+                        message.user.split(" ")[1].charAt(0)
+                      }`}
+                      rounded
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                      }}
+                    />
+                    <div className="d-flex align-items-center">
+                      <div className="ms-3">
+                        <div className="d-flex flex-row align-content-center align-items-center">
+                          <div className="fw-bold">{message.user}</div>
+                          <small className="text-muted ms-1">
+                            {format(
+                              new Date(message.date),
+                              "dd/MM/yy hh:mm a",
+                              {
+                                locale: es,
+                              }
+                            )}
+                          </small>
+                        </div>
+
+                        <div>{message.message}</div>
+                      </div>
+                    </div>
+                  </li>
+                ))
+              )}
             </ul>
           </Col>
         </Row>

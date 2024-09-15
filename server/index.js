@@ -5,7 +5,7 @@ const morgan = require("morgan");
 const db = require("./database");
 const routes = require("./routes/routes");
 const PORT = process.env.PORT || 3000;
-const OperacionProducto = require("./modelos/Operacion_Producto");
+const actividad_operacion = require("./modelos/actividad_operacion");
 
 app.use(cors());
 app.use(morgan("dev"));

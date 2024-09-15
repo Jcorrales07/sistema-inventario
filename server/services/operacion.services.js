@@ -4,14 +4,30 @@ const Sequelize = require("../database");
 
 const Socios = require("../modelos/Socio");
 const OperacionProducto = require("../modelos/Operacion_Producto");
+const actividad_operacion = require("../modelos/actividad_operacion");
 const Producto = require("../modelos/Producto");
 const Almacen = require("../modelos/Almacenes");
 
 exports.operacionCreateService = async (operacionData, res) => {
   try {
-    const operacion = await Operacion.create(operacionData);
+    const t = await Sequelize.transaction();
+    const operacion = await Operacion.create(operacionData, { transaction: t });
+
+    const actividad_operacio = await actividad_operacion.create(
+      {
+        id_operacion: operacion.id,
+        id_socio: operacionData.id_responsable,
+        texto: "Ha creado la operacion",
+        fecha: new Date().toISOString(),
+      },
+      { transaction: t }
+    );
+
+    await t.commit();
+
     return operacion;
   } catch (error) {
+    console.log(error);
     res.status(400).json({ message: "Error durante la creación de Operacion" });
   }
 };
