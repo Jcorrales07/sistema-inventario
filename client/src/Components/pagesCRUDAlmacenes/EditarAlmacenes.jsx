@@ -105,6 +105,7 @@ function EditarAlmacen() {
                                     name="nombre_corto"
                                     value={almacen.nombre_corto}
                                     onChange={handleChange}
+                                    maxLength={5}
                                 />
                             </Form.Group>
                         </Row>
