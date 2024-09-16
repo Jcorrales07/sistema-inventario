@@ -222,11 +222,8 @@ function HomePage() {
                                         />
 
                                         <Dropdown.Menu align="end">
-                                            <Dropdown.Item href="#/profile">
-                                                Profile
-                                            </Dropdown.Item>
                                             <Dropdown.Item href="/configuracion">
-                                                Settings
+                                                Configuracion
                                             </Dropdown.Item>
                                             <Dropdown.Item
                                                 href="/"
