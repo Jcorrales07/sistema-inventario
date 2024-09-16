@@ -26,7 +26,7 @@ const buttons = [
     {
         name: 'Gestión de Almacenes',
         link: '/almacenes',
-        rolePermissions: [4],
+        rolePermissions: [1, 2,4],
     },
     {
         name: 'Gestión de Usuarios',

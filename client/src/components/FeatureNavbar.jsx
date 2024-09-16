@@ -11,13 +11,20 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 const dropdowns = [
     {
-        name: 'Operaciones',
+        name: 'Almacenes',
         options: [
-            { name: 'Almacenes', link: '/almacenes/buscar' },
-            { name: 'Recibidos', link: '/almacenes/recibidos' },
-            { name: 'Entregas', link: '/almacenes/entregas' },
+            { name: 'Crear Almacen', link: '/almacenes/crear' },
+            { name: 'Buscar Almacen', link: '/almacenes/buscar' },
         ],
         rolePermissions: [4],
+    },
+    {
+        name: 'Operaciones',
+        options: [
+            { name: 'Recibidos', link: '/almacenes/recibidos', permission: 1 },
+            { name: 'Entregas', link: '/almacenes/entregas', permission: 2 },
+        ],
+        rolePermissions: [1, 2],
     },
     {
         name: 'Productos',
@@ -92,7 +99,7 @@ function FeatureNavbar() {
                                     )
                                 ) ||
                                 dropdown.rolePermissions.length === 0 ||
-                                user.roles.some((rol) => rol.id === 1)
+                                user.roles.some((rol) => rol.id === 1) // Allow access to admin
                         )
                         .map((dropdown) => (
                             <Dropdown key={dropdown.name} className="text-white mx-1">
@@ -103,14 +110,27 @@ function FeatureNavbar() {
                                     {dropdown.name}
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu align="end">
-                                    {dropdown.options.map((option) => (
-                                        <Dropdown.Item
-                                            key={option.name}
-                                            href={option.link}
-                                        >
-                                            {option.name}
-                                        </Dropdown.Item>
-                                    ))}
+                                    {dropdown.options
+                                        .filter((option) =>
+                                            option.permission
+                                                ? user.privilegios.some(
+                                                      (privilegio) =>
+                                                          privilegio.id ===
+                                                          option.permission
+                                                  ) ||
+                                                  user.roles.some(
+                                                      (rol) => rol.id === 1 // Admin can see all options
+                                                  )
+                                                : true
+                                        )
+                                        .map((option) => (
+                                            <Dropdown.Item
+                                                key={option.name}
+                                                href={option.link}
+                                            >
+                                                {option.name}
+                                            </Dropdown.Item>
+                                        ))}
                                 </Dropdown.Menu>
                             </Dropdown>
                         ))}

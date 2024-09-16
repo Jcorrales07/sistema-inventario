@@ -2,6 +2,10 @@ import React from 'react'
 import FeatureNavbar from '../components/FeatureNavbar'
 import { Button, Container } from 'react-bootstrap'
 
+const user = JSON.parse(localStorage.getItem('user'))
+// console.log(user.privilegios.some((privilegio) => privilegio.id === 1));
+// console.log(user.privilegios.some((privilegio) => privilegio.id === 2));
+
 function CRUDAlmacenesPage() {
     return (
         <div>
@@ -14,6 +18,7 @@ function CRUDAlmacenesPage() {
                 >
                     <div className="d-flex  gap-3">
                         <Button
+                            disabled={!user.privilegios.some((privilegio) => privilegio.id === 3)}
                             variant="dark"
                             size="lg"
                             href="/almacenes/crear"
@@ -21,6 +26,7 @@ function CRUDAlmacenesPage() {
                             Crear nuevo Almacén
                         </Button>
                         <Button
+                            disabled={!user.privilegios.some((privilegio) => privilegio.id === 3)}
                             variant="dark"
                             size="lg"
                             href="/almacenes/buscar"
@@ -28,6 +34,7 @@ function CRUDAlmacenesPage() {
                             Buscar Almacén
                         </Button>
                         <Button
+                        disabled={!user.privilegios.some((privilegio) => privilegio.id === 1)}
                         variant = "dark"
                         size = "lg"
                         href = "/almacenes/recibidos"
@@ -35,6 +42,7 @@ function CRUDAlmacenesPage() {
                             Recibidos
                         </Button>
                         <Button
+                        disabled={!user.privilegios.some((privilegio) => privilegio.id === 2)}
                         variant = "dark"
                         size = "lg"
                         href = "/almacenes/entregas"
