@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from "react";
 import FeatureNavbar from "../FeatureNavbar";
-// prettier-ignore
 import { Container, Row, Col, Table, Form, Button, Pagination, Badge } from 'react-bootstrap';
 import operacionApi from "../../../api/operacion.api";
-
 import { format } from "date-fns";
-function RecibidosEntregasScreen({ tipo }) {
-  const [data, setData] = useState([
-    // Add more rows if needed
-  ]);
 
+function RecibidosEntregasScreen({ tipo }) {
+  const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState(data);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterEstado, setFilterEstado] = useState("");
+  const [filterEstado, setFilterEstado] = useState(tipo === "recibidos" ? "IN" : "OUT");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
@@ -39,7 +35,6 @@ function RecibidosEntregasScreen({ tipo }) {
         estado: item.estado,
       }));
       setData(data);
-
       setFilteredData(data);
     } catch (error) {
       console.log("Error getting data", error);
@@ -51,15 +46,20 @@ function RecibidosEntregasScreen({ tipo }) {
   }, []);
 
   useEffect(() => {
-    // Apply search term and filter criteria
     let filtered = data;
 
-    console.log("filtered", filterEstado);
-
     if (filterEstado) {
-      filtered = filtered.filter(
-        (item) => item.estado === parseInt(filterEstado)
-      );
+      if (filterEstado === "IN" || filterEstado === "OUT") {
+        filtered = filtered.filter((item) => {
+          if (!item.referencia || item.referencia.indexOf("/") === -1) {
+            return false; // Skip items without valid referencia
+          }
+          const referenciaParts = item.referencia.split("/");
+          return referenciaParts[1] === filterEstado;
+        });
+      } else {
+        filtered = filtered.filter((item) => item.estado === parseInt(filterEstado));
+      }
     }
 
     if (searchTerm) {
@@ -95,7 +95,6 @@ function RecibidosEntregasScreen({ tipo }) {
     setFilterEstado("");
   };
 
-  // Calculate pagination data
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
   const currentPageData = filteredData.slice(
     (currentPage - 1) * itemsPerPage,
@@ -106,7 +105,6 @@ function RecibidosEntregasScreen({ tipo }) {
     setCurrentPage(pageNumber);
   };
 
-  // Function to determine badge variant
   const getBadgeVariant = (estado) => {
     switch (estado) {
       case 1:
@@ -124,6 +122,10 @@ function RecibidosEntregasScreen({ tipo }) {
 
   const handleGetEstado = (estado) => {
     switch (estado) {
+      case 4:
+        return "IN";
+      case 5:
+        return "OUT";
       case 1:
         return "Cancelado";
       case 2:
@@ -141,9 +143,7 @@ function RecibidosEntregasScreen({ tipo }) {
     <div>
       <FeatureNavbar />
       <Container fluid>
-        <h1 className="mt-3">
-          {tipo === "recibidos" ? "Recibidos" : "Entregas"}
-        </h1>
+        <h1 className="mt-3">{tipo === "recibidos" ? "Recibidos" : "Entregas"}</h1>
         <Row className="mt-4 mb-4">
           <Col xs={12} md={6}>
             <Form.Control
@@ -154,9 +154,7 @@ function RecibidosEntregasScreen({ tipo }) {
             />
             <Button
               variant="primary"
-              href={`/almacenes/${
-                tipo === "recibidos" ? "nueva-recepcion" : "nueva-entrega"
-              }`}
+              href={`/almacenes/${tipo === "recibidos" ? "nueva-recepcion" : "nueva-entrega"}`}
               className="mt-3"
             >
               Nueva {tipo === "recibidos" ? "Recepción" : "Entrega"}
@@ -170,6 +168,8 @@ function RecibidosEntregasScreen({ tipo }) {
                 onChange={handleFilterChange}
               >
                 <option value="">Todos</option>
+                <option value="OUT">OUT</option>
+                <option value="IN">IN</option>
                 <option value={3}>Hecho</option>
                 <option value={0}>Borrador</option>
                 <option value={2}>Listo</option>
@@ -223,9 +223,7 @@ function RecibidosEntregasScreen({ tipo }) {
         <div className="d-flex justify-content-center mt-3">
           <Pagination>
             <Pagination.Prev
-              onClick={() =>
-                currentPage > 1 && handlePageChange(currentPage - 1)
-              }
+              onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
             />
             {[...Array(totalPages).keys()].map((number) => (
               <Pagination.Item
@@ -237,9 +235,7 @@ function RecibidosEntregasScreen({ tipo }) {
               </Pagination.Item>
             ))}
             <Pagination.Next
-              onClick={() =>
-                currentPage < totalPages && handlePageChange(currentPage + 1)
-              }
+              onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
             />
           </Pagination>
         </div>
