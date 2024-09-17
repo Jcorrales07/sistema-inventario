@@ -6,7 +6,10 @@ import {
     Container, Row, Col, Navbar, Nav, Image, Button, Dropdown,
     Badge,
     Stack,
+    Card,
 } from 'react-bootstrap'
+import productoApi from '../../api/producto.api'
+import operacionApi from '../../api/operacion.api'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import toast from 'react-hot-toast'
@@ -26,31 +29,34 @@ const buttons = [
     {
         name: 'Gestión de Almacenes',
         link: '/almacenes',
-        rolePermissions: [1, 2,4],
+        rolePermissions: [1, 2, 4],
     },
     {
         name: 'Gestión de Usuarios',
         link: '/usuarios',
         rolePermissions: [5],
     },
-    {
-        name: 'Gestión de Proveedores',
-        link: '/proveedores',
-        rolePermissions: [6],
-    },
+    // {
+    //     name: 'Gestión de Proveedores',
+    //     link: '/proveedores',
+    //     rolePermissions: [6],
+    // },
     {
         name: 'Reportes',
         link: '/reportes',
         rolePermissions: [7],
     },
-    {
-        name: 'Configuración',
-        link: '/configuracion',
-        rolePermissions: [],
-    },
+    // {
+    //     name: 'Configuración',
+    //     link: '/configuracion',
+    //     rolePermissions: [],
+    // },
 ]
 
 function HomePage() {
+    const [productCount, setProductCount] = useState(0)
+    const [recibidosCount, setRecibidosCount] = useState(0)
+    const [entregasCount, setEntregasCount] = useState(0)
     const [user, setUser] = useState({
         nombre: '',
         email: '',
@@ -63,6 +69,31 @@ function HomePage() {
     const [date, setDate] = useState('Fecha')
     const location = useLocation()
     const toastShown = useRef(false)
+
+    const fetchData = async () => {
+        try {
+            const response1 = await productoApi.getAllProductosRequest()
+            const response2 = await operacionApi.getAllOperacionsRequest()
+
+            const productos = response1.data.Data
+            const recibidos = response2.data.Data.filter(
+                (item) => item.tipo === 0
+            )
+            const entregas = response2.data.Data.filter(
+                (item) => item.tipo === 1
+            )
+
+            setProductCount(productos.length)
+            setRecibidosCount(recibidos.length)
+            setEntregasCount(entregas.length)
+        } catch (error) {
+            console.error('Error al obtener productos', error)
+        }
+    }
+
+    useEffect(() => {
+        fetchData() // Ejecutar fetchData al montar el componente
+    }, [])
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem('user'))
@@ -252,6 +283,48 @@ function HomePage() {
                         <h4>Estado del inventario:</h4>
 
                         <Row className="text-center mb-3">
+                            <Col className="mx-2">
+                                <Card className="border-0 shadow-sm p-3">
+                                    <Card.Body>
+                                        <h5>
+                                            <i className="bi bi-box-seam"></i>{' '}
+                                            Cantidad de productos
+                                        </h5>
+                                        <p className="display-6">
+                                            {productCount}
+                                        </p>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                            <Col className="mx-2">
+                                <Card className="border-0 shadow-sm p-3">
+                                    <Card.Body>
+                                        <h5>
+                                            <i className="bi bi-arrow-down-circle"></i>{' '}
+                                            Cantidad de recepciones
+                                        </h5>
+                                        <p className="display-6">
+                                            {recibidosCount}
+                                        </p>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                            <Col className="mx-2">
+                                <Card className="border-0 shadow-sm p-3">
+                                    <Card.Body>
+                                        <h5>
+                                            <i className="bi bi-arrow-up-circle"></i>{' '}
+                                            Cantidad de entregas
+                                        </h5>
+                                        <p className="display-6">
+                                            {entregasCount}
+                                        </p>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                        </Row>
+
+                        {/* <Row className="text-center mb-3">
                             <Col className="border p-3 mx-2">Contenido 1</Col>
                             <Col className="border p-3 mx-2">Contenido 2</Col>
                             <Col className="border p-3 mx-2">Contenido 3</Col>
@@ -260,13 +333,7 @@ function HomePage() {
                             <Col className="border p-3 mx-2">Contenido 1</Col>
                             <Col className="border p-3 mx-2">Contenido 2</Col>
                             <Col className="border p-3 mx-2">Contenido 3</Col>
-                        </Row>
-                        <Row className="text-center mb-3">
-                            <Col className="border p-3 mx-2">Contenido 1</Col>
-                            <Col className="border p-3 mx-2">Contenido 2</Col>
-                            <Col className="border p-3 mx-2">Contenido 3</Col>
-                        </Row>
-                        {/* Aquí puedes agregar más contenido */}
+                        </Row> */}
                     </Container>
                 </Col>
             </Row>
