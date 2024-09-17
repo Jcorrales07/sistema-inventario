@@ -1,13 +1,19 @@
 import React, { act, forwardRef, useEffect, useRef, useState } from 'react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
-// prettier-ignore
 import {
-    Container, Row, Col, Navbar, Nav, Image, Button, Dropdown,
+    Container,
+    Row,
+    Col,
+    Navbar,
+    Nav,
+    Image,
+    Button,
+    Dropdown,
     Badge,
     Stack,
-    Card,
 } from 'react-bootstrap'
+import Card from 'react-bootstrap/Card';
 import productoApi from '../../api/producto.api'
 import operacionApi from '../../api/operacion.api'
 

@@ -237,59 +237,59 @@ const LoginSignup = () => {
     }
 
     return (
-        <Container fluid style={{ width: '300px', marginTop: '150px' }} className='shadow'>
-                <Row className="">
-                    <Col className="border rounded py-5 px-3">
-                        <h3 className="text-center mb-4">Inicio de Sesión</h3>
-                        <Form>
-                            <Form.Group className="mb-3 mt-4" controlId="username">
-                                <Form.Label>Usuario</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Ingresa tu usuario"
-                                    value={username}
-                                    onChange={(e) =>
-                                        setUsername(e.target.value)
-                                    }
-                                    onKeyDown={handleKeyDown}
-                                    isInvalid={error.includes('Usuario')}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {error.includes('Usuario') &&
-                                        'Usuario incorrecto!'}
-                                </Form.Control.Feedback>
-                            </Form.Group>
+        <Container
+            fluid
+            style={{ width: '300px', marginTop: '150px' }}
+            className="shadow"
+        >
+            <Row className="">
+                <Col className="border rounded py-5 px-3">
+                    <h3 className="text-center mb-4">Inicio de Sesión</h3>
+                    <Form>
+                        <Form.Group className="mb-3 mt-4" controlId="username">
+                            <Form.Label>Usuario</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="Ingresa tu usuario"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                                isInvalid={error.includes('Usuario')}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {error.includes('Usuario') &&
+                                    'Usuario incorrecto!'}
+                            </Form.Control.Feedback>
+                        </Form.Group>
 
-                            <Form.Group className="mb-3 mt-4" controlId="password">
-                                <Form.Label>Contraseña</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    placeholder="Ingresa tu contraseña"
-                                    value={password}
-                                    onChange={(e) =>
-                                        setPassword(e.target.value)
-                                    }
-                                    onKeyDown={handleKeyDown}
-                                    isInvalid={error.includes('Contraseña')}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {error.includes('Contraseña') &&
-                                        'Contraseña incorrecta!'}
-                                </Form.Control.Feedback>
-                            </Form.Group>
+                        <Form.Group className="mb-3 mt-4" controlId="password">
+                            <Form.Label>Contraseña</Form.Label>
+                            <Form.Control
+                                type="password"
+                                placeholder="Ingresa tu contraseña"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                                isInvalid={error.includes('Contraseña')}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {error.includes('Contraseña') &&
+                                    'Contraseña incorrecta!'}
+                            </Form.Control.Feedback>
+                        </Form.Group>
 
-                            {error && <Alert variant="danger">{error}</Alert>}
+                        {error && <Alert variant="danger">{error}</Alert>}
 
-                            <Button
-                                variant="dark"
-                                onClick={handleLogin}
-                                className="w-100 mt-4"
-                            >
-                                Iniciar Sesión
-                            </Button>
-                        </Form>
-                    </Col>
-                </Row>
+                        <Button
+                            variant="dark"
+                            onClick={handleLogin}
+                            className="w-100 mt-4"
+                        >
+                            Iniciar Sesión
+                        </Button>
+                    </Form>
+                </Col>
+            </Row>
         </Container>
     )
 }
